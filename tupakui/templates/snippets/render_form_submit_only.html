@@ -1,0 +1,19 @@
+<form class="row" action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% include 'snippets/messages.html' %}
+    {% for field in form %}
+        <div class="container-fluid field {% if field.errors %}error{% endif %}">
+            <label class="col-md-4" for="{{ field.auto_id }}">{{ field.label }}</label>
+            <div class="col-md-8">
+                {{ field }}
+                {{ field.errors }}
+            </div>
+        </div>
+    {% endfor %}
+    <div class="container-fluid text-right">
+        <div class="buttons col-md-12">
+            <input class="btn btn-success" type="submit" tabindex="100"
+                   value="{% if submit_text %}{{ submit_text }}{% else %}Submit{% endif %}"/>
+        </div>
+    </div>
+</form>
