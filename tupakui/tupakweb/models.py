@@ -5,10 +5,8 @@ from math import pi
 # from django.core.exceptions import ValidationError
 # from django.utils.translation import ugettext_lazy as _
 
-from tupakui.accounts.models import User
-
 class Job(models.Model):
-    user = models.ForeignKey(User, related_name='user_job')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_job', on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=False, null=False)
     description = models.TextField(blank=True, null=True)
 
@@ -80,7 +78,7 @@ TAB 1: DATA (related to either OpenData or SimulatedData)
 class Data(models.Model):
     """Data class
     """
-    job = models.OneToOneField(Job, related_name='job_data')
+    job = models.OneToOneField(Job, related_name='job_data', on_delete=models.CASCADE)
 
     SIMULATED_DATA = 'simulated'
     OPEN_DATA = 'open'
@@ -100,7 +98,7 @@ class Data(models.Model):
 class OpenData(models.Model):
     """OpenData class
     """
-    data = models.OneToOneField(Data, related_name='data_open_data')
+    data = models.OneToOneField(Data, related_name='data_open_data', on_delete=models.CASCADE)
 
     HANFORD = 'hanford'
     LIVINGSTON = 'livingston'
@@ -126,7 +124,7 @@ class OpenData(models.Model):
 class SimulatedData(models.Model):
     """SimulatedData class
     """
-    data = models.OneToOneField(Data, related_name='data_simulated_data')
+    data = models.OneToOneField(Data, related_name='data_simulated_data', on_delete=models.CASCADE)
 
     HANFORD = 'hanford'
     LIVINGSTON = 'livingston'
@@ -160,7 +158,7 @@ class SignalInjection(models.Model):
 
     # NOTE: Not sure yet if this should be related to job or data
 
-    job = models.OneToOneField(Job, related_name='job_signal_injection')
+    job = models.OneToOneField(Job, related_name='job_signal_injection', on_delete=models.CASCADE)
 
     inject_or_not = models.BooleanField(default=False)
 
@@ -179,7 +177,7 @@ class SignalInjection(models.Model):
 
 
 class SignalBbh(models.Model):
-    signal = models.OneToOneField(Job, related_name='signal_injection_signal_bbh')
+    signal = models.OneToOneField(Job, related_name='signal_injection_signal_bbh', on_delete=models.CASCADE)
 
     MASS1 = 'mass_1'
 
@@ -200,7 +198,7 @@ class SignalBbh(models.Model):
 
 
 class Sampler(models.Model):
-    job = models.OneToOneField(Job, related_name='job_sampler')
+    job = models.OneToOneField(Job, related_name='job_sampler', on_delete=models.CASCADE)
 
     DYNESTY = 'dynesty'
     NESTLE = 'nestle'
@@ -210,7 +208,7 @@ class Sampler(models.Model):
         (NESTLE, 'Nestle'),
     ]
 
-    category = models.CharField(max_length=15, choices=SAMPLER_TYPE_CHOICES, default=DYNESTY, blank=True)
+    category = models.CharField(max_length=15, choices=SAMPLER_CATEGORY_CHOICES, default=DYNESTY, blank=True)
 
     NUMBER_OF_LIVE_POINTS = 'number_of_live_points'
     NUMBER_OF_STEPS = 'number_of_steps'
@@ -222,7 +220,7 @@ class Sampler(models.Model):
         (NA, "N/A"),
     ]
 
-    sampler_input_name = models.CharField(max_length=20, choices=NAME_CHOICES, default=NA, blank=True)
+    sampler_input_name = models.CharField(max_length=20, choices=SAMPLER_INPUT_NAME_CHOICES, default=NA, blank=True)
     sampler_input_value = models.IntegerField(null=True)
 
     class Meta:
