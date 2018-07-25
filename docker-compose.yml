@@ -2,6 +2,7 @@ version: '3'
 
 services:
   db:
+    container_name: mysql_tupak
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: example
@@ -9,8 +10,9 @@ services:
       MYSQL_USER: django
       MYSQL_PASSWORD: test-docker_#1
   web:
-    build: ./
-    command: python3 development-manage.py runserver 0.0.0.0:8000
+    container_name: dg_tupak
+    build: .
+    command: bash -c "cd tupakui; python3 development-manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./:/code
     ports:
