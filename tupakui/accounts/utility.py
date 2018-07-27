@@ -5,7 +5,7 @@ from datetime import timedelta
 from django.utils import timezone
 from django.conf import settings
 
-from ..accounts import constants
+from . import constants
 from .models import Verification
 
 logger = logging.getLogger(__name__)
@@ -16,7 +16,10 @@ def get_email_verification_expiry():
 
     :return:
     """
-    return settings.EMAIL_VERIFICATION_EXPIRY
+    try:
+        return settings.EMAIL_VERIFICATION_EXPIRY
+    except AttributeError:
+        return constants.EMAIL_VERIFICATION_EXPIRY
 
 
 def get_absolute_site_url(request):
@@ -24,7 +27,10 @@ def get_absolute_site_url(request):
     if request.is_secure():
         protocol = 'https'
     else:
-        protocol = settings.HTTP_PROTOCOL
+        try:
+            protocol = settings.HTTP_PROTOCOL
+        except AttributeError:
+            protocol = 'http'
     return protocol + '://' + site_name
 
 
@@ -45,4 +51,27 @@ def get_token(information, validity=None):
         return verification.id.__str__()
     except:
         logger.info("Failure generating Verification token with {}".format(information))
+        raise
+
+
+def get_information(token):
+    """
+    Retrieves the information from the database for a particular token
+
+    :param token: encoded token from email
+    :return: the actual information
+    """
+    now = timezone.localtime(timezone.now())
+    try:
+        verification = Verification.objects.get(id=token, expiry__gte=now)
+        if verification.verified:
+            raise ValueError('Already verified')
+        else:
+            verification.verified = True
+            verification.save()
+        return verification.information
+    except Verification.DoesNotExist:
+        raise ValueError('Invalid or expired verification code')
+    except Exception as e:
+        logger.exception(e)  # should notify admins via email
         raise

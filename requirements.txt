@@ -7,3 +7,4 @@
 django==2.0.7
 mysqlclient==1.3.13
 pytz==2018.5              # via django
+six==1.11.0

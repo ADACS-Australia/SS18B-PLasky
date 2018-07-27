@@ -124,3 +124,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "../static/"),
     os.path.join(BASE_DIR, "../tupakweb/static/"),
 ]
+
+
+EMAIL_FROM = 'ssaleheen@swin.edu.au'
