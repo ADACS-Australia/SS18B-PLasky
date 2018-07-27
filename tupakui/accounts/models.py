@@ -29,7 +29,7 @@ class User(AbstractUser):
     ]
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, blank=False, default=UNVERIFIED)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s %s (%s)' % (self.first_name, self.last_name, self.username)
 
     def as_json(self):
