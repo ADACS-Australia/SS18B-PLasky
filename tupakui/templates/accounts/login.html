@@ -9,49 +9,54 @@
 {% endblock page_header %}
 
 {% block content %}
-    <form class="row" action="" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {% if form.non_field_errors %}
-            <div class="container-fluid non-field-error">
-                <div class="col-md-12 text-center">
-                    {{ form.non_field_errors }}
+    <div class="single-form-wrapper mx-auto">
+        <form class="form-row" action="" method="post" enctype="multipart/form-data">
+            <div class="col-md-12">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="container-fluid non-field-error">
+                        <div class="col-md-12 text-center">
+                            {{ form.non_field_errors }}
+                        </div>
+                    </div>
+                {% endif %}
+                {% if next %}
+                    <input type="hidden" name="next" value="{{ next }}"/>
+                {% endif %}
+                <div class="row field">
+                    <label class="col-md-4 text-md-right" for="username">Username</label>
+                    <div class="col-md-4">
+                        <input class="form-control" id="username" name="username" required placeholder="username">
+                    </div>
+                </div>
+                <div class="row field">
+                    <label class="col-md-4 text-md-right" for="password">Password</label>
+                    <div class="col-md-4">
+                        <input class="form-control" type="password" id="password" name="password" required
+                               placeholder="password">
+                    </div>
+                </div>
+                <div class="row text-right">
+                    <div class="col-md-8">
+                        <label class="text-right" for="register">
+                            Don't have an account yet? <a href="{% url 'register' %}" id="register">Register here</a>.
+                        </label>
+                    </div>
+                </div>
+                <div class="row text-right">
+                    <div class="col-md-8">
+                        <label class="text-right" for="change_password">
+                            {# Forgot your username or password? <a href="{% url 'password_reset' %}" id="change_password">Reset it here</a>.#}
+                        </label>
+                    </div>
+                </div>
+                <div class="row text-right">
+                    <div class="buttons col-md-8">
+                        <input class="btn btn-warning" type="reset" value="Reset"/>
+                        <input class="btn btn-success" type="submit" value="Login"/>
+                    </div>
                 </div>
             </div>
-        {% endif %}
-        {% if next %}
-            <input type="hidden" name="next" value="{{ next }}" />
-        {% endif %}
-        <div class="container-fluid field">
-            <label class="col-md-4 text-right" for="username">Username</label>
-            <div class="col-md-4">
-                <input class="form-control" id="username" name="username" required placeholder="username">
-            </div>
-        </div>
-        <div class="container-fluid field">
-            <label class="col-md-4 text-right" for="password">Password</label>
-            <div class="col-md-4">
-                <input class="form-control" type="password" id="password" name="password" required placeholder="password">
-            </div>
-        </div>
-        <div class="container-fluid text-right">
-            <div class="col-md-8">
-                <label class="text-right" for="register">
-                    Don't have an account yet? <a href="{% url 'register' %}" id="register">Register here</a>.
-                </label>
-            </div>
-        </div>
-        <div class="container-fluid text-right">
-            <div class="col-md-8">
-                <label class="text-right" for="change_password">
-{#                    Forgot your username or password? <a href="{% url 'password_reset' %}" id="change_password">Reset it here</a>.#}
-                </label>
-            </div>
-        </div>
-        <div class="container-fluid text-right">
-            <div class="buttons col-md-8">
-                <input class="btn btn-warning" type="reset" value="Reset"/>
-                <input class="btn btn-success" type="submit" value="Login"/>
-            </div>
-        </div>
-    </form>
+        </form>
+    </div>
 {% endblock content %}

@@ -1,13 +1,11 @@
-{% extends 'base/base-two-columns.html' %}
-
-{% block info-bar %}
-        <a href="{% url 'change_password' %}">Change password</a>
-{% endblock info-bar %}
+{% extends 'base/base.html' %}
 
 {% block page_header %}
     Profile
 {% endblock page_header %}
 
 {% block content %}
+    <div class="single-form-wrapper mx-auto">
     {% include 'snippets/render_form_submit_only.html' %}
+    </div>
 {% endblock content %}

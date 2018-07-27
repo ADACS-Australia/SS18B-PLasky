@@ -1,5 +1,8 @@
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
+from .forms.profile import EditProfileForm
 from .forms.registation import RegistrationForm
 
 
@@ -50,11 +53,35 @@ def registration(request):
     )
 
 
+@login_required
 def profile(request):
+    data = {}
+    if request.method == 'POST':
+        form = EditProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            data = form.cleaned_data
+            form.save()
+            messages.success(request, 'Information successfully updated', 'alert alert-success')
+            return render(
+                request,
+                "accounts/profile.html",
+                {
+                    'form': form,
+                    'type': 'update_profile_success',
+                    'data': data,
+                },
+            )
+        else:
+            messages.error(request, 'Please correct the error(s) below.', 'alert alert-warning')
+    else:
+        form = EditProfileForm(instance=request.user)
+
     return render(
         request,
-        "accounts/registration.html",
+        "accounts/profile.html",
         {
-            'submit_text': 'Register',
+            'form': form,
+            'data': data,
+            'submit_text': 'Update',
         },
     )

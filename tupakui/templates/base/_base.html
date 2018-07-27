@@ -20,6 +20,10 @@
             integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
             crossorigin="anonymous"></script>
 
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
+          integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+
+
     <!-- Home styles -->
     <link rel="stylesheet" href="{% static 'style/styles.css' %}"/>
     {% block additional_styles %}
@@ -32,10 +36,11 @@
 </head>
 <body>
 {% include 'base/header.html' %}
-{% include 'base/navigation.html' %}
 
-{% block main_content %}
-{% endblock main_content %}
+<div class="main-content">
+    {% block main_content %}
+    {% endblock main_content %}
+</div>
 
 {% include 'base/footer.html' %}
 
