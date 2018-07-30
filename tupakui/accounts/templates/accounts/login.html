@@ -37,6 +37,12 @@
                     </div>
                 </div>
                 <div class="row text-right">
+                    <div class="buttons col-md-8">
+                        <input class="btn btn-warning" type="reset" value="Reset"/>
+                        <input class="btn btn-success" type="submit" value="Login"/>
+                    </div>
+                </div>
+                <div class="row text-right">
                     <div class="col-md-8">
                         <label class="text-right" for="register">
                             Don't have an account yet? <a href="{% url 'register' %}" id="register">Register here</a>.
@@ -46,14 +52,8 @@
                 <div class="row text-right">
                     <div class="col-md-8">
                         <label class="text-right" for="change_password">
-                            {# Forgot your username or password? <a href="{% url 'password_reset' %}" id="change_password">Reset it here</a>.#}
+                             Forgot your username or password? <a href="{% url 'password_reset' %}" id="password_reset">Reset it here</a>.
                         </label>
-                    </div>
-                </div>
-                <div class="row text-right">
-                    <div class="buttons col-md-8">
-                        <input class="btn btn-warning" type="reset" value="Reset"/>
-                        <input class="btn btn-success" type="submit" value="Login"/>
                     </div>
                 </div>
             </div>

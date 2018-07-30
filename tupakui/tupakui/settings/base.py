@@ -123,4 +123,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, '../static-files/')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "../static/"),
     os.path.join(BASE_DIR, "../tupakweb/static/"),
+    os.path.join(BASE_DIR, "../accounts/static/"),
 ]
+
+
+EMAIL_FROM = 'ssaleheen@swin.edu.au'
+
+PASSWORD_RESET_TIMEOUT_DAYS = 1

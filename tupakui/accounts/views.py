@@ -2,8 +2,14 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
+from six.moves.urllib import parse
+
 from .forms.profile import EditProfileForm
 from .forms.registation import RegistrationForm
+from . import utility, constants
+from .models import User
+
+from mailer import actions
 
 
 def registration(request):
@@ -14,22 +20,20 @@ def registration(request):
             data = form.cleaned_data
             form.save()
 
-            # # generating verification link
-            # verification_link = get_absolute_site_url(request) + \
-            #                     '/verify?verification_code=' + \
-            #                     get_token(
-            #                         information='type=user&username={}'.format(data.get('username')),
-            #                         validity=constants.EMAIL_VERIFY_EXPIRY,
-            #                     )
-            #
-            # # Sending email to the potential user to verify the email address
-            # email_verify_request(
-            #     to_addresses=[data.get('email')],
-            #     title=data.get('title'),
-            #     first_name=data.get('first_name'),
-            #     last_name=data.get('last_name'),
-            #     link=verification_link,
-            # )
+            # generating verification link
+            verification_link = utility.get_absolute_site_url(request) + '/accounts/verify?code=' + utility.get_token(
+                                    information='type=user&username={}'.format(data.get('username')),
+                                    validity=utility.get_email_verification_expiry(),
+                                )
+
+            # Sending email to the potential user to verify the email address
+            actions.email_verify_request(
+                to_addresses=[data.get('email')],
+                title=data.get('title'),
+                first_name=data.get('first_name'),
+                last_name=data.get('last_name'),
+                link=verification_link,
+            )
 
             return render(
                 request,
@@ -83,5 +87,49 @@ def profile(request):
             'form': form,
             'data': data,
             'submit_text': 'Update',
+        },
+    )
+
+
+def verify(request):
+    data = {}
+    code_encrypted = request.GET.get('code', None)
+    if code_encrypted:
+        try:
+            code = utility.get_information(code_encrypted)
+            params = dict(parse.parse_qsl(code))
+            verify_type = params.get('type', None)
+            if verify_type == 'user':
+                username = params.get('username', None)
+                try:
+                    user = User.objects.get(username=username)
+                    user.status = user.VERIFIED
+                    user.is_active = True
+                    user.save()
+                    data.update(
+                        success=True,
+                        message='The email address has been verified successfully',
+                    )
+                except User.DoesNotExist:
+                    data.update(
+                        success=False,
+                        message='The requested user account to verify does not exist',
+                    )
+        except ValueError as e:
+                data.update(
+                    success=False,
+                    message=e if e else 'Invalid verification code',
+                )
+    else:
+        data.update(
+            success=False,
+            message='Invalid Verification Code',
+        )
+    return render(
+        request,
+        "accounts/notification.html",
+        {
+            'type': 'email_verify',
+            'data': data,
         },
     )
