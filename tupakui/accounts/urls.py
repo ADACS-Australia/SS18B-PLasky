@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth import views as auth_views
 
 from .forms.password_reset import PasswordResetCustomForm
+from .forms.password_change import PasswordChangeCustomForm
 from .views import registration, profile, verify
 
 urlpatterns = [
@@ -11,7 +12,15 @@ urlpatterns = [
          name='login'),
     path('logout/', auth_views.logout, {'next_page': '/'}, name='logout'),
     path('profile/', profile, name='profile'),
-    path('profile/', profile, name='change_password'),
+    path('password_change/',
+         auth_views.PasswordChangeView.as_view(
+             form_class=PasswordChangeCustomForm,
+             template_name='accounts/registration/password_change.html',
+         ), name='password_change'),
+    path('password_change/done/',
+         auth_views.PasswordChangeDoneView.as_view(
+             template_name='accounts/registration/password_change_done.html',
+         ), name='password_change_done'),
     path('password_reset/',
          auth_views.PasswordResetView.as_view(
              from_email=settings.EMAIL_FROM,
@@ -32,7 +41,7 @@ urlpatterns = [
          ), name='password_reset_confirm'),
     path('reset/done/',
          auth_views.PasswordResetCompleteView.as_view(
-            template_name='accounts/registration/password_reset_complete.html',
+             template_name='accounts/registration/password_reset_complete.html',
          ), name='password_reset_complete'),
     path('verify/', verify, name='verify_account'),
 ]
