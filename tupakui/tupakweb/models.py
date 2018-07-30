@@ -70,11 +70,6 @@ def user_job_result_files_directory_path(instance, filename):
     return 'user_{0}/job_{1}/result_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
 
 
-"""
-
-TAB 1: DATA (related to either OpenData or SimulatedData)
-
-"""
 class Data(models.Model):
     """Data class
     """
@@ -95,10 +90,35 @@ class Data(models.Model):
             ('job', 'id'),
         )
 
-class OpenData(models.Model):
-    """OpenData class
+class DataOpen(models.Model):
+    """DataOpen class
     """
-    data = models.OneToOneField(Data, related_name='data_open_data', on_delete=models.CASCADE)
+    data = models.OneToOneField(Data, related_name='data_data_open', on_delete=models.CASCADE)
+
+    HANFORD = 'hanford'
+    LIVINGSTON = 'livingston'
+    VIRGO = 'virgo'
+
+    DETECTOR_CHOICES = [
+        (HANFORD, 'Hanford'),
+        (LIVINGSTON, 'Livingston'),
+        (VIRGO, 'Virgo'),
+    ]
+
+    detector_choice = models.CharField(max_length=20, choices=DETECTOR_CHOICES, default=HANFORD, blank=True)
+    signal_duration = models.IntegerField(blank=False, null=False, default=4, validators=[MinValueValidator(0)])
+    sample_frequency = models.IntegerField(blank=False, null=False, default=2048, validators=[MinValueValidator(0)])
+    start_time = models.FloatField(blank=False, default=0., validators=[MinValueValidator(0)])
+
+    class Meta:
+        unique_together = (
+            ('data', 'id'),
+        )
+        
+class DataSimulated(models.Model):
+    """DataSimulated class
+    """
+    data = models.OneToOneField(Data, related_name='data_data_simulated', on_delete=models.CASCADE)
 
     HANFORD = 'hanford'
     LIVINGSTON = 'livingston'
@@ -120,47 +140,48 @@ class OpenData(models.Model):
             ('data', 'id'),
         )
 
-
-class SimulatedData(models.Model):
-    """SimulatedData class
-    """
-    data = models.OneToOneField(Data, related_name='data_simulated_data', on_delete=models.CASCADE)
-
-    HANFORD = 'hanford'
-    LIVINGSTON = 'livingston'
-    VIRGO = 'virgo'
-
-    DETECTOR_CHOICES = [
-        (HANFORD, 'Hanford'),
-        (LIVINGSTON, 'Livingston'),
-        (VIRGO, 'Virgo'),
+class Prior(models.Model):
+    FIXED = 'fixed'
+    UNIFORM = 'uniform'
+    CHOICES = [
+        (FIXED, 'Fixed'),
+        (UNIFORM, 'Uniform'),
     ]
+    prior_choice = models.CharField(max_length=20, choices=CHOICES, default=FIXED, blank=True)
 
-    detector_choice = models.CharField(max_length=20, choices=DETECTOR_CHOICES, default=HANFORD, blank=True)
-    signal_duration = models.IntegerField(blank=False, null=False, default=4, validators=[MinValueValidator(0)])
-    sample_frequency = models.IntegerField(blank=False, null=False, default=2048, validators=[MinValueValidator(0)])
-    start_time = models.FloatField(blank=False, default=0., validators=[MinValueValidator(0)])
+class PriorFixed(models.Model):
+    prior = models.OneToOneField(Prior, related_name='prior_prior_fixed', on_delete=models.CASCADE)
+    value = models.FloatField(null=True)
 
     class Meta:
         unique_together = (
-            ('data', 'id'),
+            ('prior', 'id'),
         )
 
-"""
+class PriorUniform(models.Model):
+    prior = models.OneToOneField(Prior, related_name='prior_prior_uniform', on_delete=models.CASCADE)
+    value_min = models.FloatField(null=True)
+    value_max = models.FloatField(null=True)
 
-TAB 2: SignalInjection (current signal type is SignalBinaryBlackHole)
+    class Meta:
+        unique_together = (
+            ('prior', 'id'),
+        )
 
-"""
-
-class SignalInjection(models.Model):
-    """SignalInjection class
+class Signal(models.Model):
+    """Signal class
     """
 
     # NOTE: Not sure yet if this should be related to job or data
 
-    job = models.OneToOneField(Job, related_name='job_signal_injection', on_delete=models.CASCADE)
+    job = models.OneToOneField(Job, related_name='job_signal', on_delete=models.CASCADE)
 
-    inject_or_not = models.BooleanField(default=False)
+    BOOL_CHOICES = (
+        (True, 'Yes'),
+        (False, 'No'),
+    )
+
+    inject_or_not = models.BooleanField(choices=BOOL_CHOICES, default=False)
 
     BINARY_BLACK_HOLE = "bbh"
 
@@ -168,28 +189,41 @@ class SignalInjection(models.Model):
         (BINARY_BLACK_HOLE, 'Binary Black Hole'),
     ]
 
-    SIGNAL_choice = models.CharField(max_length=50, choices=SIGNAL_CHOICES, default=BINARY_BLACK_HOLE, blank=True)
+    signal_choice = models.CharField(max_length=50, choices=SIGNAL_CHOICES, default=BINARY_BLACK_HOLE, blank=True)
 
     class Meta:
         unique_together = (
             ('job', 'id'),
         )
 
-
-class SignalBbh(models.Model):
-    signal = models.OneToOneField(Job, related_name='signal_injection_signal_bbh', on_delete=models.CASCADE)
+class SignalBbhParameter(models.Model):
+    signal = models.OneToOneField(Job, related_name='signal_signal_bbh_parameter', on_delete=models.CASCADE)
 
     MASS1 = 'mass_1'
+    MASS2 = 'mass_2'
+    LUMINOSITY_DISTANCE = 'luminosity_distance'
+    IOTA = 'iota'
+    PSI = 'psi'
+    PHASE = 'phase'
+    MERGER_TIME = 'merger_time'
+    RA = 'ra'
+    DEC = 'dec'
 
     NAME_CHOICES = [
-        (MASS1, 'Mass 1'),
+        (MASS1, 'Mass 1 (M☉)'),
+        (MASS2, 'Mass 2 (M☉)'),
+        (LUMINOSITY_DISTANCE, 'Luminosity distance (Mpc)'),
+        (IOTA, 'iota'),
+        (PSI, 'psi'),
+        (PHASE, 'phase'),
+        (MERGER_TIME, 'Merger time (GPS time)'),
+        (RA, 'Right ascension'),
+        (DEC, 'Declination'),
     ]
 
     name = models.CharField(max_length=20, choices=NAME_CHOICES, default=MASS1, blank=True)
     value = models.FloatField(null=True)
-    prior_fixed = models.FloatField(null=True)
-    prior_min = models.FloatField(null=True)
-    prior_max = models.FloatField(null=True)
+    prior = models.OneToOneField(Prior, related_name='prior_signal_bbh', on_delete=models.CASCADE)
 
     class Meta:
         unique_together = (
@@ -203,28 +237,41 @@ class Sampler(models.Model):
     DYNESTY = 'dynesty'
     NESTLE = 'nestle'
 
-    SAMPLER_CATEGORY_CHOICES = [
+    SAMPLER_CHOICES = [
         (DYNESTY, 'Dynesty'),
         (NESTLE, 'Nestle'),
     ]
 
-    category = models.CharField(max_length=15, choices=SAMPLER_CATEGORY_CHOICES, default=DYNESTY, blank=True)
-
-    NUMBER_OF_LIVE_POINTS = 'number_of_live_points'
-    NUMBER_OF_STEPS = 'number_of_steps'
-    NA = "not_applicable"
-
-    SAMPLER_INPUT_NAME_CHOICES = [
-        (NUMBER_OF_LIVE_POINTS, 'Number of live points'),
-        (NUMBER_OF_STEPS, 'Number of steps'),
-        (NA, "N/A"),
-    ]
-
-    sampler_input_name = models.CharField(max_length=20, choices=SAMPLER_INPUT_NAME_CHOICES, default=NA, blank=True)
-    sampler_input_value = models.IntegerField(null=True)
+    sampler_choice = models.CharField(max_length=15, choices=SAMPLER_CATEGORY_CHOICES, default=DYNESTY, blank=True)
 
     class Meta:
         unique_together = (
             ('job', 'id'),
         )
 
+class SamplerDynesty(models.Model):
+    sampler = models.OneToOneField(Sampler, related_name='sampler_sampler_dynesty', on_delete=models.CASCADE)
+    n_livepoints = models.IntegerField(null=True)
+
+    class Meta:
+        unique_together = (
+            ('sampler', 'id'),
+        )
+
+class SamplerNestle(models.Model):
+    sampler = models.OneToOneField(Sampler, related_name='sampler_sampler_nestle', on_delete=models.CASCADE)
+    n_steps = models.IntegerField(null=True)
+
+    class Meta:
+        unique_together = (
+            ('sampler', 'id'),
+        )
+
+class SamplerEmcee(models.Model):
+    sampler = models.OneToOneField(Sampler, related_name='sampler_sampler_emcee', on_delete=models.CASCADE)
+    n_steps = models.IntegerField(null=True)
+
+    class Meta:
+        unique_together = (
+            ('sampler', 'id'),
+        )

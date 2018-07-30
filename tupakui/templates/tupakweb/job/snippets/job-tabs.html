@@ -1,0 +1,54 @@
+<div class='breadcrumbs'>
+    <div class='inner'>
+        <ul class='cf'>
+            <li id="li_start"
+                {% if active_tab == 'start' %}class="active"{% endif %}
+            >
+                <a data-toggle="tab" href="#start">
+                  <span>1</span>
+                  <span>Start</span>
+                </a>
+            </li>
+            <li id="li_data-select"
+                class="has-popover {% if active_tab == 'data-select' %}active{% endif %}
+                {% if disable_other_tabs == True %} disabled {% endif %}"
+                data-content="Define data to be used in the simulation" data-placement="top" data-container="body"
+            >
+                <a data-toggle="tab" href="#data-select">
+                  <span>2</span>
+                  <span>Data</span>
+                </a>
+            </li>
+            <li id="li_signal"
+                class="has-popover {% if active_tab == 'signal' %}active{% endif %}
+                {% if disable_other_tabs == True %} disabled {% endif %}"
+                data-content="Upload dataset" data-placement="top" data-container="body"
+            >
+                <a data-toggle="tab" href="#signal">
+                  <span>3</span>
+                  <span>Signal injection</span>
+                </a>
+            </li>
+            <li id="li_priors"
+                class="has-popover {% if active_tab == 'priors' %}active{% endif %}
+                {% if disable_other_tabs == True %} disabled {% endif %}"
+                data-content="Priors" data-placement="top" data-container="body"
+            >
+                <a data-toggle="tab" href="#priors">
+                  <span>4</span>
+                  <span>Sampler</span>
+                </a>
+            </li>
+            <li id="li_sampler"
+                class="has-popover {% if active_tab == 'sampler' %}active{% endif %}
+                {% if disable_other_tabs == True %} disabled {% endif %}"
+                data-content="Sampler" data-placement="top" data-container="body"
+            >
+                <a data-toggle="tab" href="#sampler">
+                  <span>5</span>
+                  <span>Sampler</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

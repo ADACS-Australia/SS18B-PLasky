@@ -3,17 +3,15 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 """
 
 from django import forms
+from ...models import SignalBbhParameter
 
 # GLOBAL DECLARATIONS
 RADIO = 'radio'
 SELECT = 'select'
 TEXT = 'text'
 NUMBER = 'number'
-DEFAULT_INITIAL = 'Fixed'
-DEFAULT_CHOICES = (
-    ('Fixed', 'Fixed'),
-    ('Uniform', 'Uniform'),
-)
+DEFAULT_CHOICES = SignalBbhParameter.NAME_CHOICES
+DEFAULT_INITIAL = SignalBbhParameter.MASS1
 
 def get_radio_input(label, choices=None, initial=None):
     if not choices:
@@ -26,7 +24,6 @@ def get_radio_input(label, choices=None, initial=None):
         choices=choices,
         initial=initial,
     )
-
 
 def get_text_input(label, placeholder=None, initial=None):
     return forms.CharField(
@@ -41,7 +38,6 @@ def get_text_input(label, placeholder=None, initial=None):
         initial=initial,
     )
 
-
 def get_number_input(label):
     return forms.CharField(
         label=label,
@@ -52,7 +48,6 @@ def get_number_input(label):
         ),
         required=False,
     )
-
 
 def get_select_input(label, choices=None, initial=None):
     if not choices:
@@ -71,8 +66,8 @@ def get_select_input(label, choices=None, initial=None):
 
     )
 
-class Prior(forms.Form):
-    """Class to represent a Prior. It can be any of the following types:
+class SignalBbhParameter(forms.Form):
+    """Class to represent a SignalBbhParameter. It can be any of the following types:
     1. Radio (Currently in use)
     2. Select
     3. Text (Currently in use)
@@ -86,10 +81,10 @@ class Prior(forms.Form):
         NUMBER,
     ]
 
-    field_type = field_types[1]
+    field_type = field_types[2]
 
     def __init__(self, name, label, choices=None, initial=None, field_type='', placeholder='', *args, **kwargs):
-        super(Prior, self).__init__(*args, **kwargs)
+        super(SignalBbhParameter, self).__init__(*args, **kwargs)
 
         self.field_type = field_type if self.field_types.__contains__(field_type) else self.field_type
 
