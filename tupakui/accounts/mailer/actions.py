@@ -3,9 +3,8 @@ from __future__ import unicode_literals
 from . import templates, email
 
 
-def email_verify_request(to_addresses, title, first_name, last_name, link):
+def email_verify_request(to_addresses, first_name, last_name, link):
     context = {
-        'title': title,
         'first_name': first_name,
         'last_name': last_name,
         'link': link,

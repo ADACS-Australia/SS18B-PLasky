@@ -6,10 +6,10 @@ from six.moves.urllib import parse
 
 from .forms.profile import EditProfileForm
 from .forms.registation import RegistrationForm
-from . import utility, constants
+from . import utility
 from .models import User
 
-from mailer import actions
+from .mailer import actions
 
 
 def registration(request):
@@ -29,7 +29,6 @@ def registration(request):
             # Sending email to the potential user to verify the email address
             actions.email_verify_request(
                 to_addresses=[data.get('email')],
-                title=data.get('title'),
                 first_name=data.get('first_name'),
                 last_name=data.get('last_name'),
                 link=verification_link,
