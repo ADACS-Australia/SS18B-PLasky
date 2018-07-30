@@ -1,9 +1,6 @@
 from django.conf import settings
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
-from math import pi
-# from django.core.exceptions import ValidationError
-# from django.utils.translation import ugettext_lazy as _
+from django.core.validators import MinValueValidator
 
 class Job(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_job', on_delete=models.CASCADE)
@@ -57,13 +54,9 @@ class Job(models.Model):
         )
 
 def user_job_results_file_directory_path_not_field(instance):
-    """Not a model field instance handler
-    """
     return settings.MEDIA_ROOT + 'user_{0}/job_{1}/result_files/'.format(instance.user.id, instance.id)
 
 def user_job_input_file_directory_path(instance):
-    """Not a model field instance handler
-    """
     return settings.MEDIA_ROOT + 'user_{0}/job_{1}/input_files/{2}'.format(instance.user.id, instance.id, "input.json")
 
 def user_job_result_files_directory_path(instance, filename):
@@ -71,8 +64,6 @@ def user_job_result_files_directory_path(instance, filename):
 
 
 class Data(models.Model):
-    """Data class
-    """
     job = models.OneToOneField(Job, related_name='job_data', on_delete=models.CASCADE)
 
     SIMULATED_DATA = 'simulated'
@@ -91,8 +82,6 @@ class Data(models.Model):
         )
 
 class DataOpen(models.Model):
-    """DataOpen class
-    """
     data = models.OneToOneField(Data, related_name='data_data_open', on_delete=models.CASCADE)
 
     HANFORD = 'hanford'
@@ -116,8 +105,6 @@ class DataOpen(models.Model):
         )
         
 class DataSimulated(models.Model):
-    """DataSimulated class
-    """
     data = models.OneToOneField(Data, related_name='data_data_simulated', on_delete=models.CASCADE)
 
     HANFORD = 'hanford'
@@ -169,11 +156,6 @@ class PriorUniform(models.Model):
         )
 
 class Signal(models.Model):
-    """Signal class
-    """
-
-    # NOTE: Not sure yet if this should be related to job or data
-
     job = models.OneToOneField(Job, related_name='job_signal', on_delete=models.CASCADE)
 
     BOOL_CHOICES = (
