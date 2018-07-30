@@ -242,7 +242,7 @@ class Sampler(models.Model):
         (NESTLE, 'Nestle'),
     ]
 
-    sampler_choice = models.CharField(max_length=15, choices=SAMPLER_CATEGORY_CHOICES, default=DYNESTY, blank=True)
+    sampler_choice = models.CharField(max_length=15, choices=SAMPLER_CHOICES, default=DYNESTY, blank=True)
 
     class Meta:
         unique_together = (
