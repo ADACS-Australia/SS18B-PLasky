@@ -12,7 +12,11 @@ services:
   web:
     container_name: dg_tupak
     build: .
-    command: bash -c "cd tupakui; python3 development-manage.py runserver 0.0.0.0:8000"
+    command: >
+      bash -c "cd tupakui
+      && python manage.py makemigrations
+      && python manage.py migrate
+      && python3 development-manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./:/code
     ports:
