@@ -5,7 +5,7 @@ from ...models import Job, SamplerEmcee
 FIELDS = ['n_steps',]
 
 WIDGETS = {
-    'n_steps': forms.Select(
+    'n_steps': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
 }

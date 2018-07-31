@@ -1,28 +1,28 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from ...models import Job, SamplerDynesty
+from ...models import Job, SamplerEmcee
 
-FIELDS = ['n_livepoints',]
+FIELDS = ['n_steps',]
 
 WIDGETS = {
-    'n_livepoints': forms.Select(
+    'n_steps': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
 }
 
 LABELS = {
-    'n_livepoints': _('Number of live points'),
+    'n_steps': _('Number of live points'),
 }
 
-class SamplerDynestyForm(forms.ModelForm):
+class SamplerEmceeForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         self.id = kwargs.pop('id', None)
-        super(SamplerDynesty, self).__init__(*args, **kwargs)
+        super(SamplerEmcee, self).__init__(*args, **kwargs)
 
     class Meta:
-        model = SamplerDynesty
+        model = SamplerEmcee
         fields = FIELDS
         widgets = WIDGETS
         labels = LABELS
@@ -33,9 +33,9 @@ class SamplerDynestyForm(forms.ModelForm):
 
         job = Job.objects.get(id=self.id)
 
-        result = SamplerDynesty.objects.update_or_create(
+        result = SamplerEmcee.objects.update_or_create(
             sampler=job.sampler,
-            n_livepoints=data.get('n_livepoints'),
+            n_steps=data.get('n_steps'),
         )
 
-        self.request.session['sampler_dynesty'] = self.as_array(data)
+        self.request.session['sampler_emcee'] = self.as_array(data)

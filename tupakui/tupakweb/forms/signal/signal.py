@@ -1,28 +1,33 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from ...models import Job, Data
+from ...models import Job, Signal
 
-FIELDS = ['data_choice',]
+FIELDS = ['inject_or_not',
+          'signal_choice']
 
 WIDGETS = {
-    'data_choice': forms.Select(
+    'inject_or_not': forms.Select(
+        attrs={'class': 'form-control'},
+    ),
+    'signal_choice': forms.Select(
         attrs={'class': 'form-control'},
     ),
 }
 
 LABELS = {
-    'data_choice': _('Type of data'),
+    'inject_or_not': _('Inject a signal?'),
+    'signal_choice': _('Signal type'),
 }
 
-class DataForm(forms.ModelForm):
+class SignalForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         self.id = kwargs.pop('id', None)
-        super(DataForm, self).__init__(*args, **kwargs)
+        super(SignalForm, self).__init__(*args, **kwargs)
 
     class Meta:
-        model = Data
+        model = Signal
         fields = FIELDS
         widgets = WIDGETS
         labels = LABELS
@@ -33,16 +38,12 @@ class DataForm(forms.ModelForm):
 
         job = Job.objects.get(id=self.id)
 
-        result = Data.objects.update_or_create(
+        result = Signal.objects.update_or_create(
             job=job,
             data_choice=data.get('data_choice'),
         )
 
         self.request.session['dataset'] = self.as_array(data)
 
-    class Meta:
-        model = Data
-        fields = FIELDS
-        widgets = WIDGETS
-        labels = LABELS
+
 
