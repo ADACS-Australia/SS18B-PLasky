@@ -1,11 +1,12 @@
 from django.urls import path
 from django.contrib.auth.decorators import login_required
 
-from . import views
+from .views import common
+from .views.jobs import job
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('about/', views.index, name='about'),
-    path('new_job/', login_required(views.job_start), name='job_start'),
-    path('jobs/', views.index, name='job_list'),
+    path('', common.index, name='index'),
+    path('about/', common.about, name='about'),
+    path('new_job/', login_required(job.job_start), name='job_start'),
+    path('jobs/', job.jobs, name='jobs'),
 ]
