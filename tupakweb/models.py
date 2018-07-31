@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.core.validators import MinValueValidator
 
+
 class Job(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_job', on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=False, null=False)
@@ -36,9 +37,6 @@ class Job(models.Model):
             ('user', 'id'),
         )
 
-    def __unicode__(self):
-        return '{}'.format(self.name)
-
     def __str__(self):
         return '{}'.format(self.name)
 
@@ -53,11 +51,14 @@ class Job(models.Model):
             ),
         )
 
+
 def user_job_results_file_directory_path_not_field(instance):
     return settings.MEDIA_ROOT + 'user_{0}/job_{1}/result_files/'.format(instance.user.id, instance.id)
 
+
 def user_job_input_file_directory_path(instance):
     return settings.MEDIA_ROOT + 'user_{0}/job_{1}/input_files/{2}'.format(instance.user.id, instance.id, "input.json")
+
 
 def user_job_result_files_directory_path(instance, filename):
     return 'user_{0}/job_{1}/result_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
@@ -81,6 +82,7 @@ class Data(models.Model):
             ('job', 'id'),
         )
 
+
 class DataOpen(models.Model):
     data = models.OneToOneField(Data, related_name='data_data_open', on_delete=models.CASCADE)
 
@@ -103,7 +105,8 @@ class DataOpen(models.Model):
         unique_together = (
             ('data', 'id'),
         )
-        
+
+
 class DataSimulated(models.Model):
     data = models.OneToOneField(Data, related_name='data_data_simulated', on_delete=models.CASCADE)
 
@@ -127,6 +130,7 @@ class DataSimulated(models.Model):
             ('data', 'id'),
         )
 
+
 class Prior(models.Model):
     FIXED = 'fixed'
     UNIFORM = 'uniform'
@@ -135,6 +139,7 @@ class Prior(models.Model):
         (UNIFORM, 'Uniform'),
     ]
     prior_choice = models.CharField(max_length=20, choices=CHOICES, default=FIXED, blank=True)
+
 
 class PriorFixed(models.Model):
     prior = models.OneToOneField(Prior, related_name='prior_prior_fixed', on_delete=models.CASCADE)
@@ -145,6 +150,7 @@ class PriorFixed(models.Model):
             ('prior', 'id'),
         )
 
+
 class PriorUniform(models.Model):
     prior = models.OneToOneField(Prior, related_name='prior_prior_uniform', on_delete=models.CASCADE)
     value_min = models.FloatField(null=True)
@@ -154,6 +160,7 @@ class PriorUniform(models.Model):
         unique_together = (
             ('prior', 'id'),
         )
+
 
 class Signal(models.Model):
     job = models.OneToOneField(Job, related_name='job_signal', on_delete=models.CASCADE)
@@ -177,6 +184,7 @@ class Signal(models.Model):
         unique_together = (
             ('job', 'id'),
         )
+
 
 class SignalBbhParameter(models.Model):
     signal = models.OneToOneField(Job, related_name='signal_signal_bbh_parameter', on_delete=models.CASCADE)
@@ -231,6 +239,7 @@ class Sampler(models.Model):
             ('job', 'id'),
         )
 
+
 class SamplerDynesty(models.Model):
     sampler = models.OneToOneField(Sampler, related_name='sampler_sampler_dynesty', on_delete=models.CASCADE)
     n_livepoints = models.IntegerField(null=True)
@@ -240,6 +249,7 @@ class SamplerDynesty(models.Model):
             ('sampler', 'id'),
         )
 
+
 class SamplerNestle(models.Model):
     sampler = models.OneToOneField(Sampler, related_name='sampler_sampler_nestle', on_delete=models.CASCADE)
     n_steps = models.IntegerField(null=True)
@@ -248,6 +258,7 @@ class SamplerNestle(models.Model):
         unique_together = (
             ('sampler', 'id'),
         )
+
 
 class SamplerEmcee(models.Model):
     sampler = models.OneToOneField(Sampler, related_name='sampler_sampler_emcee', on_delete=models.CASCADE)
