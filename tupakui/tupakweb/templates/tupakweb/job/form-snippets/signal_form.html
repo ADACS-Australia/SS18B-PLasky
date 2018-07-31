@@ -1,9 +1,9 @@
 <form action="{% url 'job_data_model_edit' id=job_id %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
-    {% include 'job/snippets/errors.html' %}
+    {% include 'tupakweb/job/snippets/errors.html' %}
 
-    {% include 'job/snippets/pager.html' %}
+    {% include 'tupakweb/job/snippets/pager.html' %}
 
     <!-- dmodel_type -->
     <div class="container-fluid field
@@ -153,5 +153,5 @@
     </div>
 
 {#    <input class="btn btn-primary" type="submit" value="Save and next" />#}
-    {% include 'job/snippets/pager.html' %}
+    {% include 'tupakweb/job/snippets/pager.html' %}
 </form>
