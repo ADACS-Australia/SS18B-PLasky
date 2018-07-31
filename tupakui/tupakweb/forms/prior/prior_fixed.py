@@ -1,13 +1,13 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from tupakui.tupakweb.models import (
-    Job, PriorFixed, Signal, SignalBbh
+from ...models import (
+    Job, PriorFixed, Signal
 )
 
 FIELDS = ['value',]
 
 WIDGETS = {
-    'value': forms.FloatField(
+    'value': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
 }

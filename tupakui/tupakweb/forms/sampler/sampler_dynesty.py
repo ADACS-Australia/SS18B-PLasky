@@ -1,28 +1,28 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from tupakui.tupakweb.models import Job, SamplerEmcee
+from ...models import Job, SamplerDynesty
 
-FIELDS = ['n_steps',]
+FIELDS = ['n_livepoints',]
 
 WIDGETS = {
-    'n_steps': forms.Select(
+    'n_livepoints': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
 }
 
 LABELS = {
-    'n_steps': _('Number of live points'),
+    'n_livepoints': _('Number of live points'),
 }
 
-class SamplerEmceeForm(forms.ModelForm):
+class SamplerDynestyForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         self.id = kwargs.pop('id', None)
-        super(SamplerEmcee, self).__init__(*args, **kwargs)
+        super(SamplerDynesty, self).__init__(*args, **kwargs)
 
     class Meta:
-        model = SamplerEmcee
+        model = SamplerDynesty
         fields = FIELDS
         widgets = WIDGETS
         labels = LABELS
@@ -33,9 +33,9 @@ class SamplerEmceeForm(forms.ModelForm):
 
         job = Job.objects.get(id=self.id)
 
-        result = SamplerEmcee.objects.update_or_create(
+        result = SamplerDynesty.objects.update_or_create(
             sampler=job.sampler,
-            n_steps=data.get('n_steps'),
+            n_livepoints=data.get('n_livepoints'),
         )
 
-        self.request.session['sampler_emcee'] = self.as_array(data)
+        self.request.session['sampler_dynesty'] = self.as_array(data)

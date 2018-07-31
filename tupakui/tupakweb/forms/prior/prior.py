@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from tupakui.tupakweb.models import Job, Prior
+from ...models import Job, Prior
 
 FIELDS = ['prior_choice',]
 

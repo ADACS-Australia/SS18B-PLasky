@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from tupakui.tupakweb.models import Job, Signal
+from ...models import Job, Signal
 
 FIELDS = ['inject_or_not',
           'signal_choice']

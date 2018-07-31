@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from tupakui.tupakweb.models import Job, DataSimulated
+from ...models import Job, DataSimulated
 
 FIELDS = ['detector_choice',
           'signal_duration',
@@ -11,13 +11,13 @@ WIDGETS = {
     'detector_choice': forms.Select(
         attrs={'class': 'form-control'},
     ),
-    'signal_duration': forms.IntegerField(
+    'signal_duration': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
-    'sample_frequency': forms.IntegerField(
+    'sample_frequency': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
-    'start_time': forms.FloatField(
+    'start_time': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
 }

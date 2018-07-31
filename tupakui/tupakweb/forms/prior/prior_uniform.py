@@ -1,17 +1,17 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from tupakui.tupakweb.models import (
-    Job, PriorUniform, Signal, SignalBbh
+from ...models import (
+    Job, PriorUniform, Signal
 )
 
 FIELDS = ['value_min',
           'value_max',]
 
 WIDGETS = {
-    'value_min': forms.FloatField(
+    'value_min': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
-    'value_max': forms.FloatField(
+    'value_max': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
 }
