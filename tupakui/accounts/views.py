@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
 
 from six.moves.urllib import parse
 
@@ -13,6 +14,11 @@ from .mailer import actions
 
 
 def registration(request):
+
+    # returning to profile if the user is authenticated
+    if request.user.is_authenticated:
+        return redirect(reverse('profile'))
+
     data = {}
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
