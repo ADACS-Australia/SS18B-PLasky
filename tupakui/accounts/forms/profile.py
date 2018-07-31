@@ -18,20 +18,15 @@ WIDGETS = {
                 attrs={'class': "form-control", 'tabindex': '4'},
             ),
             'username': forms.TextInput(
-                attrs={'class': "form-control", 'tabindex': '5'},
+                attrs={'class': "form-control", 'tabindex': '5', 'readonly': True, },
             ),
         }
 
 LABELS = {
-    'title': _('Title'),
     'first_name': _('First name'),
     'last_name': _('Last name'),
     'email': _('Email'),
-    'gender': _('Gender'),
     'institution': _('Institution'),
-    'is_student': _('Is student?'),
-    'country': _('Country'),
-    'scientific_interests': _('Scientific interests'),
     'username': _('Username'),
 }
 
