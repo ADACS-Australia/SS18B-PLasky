@@ -1,0 +1,63 @@
+<div class='breadcrumbs'>
+    <div class='inner'>
+        <ul class='cf'>
+            <li id="li_start"
+                {% if active_tab == 'start' %}class="active"{% endif %}
+            >
+                <a data-toggle="tab" href="#start">
+                  <span>1</span>
+                  <span>Start</span>
+                </a>
+            </li>
+            <li id="li_data"
+                class="has-popover {% if active_tab == 'data' %}active{% endif %}
+                {% if disable_other_tabs == True %} disabled {% endif %}"
+                data-content="Define Data" data-placement="top" data-container="body"
+            >
+                <a data-toggle="tab" href="#data">
+                  <span>2</span>
+                  <span>Data</span>
+                </a>
+            </li>
+            <li id="li_signal"
+                class="has-popover {% if active_tab == 'signal' %}active{% endif %}
+                {% if disable_other_tabs == True %} disabled {% endif %}"
+                data-content="Inject a signal (optional)" data-placement="top" data-container="body"
+            >
+                <a data-toggle="tab" href="#signal">
+                  <span>3</span>
+                  <span>Signal</span>
+                </a>
+            </li>
+            <li id="li_priors"
+                class="has-popover {% if active_tab == 'priors' %}active{% endif %}
+                {% if disable_other_tabs == True %} disabled {% endif %}"
+                data-content="Define priors" data-placement="top" data-container="body"
+            >
+                <a data-toggle="tab" href="#priors">
+                  <span>4</span>
+                  <span>Priors</span>
+                </a>
+            </li>
+            <li id="li_sampler"
+                class="has-popover {% if active_tab == 'sampler' %}active{% endif %}
+                {% if disable_other_tabs == True %} disabled {% endif %}"
+                data-content="Define sampler" data-placement="top" data-container="body"
+            >
+                <a data-toggle="tab" href="#sampler">
+                  <span>5</span>
+                  <span>Sampler</span>
+                </a>
+            </li>
+            <li id="li_launch"
+                class="{% if active_tab == 'launch' %} active{% endif %}
+                {% if disable_other_tabs == True %} disabled {% endif %}"
+            >
+                <a data-toggle="tab" href="#launch">
+                  <span>6</span>
+                  <span>Submit</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

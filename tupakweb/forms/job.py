@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from tupakui.tupakweb.models import Job
+from ..models import Job
 
 FIELDS = ['name', 'description']
 
@@ -22,7 +22,7 @@ LABELS = {
 class StartJobForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
-        super(JobInitialForm, self).__init__(*args, **kwargs)
+        super(StartJobForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = Job
@@ -31,7 +31,7 @@ class StartJobForm(forms.ModelForm):
         labels = LABELS
 
     def clean(self):
-        cleaned_data = super(JobInitialForm, self).clean()
+        cleaned_data = super(StartJobForm, self).clean()
         name = cleaned_data.get('name')  # new job name
 
         # the user either needs to select a draft job from the list or enter a new

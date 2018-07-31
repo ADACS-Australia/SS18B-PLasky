@@ -5,7 +5,7 @@ from ...models import Job, SamplerDynesty
 FIELDS = ['n_livepoints',]
 
 WIDGETS = {
-    'n_livepoints': forms.Select(
+    'n_livepoints': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
 }
