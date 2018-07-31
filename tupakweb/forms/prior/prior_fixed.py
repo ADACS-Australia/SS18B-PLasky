@@ -1,35 +1,30 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from ...models import (
-    Job, PriorUniform, Signal, SignalBbh
+    Job, PriorFixed, Signal
 )
 
-FIELDS = ['value_min',
-          'value_max',]
+FIELDS = ['value',]
 
 WIDGETS = {
-    'value_min': forms.FloatField(
-        attrs={'class': 'form-control'},
-    ),
-    'value_max': forms.FloatField(
+    'value': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
 }
 
 LABELS = {
-    'value_min': _('Minimum value'),
-    'value_max': _('Maximum value'),
+    'value': _('Value'),
 }
 
-class PriorUniformForm(forms.ModelForm):
+class PriorFixedForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         self.id = kwargs.pop('id', None)
-        super(PriorUniformForm, self).__init__(*args, **kwargs)
+        super(PriorFixedForm, self).__init__(*args, **kwargs)
 
     class Meta:
-        model = PriorUniform
+        model = PriorFixed
         fields = FIELDS
         widgets = WIDGETS
         labels = LABELS
@@ -42,16 +37,15 @@ class PriorUniformForm(forms.ModelForm):
         if job.signal.signal_choice == Signal.BINARY_BLACK_HOLE:
             prior = job.signal.signal_bbh_parameter.prior
 
-        result = PriorUniform.objects.update_or_create(
+        result = PriorFixed.objects.update_or_create(
             prior=prior,
-            value_min=data.get('value_min'),
-            value_max=data.get('value_max'),
+            value=data.get('value'),
         )
 
-        self.request.session['prior_uniform'] = self.as_array(data)
+        self.request.session['prior_fixed'] = self.as_array(data)
 
     class Meta:
-        model = PriorUniform
+        model = PriorFixed
         fields = FIELDS
         widgets = WIDGETS
         labels = LABELS
