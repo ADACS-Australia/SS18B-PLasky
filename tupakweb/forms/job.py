@@ -4,15 +4,6 @@ from ..models import Job
 
 FIELDS = ['name', 'description']
 
-WIDGETS = {
-    'name': forms.TextInput(
-        attrs={'class': 'form-control'},
-    ),
-    'description': forms.Textarea(
-        attrs={'class': 'form-control'},
-    ),
-}
-
 LABELS = {
     'name': _('Job name'),
     'description': _('Job description'),
@@ -23,11 +14,12 @@ class StartJobForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         super(StartJobForm, self).__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs.update({'class': 'form-control'})
+        self.fields['description'].widget.attrs.update({'class': 'form-control'})
 
     class Meta:
         model = Job
         fields = FIELDS
-        widget = WIDGETS
         labels = LABELS
 
     def clean(self):
