@@ -240,7 +240,7 @@ def job_start(request):
 
     return render(
         request,
-        "tupakweb/job/job-start.html",
+        "tupakweb/job/new-job.html",
         {
             'job_id': id,
             'active_tab': active_tab,

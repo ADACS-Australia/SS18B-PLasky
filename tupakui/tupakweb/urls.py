@@ -7,5 +7,5 @@ urlpatterns = [
     path('', index.index, name='index'),
     path('about/', index.index, name='about'),
     path('new_job/', login_required(job.job_start), name='job_start'),
-    path('jobs/', index.index, name='job_list'),
+    path('job/', index.index, name='job_list'),
 ]

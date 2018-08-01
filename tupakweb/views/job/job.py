@@ -196,15 +196,36 @@ def act_on_request_method(request, active_tab, id):
 
     return active_tab, forms, views
 
+@login_required
+def new_job(request):
+    active_tab = START
+    if request.method == 'POST':
+        form = FORMS[active_tab](request.POST, request=request)
+        active_tab = save_form(form, request, active_tab)
+    else:
+        form = FORMS[active_tab](request=request)
+
+    if active_tab == START:
+        return render(
+            request,
+            "tupakweb/job/new-job.html",
+            {
+                'active_tab': active_tab,
+                'disable_other_tabs': True,
+                'start_form': form,
+            }
+        )
+    else:
+        return redirect('job_data_model_edit', id=request.session['draft_job']['id'])
 
 @login_required
-def job_start(request):
+def edit_job(request, id):
     active_tab = START
     active_tab, forms, views = act_on_request_method(request, active_tab, id)
 
     return render(
         request,
-        "tupakweb/job/job-start.html",
+        "tupakweb/job/new-job.html",
         {
             'job_id': id,
             'active_tab': active_tab,
@@ -233,3 +254,16 @@ def job_start(request):
             # 'sampler_dynesty': views[TABS_INDEXES[SAMPLER_DYNESTY]],
         }
     )
+
+@login_required
+def jobs(request):
+    my_jobs = Job.objects.filter(user=request.user)
+
+    return render(
+        request,
+        "tupakweb/job/jobs.html",
+        {
+            'job': my_jobs,
+        }
+    )
+

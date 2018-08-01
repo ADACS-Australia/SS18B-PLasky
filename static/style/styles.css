@@ -1,5 +1,5 @@
 body {
-    background-color: #343a40!important;
+    background-color: #343a40 !important;
 }
 
 .main-content {
@@ -32,6 +32,28 @@ body {
     color: white;
 }
 
+/*
+
+Welcome page
+
+*/
+
+.jumbotron {
+    /*background-image: url("../images/GW.jpg");*/
+    background-size:cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    margin-bottom: 0px;
+    /*padding-top: 15em;*/
+    /*padding-bottom: 13em;*/
+}
+
+#welcome-message{
+    text-align: center;
+    /*color: #000000;*/
+    /*font-optical-sizing: auto;*/
+    /*text-shadow: 1px 1px #0e2918;*/
+}
 
 /********************************************/
 /*                                          */
@@ -98,11 +120,6 @@ ul.messages {
    color:red;
 }
 
-.mode_image {
-    width:100%;
-    height:auto;
-}
-
 /********************************************/
 /*                                          */
 /*                 Job-Tabs                 */
@@ -121,18 +138,17 @@ ul.messages {
   list-style-type: none;
 }
 
-
 /********************************************/
 /*                                          */
 /*                 Pager                    */
 /*                                          */
 /********************************************/
-.container-fluid .pager .previous{
+.row .pager .previous, .container-fluid .pager .previous{
     float: left;
     margin-left: 15px;
 }
 
-.container-fluid .pager .next{
+.row .pager .next, .container-fluid .pager .next{
     float: right;
     margin-right: 15px;
 }

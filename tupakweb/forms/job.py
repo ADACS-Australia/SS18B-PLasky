@@ -54,31 +54,25 @@ class StartJobForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        try:
-            job_created = Job.objects.create(
-                user=self.request.user,
-                name=data.get('name')
-            )
-            self.request.session['draft_job'] = job_created.as_json()
-        except:
-            Job.objects.filter(id=id).update(
-                name=data.get('name')
-            )
-            self.request.session['draft_job'] = Job.objects.filter(id=id).as_json()
+        job_created = Job.objects.update_or_create(
+            user=self.request.user,
+            name=data.get('name')
+        )
+        self.request.session['draft_job'] = job_created.as_json()
 
-class EditJobForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
-        self.job_id = kwargs.pop('job_id', None)
-        if self.job_id:
-            try:
-                self.request.session['draft_job'] = Job.objects.get(id=self.job_id).as_json()
-            except:
-                pass
-        super(EditJobForm, self).__init__(*args, **kwargs)
-
-    class Meta:
-        model = Job
-        fields = FIELDS
-        widget = WIDGETS
-        labels = LABELS
+# class EditJobForm(forms.ModelForm):
+#     def __init__(self, *args, **kwargs):
+#         self.request = kwargs.pop('request', None)
+#         self.job_id = kwargs.pop('job_id', None)
+#         if self.job_id:
+#             try:
+#                 self.request.session['draft_job'] = Job.objects.get(id=self.job_id).as_json()
+#             except:
+#                 pass
+#         super(EditJobForm, self).__init__(*args, **kwargs)
+#
+#     class Meta:
+#         model = Job
+#         fields = FIELDS
+#         widget = WIDGETS
+#         labels = LABELS
