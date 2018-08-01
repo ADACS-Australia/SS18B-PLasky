@@ -4,7 +4,7 @@
     {% include 'tupakweb/job/snippets/errors.html' %}
 
     {% for field in start_form %}
-        <div class="container-fluid field
+        <div class="row field
                     {% if field.field.required %}required{% endif %}
                     {% if field.errors %}error{% endif %}
                     " id="div-{{ field.name }}">
@@ -16,7 +16,7 @@
             </label>
 
             <!-- Field -->
-            <div class="col-md-12">
+            <div class="col-md-8">
                 {{ field }}
                 {{ field.errors }}
             </div>

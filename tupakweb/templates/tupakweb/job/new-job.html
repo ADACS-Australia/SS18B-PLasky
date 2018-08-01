@@ -9,11 +9,9 @@
 
 {% block content %}
     {% include 'tupakweb/job/snippets/job-tabs.html' %}
-
     <div class="tab-content" id="job-tabs">
-
         <!-- START -->
-        <div id="start" class="tab-pane fade{% if active_tab == 'start' %} in active{% endif %}">
+        <div id="start" class="tab-pane {% if active_tab == 'start' %} active{% endif %}">
             {% include 'tupakweb/job/form-snippets/new_job_form.html' %}
         </div>
 
