@@ -227,8 +227,8 @@ def edit_job(request, id):
 
             'start_form': forms[TABS_INDEXES[START]],
             'data_form': forms[TABS_INDEXES[DATA]],
-            'data_simulated_form': forms[TABS_INDEXES[DATA_SIMULATED]],
-            'data_open_form': forms[TABS_INDEXES[DATA_OPEN]],
+            # 'data_simulated_form': forms[TABS_INDEXES[DATA_SIMULATED]],
+            # 'data_open_form': forms[TABS_INDEXES[DATA_OPEN]],
             'signal_form': forms[TABS_INDEXES[SIGNAL]],
             'prior': forms[TABS_INDEXES[PRIOR]],
             # 'prior_uniform': forms[TABS_INDEXES[PRIOR_UNIFORM]],
