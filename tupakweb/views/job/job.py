@@ -104,14 +104,20 @@ def act_on_request_method(request, active_tab, id):
 
     job = None
     data = None
+    data_simulated = None
+    data_open = None
     signal = None
     prior = None
+    prior_fixed = None
+    prior_uniform = None
     sampler = None
+    sampler_dynesty = None
+    sampler_emcee = None
 
     if tab_checker != START:
         try:
             job = Job.objects.get(id=id)
-            start_form = FORMS[START](instance=job, request=request, job_id=id)
+            start_form = FORMS_EDIT[START](instance=job, request=request, job_id=id)
 
         except:
             # If the job is not found, let's go where we can create one!
@@ -212,7 +218,7 @@ def edit_job(request, id):
 
     return render(
         request,
-        "tupakweb/job/new-job.html",
+        "tupakweb/job/edit-job.html",
         {
             'job_id': id,
             'active_tab': active_tab,
@@ -221,8 +227,8 @@ def edit_job(request, id):
 
             'start_form': forms[TABS_INDEXES[START]],
             'data_form': forms[TABS_INDEXES[DATA]],
-            # 'data_simulated_form': forms[TABS_INDEXES[DATA_SIMULATED]],
-            # 'data_open_form': forms[TABS_INDEXES[DATA_OPEN]],
+            'data_simulated_form': forms[TABS_INDEXES[DATA_SIMULATED]],
+            'data_open_form': forms[TABS_INDEXES[DATA_OPEN]],
             'signal_form': forms[TABS_INDEXES[SIGNAL]],
             'prior': forms[TABS_INDEXES[PRIOR]],
             # 'prior_uniform': forms[TABS_INDEXES[PRIOR_UNIFORM]],

@@ -222,7 +222,7 @@ ul.messages {
 
 .breadcrumbs li {
   float: left;
-  width: 16.6%;
+  /*width: 16.6%;*/
 }
 
 .breadcrumbs li.disabled {

@@ -8,7 +8,7 @@ def jobs(request):
 
     return render(
         request,
-        "tupakweb/job/jobs.html",
+        "tupakweb/job/all-jobs.html",
         {
             'job': my_jobs,
         }
