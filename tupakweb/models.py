@@ -77,11 +77,6 @@ class Data(models.Model):
 
     data_choice = models.CharField(max_length=20, choices=DATA_CHOICES, default=SIMULATED_DATA, blank=True)
 
-    class Meta:
-        unique_together = (
-            ('job', 'id'),
-        )
-
 
 class DataOpen(models.Model):
     data = models.OneToOneField(Data, related_name='data_data_open', on_delete=models.CASCADE)
@@ -100,11 +95,6 @@ class DataOpen(models.Model):
     signal_duration = models.IntegerField(blank=False, null=False, default=4, validators=[MinValueValidator(0)])
     sample_frequency = models.IntegerField(blank=False, null=False, default=2048, validators=[MinValueValidator(0)])
     start_time = models.FloatField(blank=False, default=0., validators=[MinValueValidator(0)])
-
-    class Meta:
-        unique_together = (
-            ('data', 'id'),
-        )
 
 
 class DataSimulated(models.Model):
@@ -125,11 +115,6 @@ class DataSimulated(models.Model):
     sample_frequency = models.IntegerField(blank=False, null=False, default=2048, validators=[MinValueValidator(0)])
     start_time = models.FloatField(blank=False, default=0., validators=[MinValueValidator(0)])
 
-    class Meta:
-        unique_together = (
-            ('data', 'id'),
-        )
-
 
 class Prior(models.Model):
     FIXED = 'fixed'
@@ -145,21 +130,11 @@ class PriorFixed(models.Model):
     prior = models.OneToOneField(Prior, related_name='prior_prior_fixed', on_delete=models.CASCADE)
     value = models.FloatField(null=True)
 
-    class Meta:
-        unique_together = (
-            ('prior', 'id'),
-        )
-
 
 class PriorUniform(models.Model):
     prior = models.OneToOneField(Prior, related_name='prior_prior_uniform', on_delete=models.CASCADE)
     value_min = models.FloatField(null=True)
     value_max = models.FloatField(null=True)
-
-    class Meta:
-        unique_together = (
-            ('prior', 'id'),
-        )
 
 
 class Signal(models.Model):
@@ -179,11 +154,6 @@ class Signal(models.Model):
     ]
 
     signal_choice = models.CharField(max_length=50, choices=SIGNAL_CHOICES, default=BINARY_BLACK_HOLE, blank=True)
-
-    class Meta:
-        unique_together = (
-            ('job', 'id'),
-        )
 
 
 class SignalBbhParameter(models.Model):
@@ -215,11 +185,6 @@ class SignalBbhParameter(models.Model):
     value = models.FloatField(null=True)
     prior = models.OneToOneField(Prior, related_name='prior_signal_bbh', on_delete=models.CASCADE)
 
-    class Meta:
-        unique_together = (
-            ('signal', 'id'),
-        )
-
 
 class Sampler(models.Model):
     job = models.OneToOneField(Job, related_name='job_sampler', on_delete=models.CASCADE)
@@ -234,37 +199,17 @@ class Sampler(models.Model):
 
     sampler_choice = models.CharField(max_length=15, choices=SAMPLER_CHOICES, default=DYNESTY, blank=True)
 
-    class Meta:
-        unique_together = (
-            ('job', 'id'),
-        )
-
 
 class SamplerDynesty(models.Model):
     sampler = models.OneToOneField(Sampler, related_name='sampler_sampler_dynesty', on_delete=models.CASCADE)
     n_livepoints = models.IntegerField(null=True)
-
-    class Meta:
-        unique_together = (
-            ('sampler', 'id'),
-        )
 
 
 class SamplerNestle(models.Model):
     sampler = models.OneToOneField(Sampler, related_name='sampler_sampler_nestle', on_delete=models.CASCADE)
     n_steps = models.IntegerField(null=True)
 
-    class Meta:
-        unique_together = (
-            ('sampler', 'id'),
-        )
-
 
 class SamplerEmcee(models.Model):
     sampler = models.OneToOneField(Sampler, related_name='sampler_sampler_emcee', on_delete=models.CASCADE)
     n_steps = models.IntegerField(null=True)
-
-    class Meta:
-        unique_together = (
-            ('sampler', 'id'),
-        )

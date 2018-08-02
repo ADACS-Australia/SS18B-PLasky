@@ -42,7 +42,7 @@ class StartJobForm(forms.ModelForm):
                 )
         return cleaned_data
 
-    def save(self):
+    def save(self, **kwargs):
         self.full_clean()
         data = self.cleaned_data
 

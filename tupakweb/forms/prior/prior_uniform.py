@@ -34,7 +34,7 @@ class PriorUniformForm(forms.ModelForm):
         widgets = WIDGETS
         labels = LABELS
 
-    def save(self):
+    def save(self, **kwargs):
         self.full_clean()
         data = self.cleaned_data
 
