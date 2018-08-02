@@ -1,8 +1,4 @@
-{% if new_form %}
-    <form action="{% url 'job_start' %}" method="post" enctype="multipart/form-data">
-{% else %}
-    <form action="{% url 'job_name_edit' id=job_id %}" method="post" enctype="multipart/form-data">
-{% endif %}
+<form action="{% url 'job_start' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
     {% include 'tupakweb/job/snippets/errors.html' %}

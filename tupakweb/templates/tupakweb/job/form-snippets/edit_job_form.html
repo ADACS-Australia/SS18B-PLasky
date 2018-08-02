@@ -1,0 +1,28 @@
+<form action="{% url 'job_name_edit' id=job_id %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {% include 'tupakweb/job/snippets/errors.html' %}
+
+    {% for field in start_form %}
+        <div class="row field
+                    {% if field.field.required %}required{% endif %}
+                    {% if field.errors %}error{% endif %}
+                    div-{{ field.name }}">
+
+            <!-- Label -->
+
+            <label class="col-md-2 control-label" for="{{ field.auto_id }}">
+                {{ field.label }}
+            </label>
+
+            <!-- Field -->
+            <div class="col-md-10">
+                {{ field }}
+                {{ field.errors }}
+            </div>
+
+        </div>
+    {% endfor %}
+
+    {% include 'tupakweb/job/snippets/pager-next-only.html' %}
+</form>
