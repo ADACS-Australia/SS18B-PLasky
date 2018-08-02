@@ -4,11 +4,19 @@ from ..models import Job
 
 FIELDS = ['name', 'description']
 
+WIDGETS = {
+    'name': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'description': forms.Textarea(
+        attrs={'class': 'form-control'},
+    ),
+}
+
 LABELS = {
     'name': _('Job name'),
     'description': _('Job description'),
 }
-
 
 class StartJobForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -21,6 +29,7 @@ class StartJobForm(forms.ModelForm):
         model = Job
         fields = FIELDS
         labels = LABELS
+        widgets = WIDGETS
 
     def clean(self):
         cleaned_data = super(StartJobForm, self).clean()
@@ -46,25 +55,26 @@ class StartJobForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        job_created = Job.objects.update_or_create(
+        job_created = Job.objects.create(
             user=self.request.user,
             name=data.get('name')
         )
-        self.request.session['draft_job'] = job_created.as_json()
+        if job_created[1]:
+            self.request.session['draft_job'] = job_created[0].as_json()
 
-# class EditJobForm(forms.ModelForm):
-#     def __init__(self, *args, **kwargs):
-#         self.request = kwargs.pop('request', None)
-#         self.job_id = kwargs.pop('job_id', None)
-#         if self.job_id:
-#             try:
-#                 self.request.session['draft_job'] = Job.objects.get(id=self.job_id).as_json()
-#             except:
-#                 pass
-#         super(EditJobForm, self).__init__(*args, **kwargs)
-#
-#     class Meta:
-#         model = Job
-#         fields = FIELDS
-#         widget = WIDGETS
-#         labels = LABELS
+class EditJobForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        self.job_id = kwargs.pop('job_id', None)
+        if self.job_id:
+            try:
+                self.request.session['draft_job'] = Job.objects.get(id=self.job_id).as_json()
+            except:
+                pass
+        super(EditJobForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Job
+        fields = FIELDS
+        labels = LABELS
+        widgets = WIDGETS

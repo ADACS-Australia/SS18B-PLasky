@@ -1,4 +1,8 @@
-<form action="{% url 'job_start' %}" method="post" enctype="multipart/form-data">
+{% if new_form %}
+    <form action="{% url 'job_start' %}" method="post" enctype="multipart/form-data">
+{% else %}
+    <form action="{% url 'job_name_edit' id=job_id %}" method="post" enctype="multipart/form-data">
+{% endif %}
     {% csrf_token %}
 
     {% include 'tupakweb/job/snippets/errors.html' %}
@@ -7,16 +11,16 @@
         <div class="row field
                     {% if field.field.required %}required{% endif %}
                     {% if field.errors %}error{% endif %}
-                    " id="div-{{ field.name }}">
+                    div-{{ field.name }}">
 
             <!-- Label -->
 
-            <label class="col-md-4 control-label" for="{{ field.auto_id }}">
+            <label class="col-md-2 control-label" for="{{ field.auto_id }}">
                 {{ field.label }}
             </label>
 
             <!-- Field -->
-            <div class="col-md-8">
+            <div class="col-md-10">
                 {{ field }}
                 {{ field.errors }}
             </div>

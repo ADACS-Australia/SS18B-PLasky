@@ -6,17 +6,17 @@ from ..models import (
     Sampler, SamplerDynesty, SamplerEmcee, SamplerNestle
 )
 
-from ..forms.job import StartJobForm
-from ..forms.data.data import DataForm
-from ..forms.data.data_simulated import DataSimulatedForm
-from ..forms.data.data_open import DataOpenForm
-from ..forms.signal.signal import SignalForm
-from ..forms.prior.prior import PriorForm
-from ..forms.prior.prior_uniform import PriorUniformForm
-from ..forms.prior.prior_fixed import PriorFixedForm
-from ..forms.sampler.sampler import SamplerForm
-from ..forms.sampler.sampler_dynesty import SamplerDynestyForm
-from ..forms.sampler.sampler_emcee import SamplerEmceeForm
+from ..forms.job import StartJobForm, EditJobForm
+from ..forms.data.data import DataForm, EditDataForm
+from ..forms.data.data_simulated import DataSimulatedForm, EditDataSimulatedForm
+from ..forms.data.data_open import DataOpenForm, EditDataOpenForm
+from ..forms.signal.signal import SignalForm, EditSignalForm
+from ..forms.prior.prior import PriorForm, EditPriorForm
+from ..forms.prior.prior_uniform import PriorUniformForm, EditPriorUniformForm
+from ..forms.prior.prior_fixed import PriorFixedForm, EditPriorFixedForm
+from ..forms.sampler.sampler import SamplerForm, EditSamplerForm
+from ..forms.sampler.sampler_dynesty import SamplerDynestyForm, EditSamplerDynestyForm
+from ..forms.sampler.sampler_emcee import SamplerEmceeForm, EditSamplerEmceeForm
 
 def set_dict_indices(my_array):
     """Creates a dictionary based on values in my_array, and links each of them to an indice.
@@ -66,7 +66,7 @@ TABS = [
 ]
 TABS_INDEXES = set_dict_indices(TABS)
 
-FORMS = {
+FORMS_NEW = {
     START: StartJobForm,
     DATA: DataForm,
     DATA_SIMULATED: DataSimulatedForm,
@@ -79,6 +79,21 @@ FORMS = {
     SAMPLER: SamplerForm,
     SAMPLER_DYNESTY: SamplerDynestyForm,
     SAMPLER_EMCEE: SamplerEmceeForm,
+}
+
+FORMS_EDIT = {
+    START: EditJobForm,
+    DATA: EditDataForm,
+    DATA_SIMULATED: EditDataSimulatedForm,
+    DATA_OPEN: EditDataOpenForm,
+    SIGNAL: EditSignalForm,
+    SIGNAL_BBH_PARAMETERS: None, # Need to figure this one out!
+    PRIOR: EditPriorForm,
+    PRIOR_FIXED: EditPriorFixedForm,
+    PRIOR_UNIFORM: EditPriorUniformForm,
+    SAMPLER: EditSamplerForm,
+    SAMPLER_DYNESTY: EditSamplerDynestyForm,
+    SAMPLER_EMCEE: EditSamplerEmceeForm,
 }
 
 MODELS = {

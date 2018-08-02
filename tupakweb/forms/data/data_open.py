@@ -48,7 +48,7 @@ class DataOpenForm(forms.ModelForm):
 
         job = Job.objects.get(id=self.id)
 
-        result = DataOpen.objects.update_or_create(
+        result = DataOpen.objects.create(
             data=job.data,
             detector_choice=data.get('detector_choice'),
             signal_duration=data.get('signal_duration'),
@@ -57,3 +57,20 @@ class DataOpenForm(forms.ModelForm):
         )
 
         self.request.session['data_open'] = self.as_array(data)
+
+class EditDataOpenForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        self.job_id = kwargs.pop('job_id', None)
+        if self.job_id:
+            try:
+                self.request.session['data_open'] = DataOpen.objects.get(job_id=self.job_id).as_json()
+            except:
+                pass
+        super(EditDataOpenForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = DataOpen
+        fields = FIELDS
+        widgets = WIDGETS
+        labels = LABELS

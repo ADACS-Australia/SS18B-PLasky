@@ -8,10 +8,8 @@ from ...utility.job_iterables import model_instance_to_iterable
 from django.utils.timezone import now
 import json
 
-
 def build_task_json(request):
     pass
-
 
 def act_on_request_method(request, active_tab, id):
     tab_checker = active_tab
@@ -23,31 +21,22 @@ def act_on_request_method(request, active_tab, id):
         if request.method == 'POST':
             if active_tab == START:
                 instance = MODELS[active_tab].objects.get(id=id)
-                form = FORMS[active_tab](request.POST,
+                form = FORMS_EDIT[active_tab](request.POST,
                                          instance=instance,
                                          request=request,
                                          job_id=id)
             else:
-                if active_tab == DATA:
-                    try:
-                        if request.FILES['datafile1']:
-                            form = FORMS[active_tab](request.POST, request.FILES, request=request, id=id)
-                        else:
-                            form = FORMS[active_tab](request=request, id=id)
-                    except:
-                        form = FORMS[active_tab](request=request, id=id)
-                else:
-                    try:
-                        # Update
-                        instance = MODELS[active_tab].objects.get(job_id=id)
-                        form = FORMS[active_tab](request.POST,
-                                                 instance=instance,
-                                                 request=request,
-                                                 job_id=id)
-                    except:
-                        # Create
-                        form = FORMS[active_tab](request.POST, request=request, id=id)
-                        get_instance = True
+                try:
+                    # Update
+                    instance = MODELS[active_tab].objects.get(job_id=id)
+                    form = FORMS_EDIT[active_tab](request.POST,
+                                             instance=instance,
+                                             request=request,
+                                             job_id=id)
+                except:
+                    # Create
+                    form = FORMS_NEW[active_tab](request.POST, request=request, id=id)
+                    get_instance = True
 
             active_tab = check_permission_save(form, request, active_tab, id)
             if get_instance:
@@ -60,13 +49,13 @@ def act_on_request_method(request, active_tab, id):
         else:
             if active_tab == START:
                 instance = MODELS[active_tab].objects.get(id=id)
-                form = FORMS[active_tab](instance=instance, request=request, job_id=id)
+                form = FORMS_EDIT[active_tab](instance=instance, request=request, job_id=id)
             else:
                 try:
                     instance = MODELS[active_tab].objects.get(job_id=id)
-                    form = FORMS[active_tab](instance=instance, request=request, job_id=id)
+                    form = FORMS_EDIT[active_tab](instance=instance, request=request, job_id=id)
                 except:
-                    form = FORMS[active_tab](request=request, id=id)
+                    form = FORMS_NEW[active_tab](request=request, id=id)
     else:
         if 'previous' in request.POST:
             active_tab = previous_tab(active_tab)
@@ -114,13 +103,10 @@ def act_on_request_method(request, active_tab, id):
     views = []
 
     job = None
-    data_model = None
-    dataset = None
-    psf = None
-    lsf = None
-    galaxy_model = None
-    fitter = None
-    params = None
+    data = None
+    signal = None
+    prior = None
+    sampler = None
 
     if tab_checker != START:
         try:
@@ -138,59 +124,59 @@ def act_on_request_method(request, active_tab, id):
 
     if tab_checker != DATA:
         try:
-            data_model = Data.objects.get(job_id=id)
-            data_model_form = FORMS[DATA](instance=data_model, request=request, job_id=id)
+            data = Data.objects.get(job_id=id)
+            data_form = FORMS_EDIT[DATA](instance=data, request=request, job_id=id)
         except:
-            data_model_form = FORMS[DATA](request=request, job_id=id)
+            data_form = FORMS_EDIT[DATA](request=request, job_id=id)
     else:
-        data_model_form = form
-        data_model = instance
-    set_list(forms, TABS_INDEXES[DATA], data_model_form)
-    set_list(views, TABS_INDEXES[DATA], model_instance_to_iterable(data_model,
+        data_form = form
+        data = instance
+    set_list(forms, TABS_INDEXES[DATA], data_form)
+    set_list(views, TABS_INDEXES[DATA], model_instance_to_iterable(data,
                                                                    model=DATA,
-                                                                   views=views) if data_model else None)
+                                                                   views=views) if data else None)
 
     if tab_checker != SIGNAL:
         try:
-            data_model = Signal.objects.get(job_id=id)
-            data_model_form = FORMS[SIGNAL](instance=data_model, request=request, job_id=id)
+            signal = Signal.objects.get(job_id=id)
+            signal_form = FORMS_EDIT[SIGNAL](instance=signal, request=request, job_id=id)
         except:
-            data_model_form = FORMS[SIGNAL](request=request, job_id=id)
+            signal_form = FORMS_EDIT[SIGNAL](request=request, job_id=id)
     else:
-        data_model_form = form
-        data_model = instance
-    set_list(forms, TABS_INDEXES[SIGNAL], data_model_form)
-    set_list(views, TABS_INDEXES[SIGNAL], model_instance_to_iterable(data_model,
+        signal_form = form
+        signal = instance
+    set_list(forms, TABS_INDEXES[SIGNAL], signal_form)
+    set_list(views, TABS_INDEXES[SIGNAL], model_instance_to_iterable(signal,
                                                                      model=SIGNAL,
-                                                                     views=views) if data_model else None)
+                                                                     views=views) if signal else None)
 
     if tab_checker != PRIOR:
         try:
-            data_model = Prior.objects.get(job_id=id)
-            data_model_form = FORMS[PRIOR](instance=data_model, request=request, job_id=id)
+            prior = Prior.objects.get(job_id=id)
+            prior_form = FORMS_EDIT[PRIOR](instance=prior, request=request, job_id=id)
         except:
-            data_model_form = FORMS[PRIOR](request=request, job_id=id)
+            prior_form = FORMS_EDIT[PRIOR](request=request, job_id=id)
     else:
-        data_model_form = form
-        data_model = instance
-    set_list(forms, TABS_INDEXES[PRIOR], data_model_form)
-    set_list(views, TABS_INDEXES[PRIOR], model_instance_to_iterable(data_model,
+        prior_form = form
+        prior = instance
+    set_list(forms, TABS_INDEXES[PRIOR], prior_form)
+    set_list(views, TABS_INDEXES[PRIOR], model_instance_to_iterable(prior,
                                                                     model=PRIOR,
-                                                                    views=views) if data_model else None)
+                                                                    views=views) if prior else None)
 
     if tab_checker != SAMPLER:
         try:
-            data_model = Sampler.objects.get(job_id=id)
-            data_model_form = FORMS[SAMPLER](instance=data_model, request=request, job_id=id)
+            sampler = Sampler.objects.get(job_id=id)
+            sampler_form = FORMS_EDIT[SAMPLER](instance=sampler, request=request, job_id=id)
         except:
-            data_model_form = FORMS[SAMPLER](request=request, job_id=id)
+            sampler_form = FORMS_EDIT[SAMPLER](request=request, job_id=id)
     else:
-        data_model_form = form
-        data_model = instance
-    set_list(forms, TABS_INDEXES[SAMPLER], data_model_form)
-    set_list(views, TABS_INDEXES[SAMPLER], model_instance_to_iterable(data_model,
+        sampler_form = form
+        sampler = instance
+    set_list(forms, TABS_INDEXES[SAMPLER], sampler_form)
+    set_list(views, TABS_INDEXES[SAMPLER], model_instance_to_iterable(sampler,
                                                                       model=SAMPLER,
-                                                                      views=views) if data_model else None)
+                                                                      views=views) if sampler else None)
 
     request.session['task'] = build_task_json(request)
 
@@ -200,10 +186,10 @@ def act_on_request_method(request, active_tab, id):
 def new_job(request):
     active_tab = START
     if request.method == 'POST':
-        form = FORMS[active_tab](request.POST, request=request)
+        form = FORMS_NEW[active_tab](request.POST, request=request)
         active_tab = save_form(form, request, active_tab)
     else:
-        form = FORMS[active_tab](request=request)
+        form = FORMS_NEW[active_tab](request=request)
 
     if active_tab == START:
         return render(
@@ -213,6 +199,7 @@ def new_job(request):
                 'active_tab': active_tab,
                 'disable_other_tabs': True,
                 'start_form': form,
+                'new_job': True,
             }
         )
     else:
@@ -230,6 +217,7 @@ def edit_job(request, id):
             'job_id': id,
             'active_tab': active_tab,
             'disable_other_tabs': False,
+            'new_job': False,
 
             'start_form': forms[TABS_INDEXES[START]],
             'data_form': forms[TABS_INDEXES[DATA]],
@@ -255,15 +243,19 @@ def edit_job(request, id):
         }
     )
 
-@login_required
-def jobs(request):
-    my_jobs = Job.objects.filter(user=request.user)
+def job_data(request, id):
+    pass
 
-    return render(
-        request,
-        "tupakweb/job/jobs.html",
-        {
-            'job': my_jobs,
-        }
-    )
+def job_signal(request, id):
+    pass
+
+def job_prior(request, id):
+    pass
+
+def job_sampler(request, id):
+    pass
+
+def job_launch(request, id):
+    pass
+
 

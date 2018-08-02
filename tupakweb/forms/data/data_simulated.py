@@ -48,7 +48,7 @@ class DataSimulatedForm(forms.ModelForm):
 
         job = Job.objects.get(id=self.id)
 
-        result = DataSimulated.objects.update_or_create(
+        result = DataSimulated.objects.create(
             data=job.data,
             detector_choice=data.get('detector_choice'),
             signal_duration=data.get('signal_duration'),
@@ -56,4 +56,21 @@ class DataSimulatedForm(forms.ModelForm):
             start_time=data.get('start_time'),
         )
 
-        self.request.session['data_open'] = self.as_array(data)
+        self.request.session['data_simulated'] = self.as_array(data)
+
+class EditDataSimulatedForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        self.job_id = kwargs.pop('job_id', None)
+        if self.job_id:
+            try:
+                self.request.session['data_simulated'] = DataSimulated.objects.get(job_id=self.job_id).as_json()
+            except:
+                pass
+        super(EditDataSimulatedForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = DataSimulated
+        fields = FIELDS
+        widgets = WIDGETS
+        labels = LABELS

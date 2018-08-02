@@ -140,21 +140,6 @@ ul.messages {
 
 /********************************************/
 /*                                          */
-/*                 Pager                    */
-/*                                          */
-/********************************************/
-.row .pager .previous, .container-fluid .pager .previous{
-    float: left;
-    margin-left: 15px;
-}
-
-.row .pager .next, .container-fluid .pager .next{
-    float: right;
-    margin-right: 15px;
-}
-
-/********************************************/
-/*                                          */
 /*                 Forms                    */
 /*                                          */
 /********************************************/

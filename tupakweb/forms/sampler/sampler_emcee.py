@@ -33,9 +33,26 @@ class SamplerEmceeForm(forms.ModelForm):
 
         job = Job.objects.get(id=self.id)
 
-        result = SamplerEmcee.objects.update_or_create(
+        result = SamplerEmcee.objects.create(
             sampler=job.sampler,
             n_steps=data.get('n_steps'),
         )
 
         self.request.session['sampler_emcee'] = self.as_array(data)
+
+class EditSamplerEmceeForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        self.job_id = kwargs.pop('job_id', None)
+        if self.job_id:
+            try:
+                self.request.session['sampler_emcee'] = SamplerEmcee.objects.get(job_id=self.job_id).as_json()
+            except:
+                pass
+        super(EditSamplerEmceeForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = SamplerEmcee
+        fields = FIELDS
+        widgets = WIDGETS
+        labels = LABELS

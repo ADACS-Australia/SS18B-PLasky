@@ -33,7 +33,7 @@ class PriorForm(forms.ModelForm):
 
         job = Job.objects.get(id=self.id)
 
-        result = Prior.objects.update_or_create(
+        result = Prior.objects.create(
             job=job,
             prior_choice=data.get('prior_choice'),
         )
@@ -46,3 +46,19 @@ class PriorForm(forms.ModelForm):
         widgets = WIDGETS
         labels = LABELS
 
+class EditPriorForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        self.job_id = kwargs.pop('job_id', None)
+        if self.job_id:
+            try:
+                self.request.session['prior'] = Prior.objects.get(job_id=self.job_id).as_json()
+            except:
+                pass
+        super(EditPriorForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Prior
+        fields = FIELDS
+        widgets = WIDGETS
+        labels = LABELS

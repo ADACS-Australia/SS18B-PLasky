@@ -37,12 +37,29 @@ class PriorFixedForm(forms.ModelForm):
         if job.signal.signal_choice == Signal.BINARY_BLACK_HOLE:
             prior = job.signal.signal_bbh_parameter.prior
 
-        result = PriorFixed.objects.update_or_create(
+        result = PriorFixed.objects.create(
             prior=prior,
             value=data.get('value'),
         )
 
         self.request.session['prior_fixed'] = self.as_array(data)
+
+    class Meta:
+        model = PriorFixed
+        fields = FIELDS
+        widgets = WIDGETS
+        labels = LABELS
+
+class EditPriorFixedForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        self.job_id = kwargs.pop('job_id', None)
+        if self.job_id:
+            try:
+                self.request.session['prior_fixed'] = PriorFixed.objects.get(job_id=self.job_id).as_json()
+            except:
+                pass
+        super(EditPriorFixedForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = PriorFixed

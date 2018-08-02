@@ -42,7 +42,7 @@ class PriorUniformForm(forms.ModelForm):
         if job.signal.signal_choice == Signal.BINARY_BLACK_HOLE:
             prior = job.signal.signal_bbh_parameter.prior
 
-        result = PriorUniform.objects.update_or_create(
+        result = PriorUniform.objects.create(
             prior=prior,
             value_min=data.get('value_min'),
             value_max=data.get('value_max'),
@@ -55,3 +55,21 @@ class PriorUniformForm(forms.ModelForm):
         fields = FIELDS
         widgets = WIDGETS
         labels = LABELS
+
+class EditPriorUniformForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        self.job_id = kwargs.pop('job_id', None)
+        if self.job_id:
+            try:
+                self.request.session['prior_uniform'] = PriorUniform.objects.get(job_id=self.job_id).as_json()
+            except:
+                pass
+        super(EditPriorUniformForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = PriorUniform
+        fields = FIELDS
+        widgets = WIDGETS
+        labels = LABELS
+        

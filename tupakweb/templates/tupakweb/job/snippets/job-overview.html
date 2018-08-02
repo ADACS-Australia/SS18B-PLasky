@@ -3,25 +3,25 @@
 {#</div>#}
 <fieldset id="job_details">
     <legend>Job</legend>
-    {% include 'job/snippets-view/start_form.html' %}
+    {% include 'tupakweb/job/view-snippets/job_start_view.html' %}
 </fieldset>
 
 <fieldset id="data_model_details">
     <legend>Data</legend>
-    {% include 'job/snippets-view/data_form.html' %}
+    {% include 'tupakweb/job/view-snippets/data_view.html' %}
 </fieldset>
 
 <fieldset id="dataset_details">
-    <legend>Signal (optional</legend>
-    {% include 'job/snippets-view/signal_form.html' %}
+    <legend>Signal (optional)</legend>
+    {% include 'tupakweb/job/view-snippets/signal_view.html' %}
 </fieldset>
 
 <fieldset id="psf_details">
     <legend>Prior (optional)</legend>
-    {% include 'job/snippets-view/priors_form.html' %}
+    {% include 'tupakweb/job/view-snippets/prior_view.html' %}
 </fieldset>
 
 <fieldset id="sampler_details">
     <legend>Sampler</legend>
-    {% include 'job/snippets-view/sampler_form.html' %}
+    {% include 'tupakweb/job/view-snippets/sampler_view.html' %}
 </fieldset>

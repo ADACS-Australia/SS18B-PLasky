@@ -10,9 +10,35 @@
 {% block content %}
     {% include 'tupakweb/job/snippets/job-tabs.html' %}
     <div class="tab-content" id="job-tabs">
+
         <!-- START -->
-        <div id="start" class="tab-pane {% if active_tab == 'start' %} active{% endif %}">
-            {% include 'tupakweb/job/form-snippets/new_job_form.html' %}
+        <div id="start" class="tab-pane container {% if active_tab == 'start' %}active{% else %}fade{% endif %}">
+            {% include 'tupakweb/job/form-snippets/job_form.html' %}
+        </div>
+
+        <!-- Data -->
+        <div id="data" class="tab-pane container {% if active_tab == 'data' %}active{% else %}fade{% endif %}">
+            {% include 'tupakweb/job/form-snippets/data_form.html' %}
+        </div>
+
+        <!-- Signal -->
+        <div id="signal" class="tab-pane container {% if active_tab == 'signal' %}active{% else %}fade{% endif %}">
+            {% include 'tupakweb/job/form-snippets/signal_form.html' %}
+        </div>
+
+        <!-- Prior -->
+        <div id="prior" class="tab-pane container {% if active_tab == 'prior' %}active{% else %}fade{% endif %}">
+            {% include 'tupakweb/job/form-snippets/prior_form.html' %}
+        </div>
+
+        <!-- Sampler -->
+        <div id="sampler" class="tab-pane container {% if active_tab == 'sampler' %}active{% else %}fade{% endif %}">
+            {% include 'tupakweb/job/form-snippets/sampler_form.html' %}
+        </div>
+
+        <!-- Launch -->
+        <div id="launch" class="tab-pane container {% if active_tab == 'launch' %}active{% else %}fade{% endif %}">
+            {% include 'tupakweb/job/form-snippets/launch_form.html' %}
         </div>
 
     </div>
