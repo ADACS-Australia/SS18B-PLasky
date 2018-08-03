@@ -23,45 +23,47 @@
         </div>
     {% endfor %}
 
-    {% for field in data_simulated_form %}
-        <div class="row field
-                    {% if field.field.required %}required{% endif %}
-                    {% if field.errors %}error{% endif %}
-                    div-{{ field.name }}">
+    <div id="div_data_simulated">
+        {% for field in data_simulated_form %}
+            <div class="row field
+                        {% if field.field.required %}required{% endif %}
+                        {% if field.errors %}error{% endif %}">
 
-            <!-- Label -->
-            <label class="col-md-2 control-label" for="{{ field.auto_id }}">
-                {{ field.label }}
-            </label>
+                <!-- Label -->
+                <label class="col-md-4 control-label" for="{{ field.auto_id }}">
+                    {{ field.label }}
+                </label>
 
-            <!-- Field -->
-            <div class="col-md-10">
-                {{ field }}
-                {{ field.errors }}
+                <!-- Field -->
+                <div class="col-md-8">
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+
             </div>
+        {% endfor %}
+    </div>
 
-        </div>
-    {% endfor %}
-    
-    {% for field in data_open_form %}
-        <div class="row field
-                    {% if field.field.required %}required{% endif %}
-                    {% if field.errors %}error{% endif %}
-                    div-{{ field.name }}">
+    <div id="div_data_open">
+        {% for field in data_open_form %}
+            <div class="row field
+                        {% if field.field.required %}required{% endif %}
+                        {% if field.errors %}error{% endif %}">
 
-            <!-- Label -->
-            <label class="col-md-2 control-label" for="{{ field.auto_id }}">
-                {{ field.label }}
-            </label>
+                <!-- Label -->
+                <label class="col-md-4 control-label" for="{{ field.auto_id }}">
+                    {{ field.label }}
+                </label>
 
-            <!-- Field -->
-            <div class="col-md-10">
-                {{ field }}
-                {{ field.errors }}
+                <!-- Field -->
+                <div class="col-md-8">
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+
             </div>
-
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
     
     {% include 'tupakweb/job/snippets/pager.html' %}
 
@@ -70,18 +72,27 @@
 {% block additional_javascript %}
 <script type="text/javascript">
 
-    $("#id_data_choice").onchange(
-        function(){
-            if ($("#id_data_choice").value == 'simulated') {
-                $(".div_data_simulated").show();
-                $(".div_data_open").hide();
-            }
-            if ($("#id_data_choice").value == 'open') {
-                $(".div_data_open").show();
-                $(".div_data_simulated").hide();
-            }
+    if ($("#id_data_choice").val() == 'open') {
+        $("#div_data_open").show();
+        $("#div_data_simulated").hide();
+    }
+
+    if ($("#id_data_choice").val() == 'simulated') {
+        $("#div_data_simulated").show();
+        $("#div_data_open").hide();
+    }
+
+    $("#id_data_choice").change(function() {
+        if ($(this).val() == 'simulated') {
+            $("#div_data_simulated").show();
+            $("#div_data_open").hide();
         }
-    );
+
+        if ($(this).val() == 'open') {
+            $("#div_data_open").show();
+            $("#div_data_simulated").hide();
+        }
+    });
 
 </script>
 {% endblock additional_javascript %}

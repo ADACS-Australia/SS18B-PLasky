@@ -93,7 +93,6 @@ def act_on_request_method(request, active_tab, id):
     views[START] = model_instance_to_iterable(job) if job else None
 
     for model in MODELS:
-        print (model)
         if model not in [START, SIGNAL_BBH_PARAMETERS]: # Not yet handling BBH_PARAMETERS...
             if tab_checker != model:
                 try:

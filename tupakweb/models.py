@@ -75,7 +75,7 @@ class Data(models.Model):
         (OPEN_DATA, 'Open data'),
     ]
 
-    data_choice = models.CharField(max_length=20, choices=DATA_CHOICES, default=SIMULATED_DATA, blank=True)
+    data_choice = models.CharField(max_length=20, choices=DATA_CHOICES, default=SIMULATED_DATA)
 
 
 class DataOpen(models.Model):
