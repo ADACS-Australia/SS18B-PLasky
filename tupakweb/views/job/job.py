@@ -11,12 +11,10 @@ import json
 def build_task_json(request):
     pass
 
-def act_on_request_method(request, active_tab, id):
-    tab_checker = active_tab
+def process_active_tab(request, active_tab, id):
     instance = None
     get_instance = False
 
-    # ACTIVE TAB
     if active_tab != LAUNCH:
         if request.method == 'POST':
             if active_tab == START:
@@ -33,6 +31,8 @@ def act_on_request_method(request, active_tab, id):
                                              instance=instance,
                                              request=request,
                                              job_id=id)
+
+                # We should catch something better... This is what was in GBKFIT
                 except:
                     # Create
                     form = FORMS_NEW[active_tab](request.POST, request=request, id=id)
@@ -62,57 +62,20 @@ def act_on_request_method(request, active_tab, id):
         else:
             if request.method == 'POST':
                 # Job is being submitted, write the json descriptor for this job
-                job = Job.objects.get(id=id)
+                # Create the task json descriptor here
+                pass
 
-                # Check write permission
-                if job.user_id == request.user.id:
-                    # Create the task json descriptor
-                    task_json = {}
-                    task_json['mode'] = 'fit'
-                    task_json['dmodel'] = job.job_data_model.as_json()
-                    task_json['datasets'] = job.job_data_set.as_array()
-                    # PSF and LSF are optional.
-                    try:
-                        task_json['psf'] = job.job_psf.as_json()
-                    except:
-                        pass
-                    try:
-                        task_json['lsf'] = job.job_lsf.as_json()
-                    except:
-                        pass
-                    task_json['gmodel'] = job.job_gmodel.as_json()
-                    task_json['fitter'] = job.job_fitter.as_json()
-                    task_json['params'] = job.job_parameter_set.as_array()
+    return instance, form, active_tab
 
-                    # Make sure the directory exists to write the json output
-                    os.makedirs(os.path.dirname(user_job_input_file_directory_path(job)), exist_ok=True)
+def act_on_request_method(request, active_tab, id):
+    tab_checker = active_tab
 
-                    # Write the input json file
-                    with open(user_job_input_file_directory_path(job), 'w') as outfile:
-                        json.dump(task_json, outfile)
-
-                    # Now actually update the job as submitted
-                    job.user = request.user
-                    job.status = Job.SUBMITTED
-                    job.submission_time = now()
-                    job.save()
-                    return Job.SUBMITTED, [], []
+    # ACTIVE TAB
+    instance, form, active_tab = process_active_tab(request, active_tab, id)
 
     # OTHER TABS
-    forms = []
-    views = []
-
-    job = None
-    data = None
-    data_simulated = None
-    data_open = None
-    signal = None
-    prior = None
-    prior_fixed = None
-    prior_uniform = None
-    sampler = None
-    sampler_dynesty = None
-    sampler_emcee = None
+    forms = {}
+    views = {}
 
     if tab_checker != START:
         try:
@@ -125,64 +88,27 @@ def act_on_request_method(request, active_tab, id):
     else:
         start_form = form
         job = instance
-    set_list(forms, TABS_INDEXES[START], start_form)
-    set_list(views, TABS_INDEXES[START], model_instance_to_iterable(job) if job else None)
 
-    if tab_checker != DATA:
-        try:
-            data = Data.objects.get(job_id=id)
-            data_form = FORMS_EDIT[DATA](instance=data, request=request, job_id=id)
-        except:
-            data_form = FORMS_EDIT[DATA](request=request, job_id=id)
-    else:
-        data_form = form
-        data = instance
-    set_list(forms, TABS_INDEXES[DATA], data_form)
-    set_list(views, TABS_INDEXES[DATA], model_instance_to_iterable(data,
-                                                                   model=DATA,
-                                                                   views=views) if data else None)
+    forms[START] = start_form
+    views[START] = model_instance_to_iterable(job) if job else None
 
-    if tab_checker != SIGNAL:
-        try:
-            signal = Signal.objects.get(job_id=id)
-            signal_form = FORMS_EDIT[SIGNAL](instance=signal, request=request, job_id=id)
-        except:
-            signal_form = FORMS_EDIT[SIGNAL](request=request, job_id=id)
-    else:
-        signal_form = form
-        signal = instance
-    set_list(forms, TABS_INDEXES[SIGNAL], signal_form)
-    set_list(views, TABS_INDEXES[SIGNAL], model_instance_to_iterable(signal,
-                                                                     model=SIGNAL,
-                                                                     views=views) if signal else None)
+    for model in MODELS:
+        print (model)
+        if model not in [START, SIGNAL_BBH_PARAMETERS]: # Not yet handling BBH_PARAMETERS...
+            if tab_checker != model:
+                try:
+                    variables[model] = MODELS[model].objects.get(job_id=id)
+                    form_variables[model] = FORMS_EDIT[model](instance=variables[model], request=request, job_id=id)
+                except:
+                    form_variables[model] = FORMS_EDIT[model](request=request, job_id=id)
+            else:
+                form_variables[model] = form
+                variables[model] = instance
 
-    if tab_checker != PRIOR:
-        try:
-            prior = Prior.objects.get(job_id=id)
-            prior_form = FORMS_EDIT[PRIOR](instance=prior, request=request, job_id=id)
-        except:
-            prior_form = FORMS_EDIT[PRIOR](request=request, job_id=id)
-    else:
-        prior_form = form
-        prior = instance
-    set_list(forms, TABS_INDEXES[PRIOR], prior_form)
-    set_list(views, TABS_INDEXES[PRIOR], model_instance_to_iterable(prior,
-                                                                    model=PRIOR,
-                                                                    views=views) if prior else None)
-
-    if tab_checker != SAMPLER:
-        try:
-            sampler = Sampler.objects.get(job_id=id)
-            sampler_form = FORMS_EDIT[SAMPLER](instance=sampler, request=request, job_id=id)
-        except:
-            sampler_form = FORMS_EDIT[SAMPLER](request=request, job_id=id)
-    else:
-        sampler_form = form
-        sampler = instance
-    set_list(forms, TABS_INDEXES[SAMPLER], sampler_form)
-    set_list(views, TABS_INDEXES[SAMPLER], model_instance_to_iterable(sampler,
-                                                                      model=SAMPLER,
-                                                                      views=views) if sampler else None)
+            forms[model] = form_variables[model]
+            views[model] = model_instance_to_iterable(variables[model],
+                                                                      model=model,
+                                                                      views=views) if variables[model] else None
 
     request.session['task'] = build_task_json(request)
 
@@ -225,27 +151,27 @@ def edit_job(request, id):
             'disable_other_tabs': False,
             'new_job': False,
 
-            'start_form': forms[TABS_INDEXES[START]],
-            'data_form': forms[TABS_INDEXES[DATA]],
-            # 'data_simulated_form': forms[TABS_INDEXES[DATA_SIMULATED]],
-            # 'data_open_form': forms[TABS_INDEXES[DATA_OPEN]],
-            'signal_form': forms[TABS_INDEXES[SIGNAL]],
-            'prior': forms[TABS_INDEXES[PRIOR]],
-            # 'prior_uniform': forms[TABS_INDEXES[PRIOR_UNIFORM]],
-            # 'prior_fixed': forms[TABS_INDEXES[PRIOR_FIXED]],
-            'sampler': forms[TABS_INDEXES[SAMPLER]],
-            # 'sampler_dynesty': forms[TABS_INDEXES[SAMPLER_DYNESTY]],
+            'start_form': forms[START],
+            'data_form': forms[DATA],
+            'data_simulated_form': forms[DATA_SIMULATED],
+            'data_open_form': forms[DATA_OPEN],
+            'signal_form': forms[SIGNAL],
+            'prior': forms[PRIOR],
+            'prior_uniform': forms[PRIOR_UNIFORM],
+            'prior_fixed': forms[PRIOR_FIXED],
+            'sampler': forms[SAMPLER],
+            'sampler_dynesty': forms[SAMPLER_DYNESTY],
 
-            'start_view': views[TABS_INDEXES[START]],
-            'data_view': views[TABS_INDEXES[DATA]],
-            # 'data_simulated_view': views[TABS_INDEXES[DATA_SIMULATED]],
-            # 'data_open_view': views[TABS_INDEXES[DATA_OPEN]],
-            'signal_view': views[TABS_INDEXES[SIGNAL]],
-            'prior': views[TABS_INDEXES[PRIOR]],
-            # 'prior_uniview': views[TABS_INDEXES[PRIOR_UNIFORM]],
-            # 'prior_fixed': views[TABS_INDEXES[PRIOR_FIXED]],
-            'sampler': views[TABS_INDEXES[SAMPLER]],
-            # 'sampler_dynesty': views[TABS_INDEXES[SAMPLER_DYNESTY]],
+            'start_view': views[START],
+            'data_view': views[DATA],
+            'data_simulated_view': views[DATA_SIMULATED],
+            'data_open_view': views[DATA_OPEN],
+            'signal_view': views[SIGNAL],
+            'prior': views[PRIOR],
+            'prior_uniview': views[PRIOR_UNIFORM],
+            'prior_fixed': views[PRIOR_FIXED],
+            'sampler': views[SAMPLER],
+            'sampler_dynesty': views[SAMPLER_DYNESTY],
         }
     )
 
