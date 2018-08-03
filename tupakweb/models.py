@@ -30,11 +30,11 @@ class Job(models.Model):
     ]
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, blank=False, default=DRAFT)
     creation_time = models.DateTimeField(auto_now_add=True)
-    submission_time = models.DateTimeField(null=True)
+    submission_time = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         unique_together = (
-            ('user', 'id'),
+            ('user', 'name'),
         )
 
     def __str__(self):
