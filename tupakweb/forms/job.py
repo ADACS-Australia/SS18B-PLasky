@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from tupakui.tupakweb.models import Job
+from ..models import Job
 
 FIELDS = ['name', 'description']
 
@@ -18,20 +18,21 @@ LABELS = {
     'description': _('Job description'),
 }
 
-
 class StartJobForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
-        super(JobInitialForm, self).__init__(*args, **kwargs)
+        super(StartJobForm, self).__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs.update({'class': 'form-control'})
+        self.fields['description'].widget.attrs.update({'class': 'form-control'})
 
     class Meta:
         model = Job
         fields = FIELDS
-        widget = WIDGETS
         labels = LABELS
+        widgets = WIDGETS
 
     def clean(self):
-        cleaned_data = super(JobInitialForm, self).clean()
+        cleaned_data = super(StartJobForm, self).clean()
         name = cleaned_data.get('name')  # new job name
 
         # the user either needs to select a draft job from the list or enter a new
@@ -50,21 +51,16 @@ class StartJobForm(forms.ModelForm):
                 )
         return cleaned_data
 
-    def save(self):
+    def save(self, **kwargs):
         self.full_clean()
         data = self.cleaned_data
 
-        try:
-            job_created = Job.objects.create(
-                user=self.request.user,
-                name=data.get('name')
-            )
-            self.request.session['draft_job'] = job_created.as_json()
-        except:
-            Job.objects.filter(id=id).update(
-                name=data.get('name')
-            )
-            self.request.session['draft_job'] = Job.objects.filter(id=id).as_json()
+        job_created = Job.objects.create(
+            user=self.request.user,
+            name=data.get('name')
+        )
+        if job_created[1]:
+            self.request.session['draft_job'] = job_created[0].as_json()
 
 class EditJobForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -80,5 +76,5 @@ class EditJobForm(forms.ModelForm):
     class Meta:
         model = Job
         fields = FIELDS
-        widget = WIDGETS
         labels = LABELS
+        widgets = WIDGETS

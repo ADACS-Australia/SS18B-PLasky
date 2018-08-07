@@ -1,16 +1,6 @@
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-
 from ...models import Job
-
-
-@login_required
-def job_start(request):
-    return render(
-        request,
-        "tupakweb/welcome.html",
-    )
-
 
 @login_required
 def jobs(request):
@@ -18,8 +8,8 @@ def jobs(request):
 
     return render(
         request,
-        "tupakweb/job/jobs.html",
+        "tupakweb/job/all-jobs.html",
         {
-            'jobs': my_jobs,
+            'job': my_jobs,
         }
     )

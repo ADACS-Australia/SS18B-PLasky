@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from tupakui.tupakweb.models import Job, DataSimulated
+from ...models import Job, DataSimulated
 
 FIELDS = ['detector_choice',
           'signal_duration',
@@ -11,13 +11,13 @@ WIDGETS = {
     'detector_choice': forms.Select(
         attrs={'class': 'form-control'},
     ),
-    'signal_duration': forms.IntegerField(
+    'signal_duration': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
-    'sample_frequency': forms.IntegerField(
+    'sample_frequency': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
-    'start_time': forms.FloatField(
+    'start_time': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
 }
@@ -42,13 +42,13 @@ class DataSimulatedForm(forms.ModelForm):
         widgets = WIDGETS
         labels = LABELS
 
-    def save(self):
+    def save(self, **kwargs):
         self.full_clean()
         data = self.cleaned_data
 
         job = Job.objects.get(id=self.id)
 
-        result = DataSimulated.objects.update_or_create(
+        result = DataSimulated.objects.create(
             data=job.data,
             detector_choice=data.get('detector_choice'),
             signal_duration=data.get('signal_duration'),
@@ -56,4 +56,21 @@ class DataSimulatedForm(forms.ModelForm):
             start_time=data.get('start_time'),
         )
 
-        self.request.session['data_open'] = self.as_array(data)
+        self.request.session['data_simulated'] = self.as_array(data)
+
+class EditDataSimulatedForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        self.job_id = kwargs.pop('job_id', None)
+        if self.job_id:
+            try:
+                self.request.session['data_simulated'] = DataSimulated.objects.get(job_id=self.job_id).as_json()
+            except:
+                pass
+        super(EditDataSimulatedForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = DataSimulated
+        fields = FIELDS
+        widgets = WIDGETS
+        labels = LABELS

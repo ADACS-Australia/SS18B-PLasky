@@ -1,11 +1,11 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from tupakui.tupakweb.models import Job, SamplerDynesty
+from ...models import Job, SamplerDynesty
 
 FIELDS = ['n_livepoints',]
 
 WIDGETS = {
-    'n_livepoints': forms.Select(
+    'n_livepoints': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
 }
@@ -27,15 +27,32 @@ class SamplerDynestyForm(forms.ModelForm):
         widgets = WIDGETS
         labels = LABELS
 
-    def save(self):
+    def save(self, **kwargs):
         self.full_clean()
         data = self.cleaned_data
 
         job = Job.objects.get(id=self.id)
 
-        result = SamplerDynesty.objects.update_or_create(
+        result = SamplerDynesty.objects.create(
             sampler=job.sampler,
             n_livepoints=data.get('n_livepoints'),
         )
 
         self.request.session['sampler_dynesty'] = self.as_array(data)
+
+class EditSamplerDynestyForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        self.job_id = kwargs.pop('job_id', None)
+        if self.job_id:
+            try:
+                self.request.session['sampler_dynesty'] = SamplerDynesty.objects.get(job_id=self.job_id).as_json()
+            except:
+                pass
+        super(EditSamplerDynestyForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = SamplerDynesty
+        fields = FIELDS
+        widgets = WIDGETS
+        labels = LABELS

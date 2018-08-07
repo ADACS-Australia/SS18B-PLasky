@@ -4,18 +4,28 @@ services:
   db:
     container_name: mysql_tupak
     image: mysql:5.7
+    ports:
+#    local port : vm port (as default)
+      - "40001:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: example
-      MYSQL_DATABASE: tupak_dev
+      MYSQL_ROOT_PASSWORD: My5qlp@55w0rd
+      MYSQL_DATABASE: tupak
       MYSQL_USER: django
-      MYSQL_PASSWORD: test-docker_#1
+      MYSQL_PASSWORD: My5qlp@55w0rd
+      MYSQL_PORT: 3306
   web:
     container_name: dg_tupak
     build: .
-    command: bash -c "cd tupakui; python3 development-manage.py runserver 0.0.0.0:8000"
+    command: >
+      bash -c "python manage.py makemigrations
+      && python manage.py migrate
+      && python manage.py createsuperuser
+      && python3 development-manage.py runserver 0.0.0.0:8001"
     volumes:
+#    local path : vm path
       - ./:/code
     ports:
-      - "8000:8000"
+#      real port: vm port
+      - "8001:8001"
     depends_on:
       - db
