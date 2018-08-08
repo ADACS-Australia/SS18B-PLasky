@@ -45,7 +45,7 @@ class Job(models.Model):
             id=self.id,
             value=dict(
                 name=self.name,
-                # user=self.user,
+                username=self.user.username,
                 status=self.status,
                 creation_time=self.creation_time.strftime('%d %b %Y %I:%m %p'),
             ),
@@ -91,7 +91,7 @@ class DataOpen(models.Model):
         (VIRGO, 'Virgo'),
     ]
 
-    detector_choice = models.CharField(max_length=20, choices=DETECTOR_CHOICES, default=HANFORD, blank=True)
+    detector_choice = models.CharField(max_length=20, choices=DETECTOR_CHOICES, default=HANFORD)
     signal_duration = models.IntegerField(blank=False, null=False, default=4, validators=[MinValueValidator(0)])
     sample_frequency = models.IntegerField(blank=False, null=False, default=2048, validators=[MinValueValidator(0)])
     start_time = models.FloatField(blank=False, default=0., validators=[MinValueValidator(0)])
@@ -110,7 +110,7 @@ class DataSimulated(models.Model):
         (VIRGO, 'Virgo'),
     ]
 
-    detector_choice = models.CharField(max_length=20, choices=DETECTOR_CHOICES, default=HANFORD, blank=True)
+    detector_choice = models.CharField(max_length=20, choices=DETECTOR_CHOICES, default=HANFORD)
     signal_duration = models.IntegerField(blank=False, null=False, default=4, validators=[MinValueValidator(0)])
     sample_frequency = models.IntegerField(blank=False, null=False, default=2048, validators=[MinValueValidator(0)])
     start_time = models.FloatField(blank=False, default=0., validators=[MinValueValidator(0)])

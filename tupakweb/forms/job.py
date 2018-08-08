@@ -4,19 +4,11 @@ from ..models import Job
 
 FIELDS = ['name', 'description']
 
-WIDGETS = {
-    'name': forms.TextInput(
-        attrs={'class': 'form-control'},
-    ),
-    'description': forms.Textarea(
-        attrs={'class': 'form-control'},
-    ),
-}
-
 LABELS = {
     'name': _('Job name'),
     'description': _('Job description'),
 }
+
 
 class StartJobForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -29,7 +21,6 @@ class StartJobForm(forms.ModelForm):
         model = Job
         fields = FIELDS
         labels = LABELS
-        widgets = WIDGETS
 
     def clean(self):
         cleaned_data = super(StartJobForm, self).clean()
@@ -57,10 +48,12 @@ class StartJobForm(forms.ModelForm):
 
         job_created = Job.objects.create(
             user=self.request.user,
-            name=data.get('name')
+            name=data.get('name'),
+            description=data.get('description'),
         )
-        if job_created[1]:
-            self.request.session['draft_job'] = job_created[0].as_json()
+        if job_created:
+            self.request.session['draft_job'] = job_created.as_json()
+
 
 class EditJobForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -72,9 +65,10 @@ class EditJobForm(forms.ModelForm):
             except:
                 pass
         super(EditJobForm, self).__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs.update({'class': 'form-control'})
+        self.fields['description'].widget.attrs.update({'class': 'form-control'})
 
     class Meta:
         model = Job
         fields = FIELDS
         labels = LABELS
-        widgets = WIDGETS

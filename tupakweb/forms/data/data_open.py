@@ -5,7 +5,7 @@ from ...models import Job, DataOpen
 FIELDS = ['detector_choice',
           'signal_duration',
           'sample_frequency',
-          'start_time',]
+          'start_time', ]
 
 WIDGETS = {
     'detector_choice': forms.Select(
@@ -29,12 +29,12 @@ LABELS = {
     'start_time': _('Start time'),
 }
 
-class DataOpenForm(forms.ModelForm):
 
+class DataOpenForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         self.id = kwargs.pop('id', None)
-        super(DataOpen, self).__init__(*args, **kwargs)
+        super(DataOpenForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = DataOpen
@@ -57,6 +57,7 @@ class DataOpenForm(forms.ModelForm):
         )
 
         self.request.session['data_open'] = self.as_array(data)
+
 
 class EditDataOpenForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

@@ -38,7 +38,7 @@ class DataForm(forms.ModelForm):
             data_choice=data.get('data_choice'),
         )
 
-        self.request.session['data'] = self.as_array(data)
+        # self.request.session['data'] = self.as_array(data)
 
     class Meta:
         model = Data
