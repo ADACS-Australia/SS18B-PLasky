@@ -2,8 +2,10 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from ...models import Job, Signal
 
-FIELDS = ['inject_or_not',
-          'signal_choice']
+FIELDS = [
+    'inject_or_not',
+    'signal_choice',
+]
 
 WIDGETS = {
     'inject_or_not': forms.Select(
@@ -19,8 +21,8 @@ LABELS = {
     'signal_choice': _('Signal type'),
 }
 
-class SignalForm(forms.ModelForm):
 
+class SignalForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         self.id = kwargs.pop('id', None)
@@ -44,6 +46,7 @@ class SignalForm(forms.ModelForm):
         )
 
         self.request.session['signal'] = self.as_array(data)
+
 
 class EditSignalForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

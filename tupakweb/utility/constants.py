@@ -18,8 +18,9 @@ from ..forms.sampler.sampler import SamplerForm, EditSamplerForm
 from ..forms.sampler.sampler_dynesty import SamplerDynestyForm, EditSamplerDynestyForm
 from ..forms.sampler.sampler_emcee import SamplerEmceeForm, EditSamplerEmceeForm
 
+
 def set_dict_indices(my_array):
-    """Creates a dictionary based on values in my_array, and links each of them to an indice.
+    """Creates a dictionary based on values in my_array, and links each of them to an index.
 
     Parameters
     ----------
@@ -83,14 +84,13 @@ BLOCKS = [
 ]
 BLOCKS_INDEXES = set_dict_indices(BLOCKS)
 
-
 FORMS_NEW = {
     START: StartJobForm,
     DATA: DataForm,
     DATA_SIMULATED: DataSimulatedForm,
     DATA_OPEN: DataOpenForm,
     SIGNAL: SignalForm,
-    SIGNAL_BBH_PARAMETERS: None, # Need to figure this one out!
+    SIGNAL_BBH_PARAMETERS: None,  # Need to figure this one out!
     PRIOR: PriorForm,
     PRIOR_FIXED: PriorFixedForm,
     PRIOR_UNIFORM: PriorUniformForm,
@@ -105,7 +105,7 @@ FORMS_EDIT = {
     DATA_SIMULATED: EditDataSimulatedForm,
     DATA_OPEN: EditDataOpenForm,
     SIGNAL: EditSignalForm,
-    SIGNAL_BBH_PARAMETERS: None, # Need to figure this one out!
+    SIGNAL_BBH_PARAMETERS: None,  # Need to figure this one out!
     PRIOR: EditPriorForm,
     PRIOR_FIXED: EditPriorFixedForm,
     PRIOR_UNIFORM: EditPriorUniformForm,

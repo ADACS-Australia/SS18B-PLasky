@@ -13,6 +13,7 @@ NUMBER = 'number'
 DEFAULT_CHOICES = SignalBbhParameter.NAME_CHOICES
 DEFAULT_INITIAL = SignalBbhParameter.MASS1
 
+
 def get_radio_input(label, choices=None, initial=None):
     if not choices:
         choices = DEFAULT_CHOICES
@@ -24,6 +25,7 @@ def get_radio_input(label, choices=None, initial=None):
         choices=choices,
         initial=initial,
     )
+
 
 def get_text_input(label, placeholder=None, initial=None):
     return forms.CharField(
@@ -38,6 +40,7 @@ def get_text_input(label, placeholder=None, initial=None):
         initial=initial,
     )
 
+
 def get_number_input(label):
     return forms.CharField(
         label=label,
@@ -48,6 +51,7 @@ def get_number_input(label):
         ),
         required=False,
     )
+
 
 def get_select_input(label, choices=None, initial=None):
     if not choices:
@@ -65,6 +69,7 @@ def get_select_input(label, choices=None, initial=None):
         initial=initial,
 
     )
+
 
 class SignalBbhParameter(forms.Form):
     """Class to represent a SignalBbhParameter. It can be any of the following types:

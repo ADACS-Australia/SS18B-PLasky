@@ -4,7 +4,9 @@ from ...models import (
     Job, PriorFixed, Signal
 )
 
-FIELDS = ['value',]
+FIELDS = [
+    'value',
+]
 
 WIDGETS = {
     'value': forms.TextInput(
@@ -16,18 +18,12 @@ LABELS = {
     'value': _('Value'),
 }
 
-class PriorFixedForm(forms.ModelForm):
 
+class PriorFixedForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         self.id = kwargs.pop('id', None)
         super(PriorFixedForm, self).__init__(*args, **kwargs)
-
-    class Meta:
-        model = PriorFixed
-        fields = FIELDS
-        widgets = WIDGETS
-        labels = LABELS
 
     def save(self, **kwargs):
         self.full_clean()
@@ -49,6 +45,7 @@ class PriorFixedForm(forms.ModelForm):
         fields = FIELDS
         widgets = WIDGETS
         labels = LABELS
+
 
 class EditPriorFixedForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

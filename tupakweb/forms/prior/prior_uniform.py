@@ -4,8 +4,10 @@ from ...models import (
     Job, PriorUniform, Signal
 )
 
-FIELDS = ['value_min',
-          'value_max',]
+FIELDS = [
+    'value_min',
+    'value_max',
+]
 
 WIDGETS = {
     'value_min': forms.TextInput(
@@ -21,18 +23,12 @@ LABELS = {
     'value_max': _('Maximum value'),
 }
 
-class PriorUniformForm(forms.ModelForm):
 
+class PriorUniformForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         self.id = kwargs.pop('id', None)
         super(PriorUniformForm, self).__init__(*args, **kwargs)
-
-    class Meta:
-        model = PriorUniform
-        fields = FIELDS
-        widgets = WIDGETS
-        labels = LABELS
 
     def save(self, **kwargs):
         self.full_clean()
@@ -56,6 +52,7 @@ class PriorUniformForm(forms.ModelForm):
         widgets = WIDGETS
         labels = LABELS
 
+
 class EditPriorUniformForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
@@ -72,4 +69,3 @@ class EditPriorUniformForm(forms.ModelForm):
         fields = FIELDS
         widgets = WIDGETS
         labels = LABELS
-        

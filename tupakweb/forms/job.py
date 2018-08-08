@@ -2,7 +2,10 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from ..models import Job
 
-FIELDS = ['name', 'description']
+FIELDS = [
+    'name',
+    'description',
+]
 
 LABELS = {
     'name': _('Job name'),
