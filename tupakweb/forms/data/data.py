@@ -2,7 +2,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from ...models import Job, Data
 
-FIELDS = ['data_choice',]
+FIELDS = ['data_choice', ]
 
 WIDGETS = {
     'data_choice': forms.Select(
@@ -14,8 +14,8 @@ LABELS = {
     'data_choice': _('Type of data'),
 }
 
-class DataForm(forms.ModelForm):
 
+class DataForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         self.id = kwargs.pop('id', None)
@@ -40,11 +40,6 @@ class DataForm(forms.ModelForm):
 
         # self.request.session['data'] = self.as_array(data)
 
-    class Meta:
-        model = Data
-        fields = FIELDS
-        widgets = WIDGETS
-        labels = LABELS
 
 class EditDataForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

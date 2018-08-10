@@ -25,10 +25,8 @@ class StartJobForm(forms.ModelForm):
         fields = FIELDS
         labels = LABELS
 
-    def clean(self):
-        cleaned_data = super(StartJobForm, self).clean()
-        name = cleaned_data.get('name')  # new job name
-
+    def clean_name(self):
+        name = self.cleaned_data['name']
         # the user either needs to select a draft job from the list or enter a new
         # job name for which a draft is going to be created
         if name is None or name == '':
@@ -43,7 +41,7 @@ class StartJobForm(forms.ModelForm):
                 raise forms.ValidationError(
                     "You already have a job with the same name"
                 )
-        return cleaned_data
+        return name
 
     def save(self, **kwargs):
         self.full_clean()
