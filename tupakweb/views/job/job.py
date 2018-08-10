@@ -219,7 +219,41 @@ def job_data(request, id):
 
 
 def job_signal(request, id):
-    pass
+    active_tab = SIGNAL
+    active_tab, forms, views = act_on_request_method(request, active_tab, id)
+
+    return render(
+        request,
+        "tupakweb/job/edit-job.html",
+        {
+            'job_id': id,
+            'active_tab': active_tab,
+            'disable_other_tabs': False,
+            'new_job': False,
+
+            'start_form': forms[START],
+            'data_form': forms[DATA],
+            'data_simulated_form': forms[DATA_SIMULATED],
+            'data_open_form': forms[DATA_OPEN],
+            'signal_form': forms[SIGNAL],
+            'prior_form': forms[PRIOR],
+            'prior_uniform_form': forms[PRIOR_UNIFORM],
+            'prior_fixed_form': forms[PRIOR_FIXED],
+            'sampler_form': forms[SAMPLER],
+            'sampler_dynesty_form': forms[SAMPLER_DYNESTY],
+
+            'start_view': views[START],
+            'data_view': views[DATA],
+            'data_simulated_view': views[DATA_SIMULATED],
+            'data_open_view': views[DATA_OPEN],
+            'signal_view': views[SIGNAL],
+            'prior_view': views[PRIOR],
+            'prior_uniform_view': views[PRIOR_UNIFORM],
+            'prior_fixed_view': views[PRIOR_FIXED],
+            'sampler_view': views[SAMPLER],
+            'sampler_dynesty_view': views[SAMPLER_DYNESTY],
+        }
+    )
 
 
 def job_prior(request, id):
