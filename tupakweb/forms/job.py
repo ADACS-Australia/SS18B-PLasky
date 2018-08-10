@@ -16,6 +16,7 @@ LABELS = {
 class StartJobForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
+        kwargs.pop('job', None)  # get rid off job keyword arg for this form
         super(StartJobForm, self).__init__(*args, **kwargs)
         self.fields['name'].widget.attrs.update({'class': 'form-control'})
         self.fields['description'].widget.attrs.update({'class': 'form-control'})

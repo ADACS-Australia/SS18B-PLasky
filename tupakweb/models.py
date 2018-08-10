@@ -79,7 +79,7 @@ class Data(models.Model):
 
 
 class DataOpen(models.Model):
-    data = models.OneToOneField(Data, related_name='data_data_open', on_delete=models.CASCADE)
+    job = models.OneToOneField(Job, related_name='job_data_open', on_delete=models.CASCADE)
 
     HANFORD = 'hanford'
     LIVINGSTON = 'livingston'
@@ -98,7 +98,7 @@ class DataOpen(models.Model):
 
 
 class DataSimulated(models.Model):
-    data = models.OneToOneField(Data, related_name='data_data_simulated', on_delete=models.CASCADE)
+    job = models.OneToOneField(Job, related_name='job_data_simulated', on_delete=models.CASCADE)
 
     HANFORD = 'hanford'
     LIVINGSTON = 'livingston'

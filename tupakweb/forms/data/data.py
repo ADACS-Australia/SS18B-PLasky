@@ -18,7 +18,7 @@ LABELS = {
 class DataForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
-        self.id = kwargs.pop('id', None)
+        self.job = kwargs.pop('job', None)
         super(DataForm, self).__init__(*args, **kwargs)
 
     class Meta:
@@ -31,10 +31,10 @@ class DataForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        job = Job.objects.get(id=self.id)
+        # job = Job.objects.get(id=self.job_id)
 
         result = Data.objects.create(
-            job=job,
+            job=self.job,
             data_choice=data.get('data_choice'),
         )
 

@@ -135,7 +135,7 @@ def get_to_be_active_tab(active_tab, previous=False):
     return active_tab, error
 
 
-def generate_forms(job_id=None):
+def generate_forms(job=None, request=None):
     forms = {
         START: StartJobForm(),
         DATA: DataForm(),
@@ -149,27 +149,48 @@ def generate_forms(job_id=None):
         SAMPLER_DYNESTY: SamplerDynestyForm(),
     }
 
-    if job_id:
-        job = Job.objects.get(id=job_id)
+    if job:
         forms.update({
             START: StartJobForm(instance=job),
         })
 
-        for key, value in FORMS_NEW:
-            print(key, value)
+        try:
+            data_object = Data.objects.get(job=job)
+
+            forms.update({
+                DATA: DataForm(instance=data_object, job=job),
+            })
+        except Data.DoesNotExist:
+            pass
+
+        # for model in MODELS:
+        #     print(model)
+        #
+        #     if model in [START, SIGNAL_BBH_PARAMETERS, PRIOR, PRIOR_FIXED, PRIOR_UNIFORM, SAMPLER_DYNESTY,
+        #                  SAMPLER_NESTLE, SAMPLER_EMCEE]:
+        #         continue
+        #
+        #     try:
+        #         instance = MODELS[model].objects.get(job=job)
+        #
+        #         forms.update({
+        #             model: FORMS_NEW[model](instance=instance, job=job)
+        #         })
+        #     except MODELS[model].DoesNotExist:
+        #         pass
 
     return forms
 
 
 def save_tab(request, active_tab):
     try:
-        job_id = request.session['draft_job'].get('id', None)
-    except AttributeError:
-        job_id = None
+        job = Job.objects.get(id=request.session['draft_job'].get('id', None))
+    except (AttributeError, Job.DoesNotExist):
+        job = None
 
-    forms = generate_forms(job_id)
+    forms = generate_forms(job, request=request)
 
-    forms[active_tab] = FORMS_NEW[active_tab](request.POST, request=request)
+    forms[active_tab] = FORMS_NEW[active_tab](request.POST, request=request, job=job)
 
     if forms[active_tab].is_valid():
         forms[active_tab].save()
@@ -180,14 +201,14 @@ def save_tab(request, active_tab):
 
 @login_required
 def new_job(request):
-    active_tab = START
-    forms = generate_forms()
-
-    request.session['draft_job'] = None
-
     if request.method == 'POST':
         active_tab = request.POST.get('form-tab', START)
         active_tab, forms = save_tab(request, active_tab)
+    else:
+        active_tab = START
+        forms = generate_forms()
+
+        request.session['draft_job'] = None
 
     print(active_tab)
 
@@ -212,7 +233,6 @@ def new_job(request):
 
         }
     )
-
 
 # @login_required
 # def new_job(request):
