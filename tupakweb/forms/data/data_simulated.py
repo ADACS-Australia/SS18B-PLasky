@@ -35,7 +35,7 @@ LABELS = {
 class DataSimulatedForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
-        self.id = kwargs.pop('id', None)
+        self.job = kwargs.pop('job', None)
         super(DataSimulatedForm, self).__init__(*args, **kwargs)
 
     class Meta:
@@ -48,17 +48,15 @@ class DataSimulatedForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        job = Job.objects.get(id=self.id)
-
         result = DataSimulated.objects.create(
-            data=job.data,
+            job=self.job,
             detector_choice=data.get('detector_choice'),
             signal_duration=data.get('signal_duration'),
             sample_frequency=data.get('sample_frequency'),
             start_time=data.get('start_time'),
         )
 
-        self.request.session['data_simulated'] = self.as_array(data)
+        # self.request.session['data_simulated'] = self.as_array(data)
 
 
 class EditDataSimulatedForm(forms.ModelForm):

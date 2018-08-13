@@ -67,6 +67,11 @@ TABS = [
 ]
 TABS_INDEXES = set_dict_indices(TABS)
 
+TAB_FORMS = {
+    START: [START],
+    DATA: [DATA, DATA_SIMULATED, DATA_OPEN, ],
+}
+
 BLOCKS = [
     START,
     DATA,

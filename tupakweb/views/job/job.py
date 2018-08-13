@@ -190,10 +190,20 @@ def save_tab(request, active_tab):
 
     forms = generate_forms(job, request=request)
 
-    forms[active_tab] = FORMS_NEW[active_tab](request.POST, request=request, job=job)
+    forms_to_save = TAB_FORMS.get(active_tab)
 
-    if forms[active_tab].is_valid():
-        forms[active_tab].save()
+    error_in_form = False
+
+    for form_to_save in forms_to_save:
+
+        forms[form_to_save] = FORMS_NEW[form_to_save](request.POST, request=request, job=job)
+
+        if forms[form_to_save].is_valid():
+            forms[form_to_save].save()
+        else:
+            error_in_form = True
+
+    if not error_in_form:
         active_tab, error = get_to_be_active_tab(active_tab, )
 
     return active_tab, forms
