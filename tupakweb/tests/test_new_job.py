@@ -31,3 +31,17 @@ class TestNewJob(TestCase):
         response = self.client.get(reverse('new_job'))
         # should not redirect to login page
         self.assertEqual(response.status_code, HTTPStatus.OK)
+
+    def test_new_job_start(self):
+        self.client.login(username=self.members[0].username, password=PASSWORD_MEMBER)
+        response = self.client.post(reverse('new_job'), data={
+            'name': 'a job',
+            'description': 'a job description',
+        })
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+
+        # checkout the created job
+        created_job = Job.objects.get(name='a job', user=self.members[0])
+        self.assertEqual(created_job.description, 'a job description')
+

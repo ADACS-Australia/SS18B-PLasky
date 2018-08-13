@@ -185,7 +185,7 @@ def generate_forms(job=None, request=None):
 def save_tab(request, active_tab):
     try:
         job = Job.objects.get(id=request.session['draft_job'].get('id', None))
-    except (AttributeError, Job.DoesNotExist):
+    except (KeyError, Job.DoesNotExist):
         job = None
 
     forms = generate_forms(job, request=request)
