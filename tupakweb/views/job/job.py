@@ -154,30 +154,30 @@ def generate_forms(job=None, request=None):
             START: StartJobForm(instance=job),
         })
 
-        try:
-            data_object = Data.objects.get(job=job)
+        # try:
+        #     data_object = Data.objects.get(job=job)
+        #
+        #     forms.update({
+        #         DATA: DataForm(instance=data_object, job=job),
+        #     })
+        # except Data.DoesNotExist:
+        #     pass
 
-            forms.update({
-                DATA: DataForm(instance=data_object, job=job),
-            })
-        except Data.DoesNotExist:
-            pass
+        for model in MODELS:
+            print(model)
 
-        # for model in MODELS:
-        #     print(model)
-        #
-        #     if model in [START, SIGNAL_BBH_PARAMETERS, PRIOR, PRIOR_FIXED, PRIOR_UNIFORM, SAMPLER_DYNESTY,
-        #                  SAMPLER_NESTLE, SAMPLER_EMCEE]:
-        #         continue
-        #
-        #     try:
-        #         instance = MODELS[model].objects.get(job=job)
-        #
-        #         forms.update({
-        #             model: FORMS_NEW[model](instance=instance, job=job)
-        #         })
-        #     except MODELS[model].DoesNotExist:
-        #         pass
+            if model in [START, SIGNAL_BBH_PARAMETERS, PRIOR, PRIOR_FIXED, PRIOR_UNIFORM, SAMPLER_DYNESTY,
+                         SAMPLER_NESTLE, SAMPLER_EMCEE]:
+                continue
+
+            try:
+                instance = MODELS[model].objects.get(job=job)
+
+                forms.update({
+                    model: FORMS_NEW[model](instance=instance, job=job)
+                })
+            except MODELS[model].DoesNotExist:
+                pass
 
     return forms
 

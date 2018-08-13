@@ -77,6 +77,18 @@ class Data(models.Model):
 
     data_choice = models.CharField(max_length=20, choices=DATA_CHOICES, default=SIMULATED_DATA)
 
+    def __str__(self):
+        return '{} ({})'.format(self.data_choice, self.job.name)
+
+    def as_json(self):
+        return dict(
+            id=self.id,
+            value=dict(
+                job=self.job.id,
+                choice=self.data_choice,
+            ),
+        )
+
 
 class DataOpen(models.Model):
     job = models.OneToOneField(Job, related_name='job_data_open', on_delete=models.CASCADE)
