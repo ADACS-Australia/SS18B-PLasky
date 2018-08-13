@@ -5,6 +5,7 @@ from django.test import (
 from django.urls import reverse
 from http import HTTPStatus
 
+from testfixtures.logcapture import LogCapture
 
 from ..models import Job
 from .utility import TestData, get_admins, get_members, PASSWORD_ADMIN, PASSWORD_MEMBER
@@ -45,3 +46,25 @@ class TestNewJob(TestCase):
         created_job = Job.objects.get(name='a job', user=self.members[0])
         self.assertEqual(created_job.description, 'a job description')
 
+    def test_new_job_duplicate_name(self):
+        job_name = 'a job'
+        job_description = 'a job description'
+
+        Job.objects.create(
+            name=job_name,
+            description=job_description,
+            user=self.members[0],
+        )
+
+        self.client.login(username=self.members[0].username, password=PASSWORD_MEMBER)
+
+        with LogCapture() as logger:
+            # try using the same name and description
+            response = self.client.post(reverse('new_job'), data={
+                'name': job_name,
+                'description': job_description,
+            })
+
+        logger.check(('tupakweb.forms.job', 'ERROR', 'You already have a job with the same name'), )
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)

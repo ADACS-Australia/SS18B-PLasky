@@ -210,7 +210,7 @@ def new_job(request):
 
         request.session['draft_job'] = None
 
-    print(active_tab)
+    # print(active_tab)
 
     return render(
         request,

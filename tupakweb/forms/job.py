@@ -1,6 +1,10 @@
+import logging
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from ..models import Job
+
+logger = logging.getLogger(__name__)
 
 FIELDS = [
     'name',
@@ -28,20 +32,14 @@ class StartJobForm(forms.ModelForm):
 
     def clean_name(self):
         name = self.cleaned_data['name']
-        # the user either needs to select a draft job from the list or enter a new
-        # job name for which a draft is going to be created
-        if name is None or name == '':
+        if Job.objects.filter(
+                user=self.request.user,
+                name=self.cleaned_data.get('name')
+        ).exists():
+            logger.error("You already have a job with the same name")
             raise forms.ValidationError(
-                "You must select a job or provide a job name"
+                "You already have a job with the same name"
             )
-        else:
-            if Job.objects.filter(
-                    user=self.request.user,
-                    name=self.cleaned_data.get('name')
-            ).exists():
-                raise forms.ValidationError(
-                    "You already have a job with the same name"
-                )
         return name
 
     def save(self, **kwargs):
