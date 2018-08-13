@@ -17,6 +17,9 @@ DATABASES = {
     },
 }
 
+for logger in LOGGING['loggers']:
+    LOGGING['loggers'][logger]['handlers'] = ['console']
+
 try:
     from .local import *
 except ImportError:
