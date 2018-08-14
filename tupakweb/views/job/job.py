@@ -150,28 +150,15 @@ def generate_forms(job=None, request=None):
     }
 
     if job:
-        forms.update({
-            START: StartJobForm(instance=job),
-        })
-
-        # try:
-        #     data_object = Data.objects.get(job=job)
-        #
-        #     forms.update({
-        #         DATA: DataForm(instance=data_object, job=job),
-        #     })
-        # except Data.DoesNotExist:
-        #     pass
-
         for model in MODELS:
-            print(model)
 
-            if model in [START, SIGNAL_BBH_PARAMETERS, PRIOR, PRIOR_FIXED, PRIOR_UNIFORM, SAMPLER_DYNESTY,
+            if model in [SIGNAL_BBH_PARAMETERS, PRIOR, PRIOR_FIXED, PRIOR_UNIFORM, SAMPLER_DYNESTY,
                          SAMPLER_NESTLE, SAMPLER_EMCEE]:
                 continue
 
             try:
-                instance = MODELS[model].objects.get(job=job)
+                # START Form is the Job instance, for other forms it is referenced
+                instance = job if model == START else MODELS[model].objects.get(job=job)
 
                 forms.update({
                     model: FORMS_NEW[model](instance=instance, job=job, prefix=model)
@@ -182,6 +169,20 @@ def generate_forms(job=None, request=None):
     return forms
 
 
+def filter_as_per_input(forms_to_save, request):
+
+    # returning the corrected forms needs to be saved for DATA tab
+    if DATA in forms_to_save:
+        data_choice = request.POST.get('data-data_choice', None)
+
+        if data_choice in DATA_SIMULATED:
+            forms_to_save = [DATA, DATA_SIMULATED, ]
+        else:
+            forms_to_save = [DATA, DATA_OPEN, ]
+
+    return forms_to_save
+
+
 def save_tab(request, active_tab):
     try:
         job = Job.objects.get(id=request.session['draft_job'].get('id', None))
@@ -190,7 +191,7 @@ def save_tab(request, active_tab):
 
     forms = generate_forms(job, request=request)
 
-    forms_to_save = TAB_FORMS.get(active_tab)
+    forms_to_save = filter_as_per_input(TAB_FORMS.get(active_tab), request)
 
     error_in_form = False
 
