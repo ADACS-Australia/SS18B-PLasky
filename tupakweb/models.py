@@ -108,6 +108,18 @@ class DataOpen(models.Model):
     sample_frequency = models.IntegerField(blank=False, null=False, default=2048, validators=[MinValueValidator(0)])
     start_time = models.FloatField(blank=False, default=0., validators=[MinValueValidator(0)])
 
+    def as_json(self):
+        return dict(
+            id=self.id,
+            value=dict(
+                job=self.job.id,
+                detector_choice=self.detector_choice,
+                signal_duration=self.signal_duration,
+                sample_frequency=self.sample_frequency,
+                start_time=self.start_time,
+            ),
+        )
+
 
 class DataSimulated(models.Model):
     job = models.OneToOneField(Job, related_name='job_data_simulated', on_delete=models.CASCADE)
@@ -126,6 +138,18 @@ class DataSimulated(models.Model):
     signal_duration = models.IntegerField(blank=False, null=False, default=4, validators=[MinValueValidator(0)])
     sample_frequency = models.IntegerField(blank=False, null=False, default=2048, validators=[MinValueValidator(0)])
     start_time = models.FloatField(blank=False, default=0., validators=[MinValueValidator(0)])
+
+    def as_json(self):
+        return dict(
+            id=self.id,
+            value=dict(
+                job=self.job.id,
+                detector_choice=self.detector_choice,
+                signal_duration=self.signal_duration,
+                sample_frequency=self.sample_frequency,
+                start_time=self.start_time,
+            ),
+        )
 
 
 class Prior(models.Model):
