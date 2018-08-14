@@ -74,17 +74,17 @@
 {% block additional_javascript %}
 <script type="text/javascript">
 
-    if ($("#id_data_choice").val() == 'open') {
+    if ($("#id_data-data_choice").val() === 'open') {
         $("#div_data_open").show();
         $("#div_data_simulated").hide();
     }
 
-    if ($("#id_data_choice").val() == 'simulated') {
+    if ($("#id_data-data_choice").val() === 'simulated') {
         $("#div_data_simulated").show();
         $("#div_data_open").hide();
     }
 
-    $("#id_data_choice").change(function() {
+    $("#id_data-data_choice").change(function() {
         if ($(this).val() == 'simulated') {
             $("#div_data_simulated").show();
             $("#div_data_open").hide();

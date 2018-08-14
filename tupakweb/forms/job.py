@@ -20,7 +20,7 @@ LABELS = {
 class StartJobForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
-        kwargs.pop('job', None)  # get rid off job keyword arg for this form
+        self.job = kwargs.pop('job', None)
         super(StartJobForm, self).__init__(*args, **kwargs)
         self.fields['name'].widget.attrs.update({'class': 'form-control'})
         self.fields['description'].widget.attrs.update({'class': 'form-control'})
@@ -46,13 +46,16 @@ class StartJobForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        job_created = Job.objects.create(
+        job_created, created = Job.objects.update_or_create(
             user=self.request.user,
-            name=data.get('name'),
-            description=data.get('description'),
+            name=self.job.name if self.job else None,
+            defaults={
+                'name': data.get('name'),
+                'description': data.get('description'),
+            }
         )
-        if job_created:
-            self.request.session['draft_job'] = job_created.as_json()
+
+        self.request.session['draft_job'] = job_created.as_json()
 
 
 class EditJobForm(forms.ModelForm):

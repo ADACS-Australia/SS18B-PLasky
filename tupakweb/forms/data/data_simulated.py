@@ -48,12 +48,14 @@ class DataSimulatedForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        result = DataSimulated.objects.create(
+        DataSimulated.objects.update_or_create(
             job=self.job,
-            detector_choice=data.get('detector_choice'),
-            signal_duration=data.get('signal_duration'),
-            sample_frequency=data.get('sample_frequency'),
-            start_time=data.get('start_time'),
+            defaults={
+                'detector_choice': data.get('detector_choice'),
+                'signal_duration': data.get('signal_duration'),
+                'sample_frequency': data.get('sample_frequency'),
+                'start_time': data.get('start_time'),
+            }
         )
 
         # self.request.session['data_simulated'] = self.as_array(data)

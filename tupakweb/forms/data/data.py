@@ -31,11 +31,11 @@ class DataForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        # job = Job.objects.get(id=self.job_id)
-
-        result = Data.objects.create(
+        Data.objects.update_or_create(
             job=self.job,
-            data_choice=data.get('data_choice'),
+            defaults={
+                'data_choice': data.get('data_choice'),
+            }
         )
 
         # self.request.session['data'] = self.as_array(data)

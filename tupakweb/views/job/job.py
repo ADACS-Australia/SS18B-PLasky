@@ -137,16 +137,16 @@ def get_to_be_active_tab(active_tab, previous=False):
 
 def generate_forms(job=None, request=None):
     forms = {
-        START: StartJobForm(),
-        DATA: DataForm(),
-        DATA_OPEN: DataOpenForm(),
-        DATA_SIMULATED: DataSimulatedForm(),
-        SIGNAL: SignalForm(),
-        PRIOR: PriorForm(),
-        PRIOR_FIXED: PriorFixedForm(),
-        PRIOR_UNIFORM: PriorUniformForm(),
-        SAMPLER: SamplerForm(),
-        SAMPLER_DYNESTY: SamplerDynestyForm(),
+        START: StartJobForm(prefix=START),
+        DATA: DataForm(prefix=DATA),
+        DATA_OPEN: DataOpenForm(prefix=DATA_OPEN),
+        DATA_SIMULATED: DataSimulatedForm(prefix=DATA_SIMULATED),
+        SIGNAL: SignalForm(prefix=SIGNAL),
+        PRIOR: PriorForm(prefix=PRIOR),
+        PRIOR_FIXED: PriorFixedForm(prefix=PRIOR_FIXED),
+        PRIOR_UNIFORM: PriorUniformForm(prefix=PRIOR_UNIFORM),
+        SAMPLER: SamplerForm(prefix=SAMPLER),
+        SAMPLER_DYNESTY: SamplerDynestyForm(prefix=SAMPLER_DYNESTY),
     }
 
     if job:
@@ -174,7 +174,7 @@ def generate_forms(job=None, request=None):
                 instance = MODELS[model].objects.get(job=job)
 
                 forms.update({
-                    model: FORMS_NEW[model](instance=instance, job=job)
+                    model: FORMS_NEW[model](instance=instance, job=job, prefix=model)
                 })
             except MODELS[model].DoesNotExist:
                 pass
@@ -196,7 +196,7 @@ def save_tab(request, active_tab):
 
     for form_to_save in forms_to_save:
 
-        forms[form_to_save] = FORMS_NEW[form_to_save](request.POST, request=request, job=job)
+        forms[form_to_save] = FORMS_NEW[form_to_save](request.POST, request=request, job=job, prefix=form_to_save)
 
         if forms[form_to_save].is_valid():
             forms[form_to_save].save()
