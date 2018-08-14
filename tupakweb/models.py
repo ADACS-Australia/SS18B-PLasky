@@ -30,11 +30,11 @@ class Job(models.Model):
     ]
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, blank=False, default=DRAFT)
     creation_time = models.DateTimeField(auto_now_add=True)
-    submission_time = models.DateTimeField(null=True)
+    submission_time = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         unique_together = (
-            ('user', 'id'),
+            ('user', 'name'),
         )
 
     def __str__(self):
@@ -45,7 +45,7 @@ class Job(models.Model):
             id=self.id,
             value=dict(
                 name=self.name,
-                # user=self.user,
+                username=self.user.username,
                 status=self.status,
                 creation_time=self.creation_time.strftime('%d %b %Y %I:%m %p'),
             ),
@@ -77,9 +77,21 @@ class Data(models.Model):
 
     data_choice = models.CharField(max_length=20, choices=DATA_CHOICES, default=SIMULATED_DATA)
 
+    def __str__(self):
+        return '{} ({})'.format(self.data_choice, self.job.name)
+
+    def as_json(self):
+        return dict(
+            id=self.id,
+            value=dict(
+                job=self.job.id,
+                choice=self.data_choice,
+            ),
+        )
+
 
 class DataOpen(models.Model):
-    data = models.OneToOneField(Data, related_name='data_data_open', on_delete=models.CASCADE)
+    job = models.OneToOneField(Job, related_name='job_data_open', on_delete=models.CASCADE)
 
     HANFORD = 'hanford'
     LIVINGSTON = 'livingston'
@@ -91,14 +103,26 @@ class DataOpen(models.Model):
         (VIRGO, 'Virgo'),
     ]
 
-    detector_choice = models.CharField(max_length=20, choices=DETECTOR_CHOICES, default=HANFORD, blank=True)
+    detector_choice = models.CharField(max_length=20, choices=DETECTOR_CHOICES, default=HANFORD)
     signal_duration = models.IntegerField(blank=False, null=False, default=4, validators=[MinValueValidator(0)])
     sample_frequency = models.IntegerField(blank=False, null=False, default=2048, validators=[MinValueValidator(0)])
     start_time = models.FloatField(blank=False, default=0., validators=[MinValueValidator(0)])
+
+    def as_json(self):
+        return dict(
+            id=self.id,
+            value=dict(
+                job=self.job.id,
+                detector_choice=self.detector_choice,
+                signal_duration=self.signal_duration,
+                sample_frequency=self.sample_frequency,
+                start_time=self.start_time,
+            ),
+        )
 
 
 class DataSimulated(models.Model):
-    data = models.OneToOneField(Data, related_name='data_data_simulated', on_delete=models.CASCADE)
+    job = models.OneToOneField(Job, related_name='job_data_simulated', on_delete=models.CASCADE)
 
     HANFORD = 'hanford'
     LIVINGSTON = 'livingston'
@@ -110,10 +134,22 @@ class DataSimulated(models.Model):
         (VIRGO, 'Virgo'),
     ]
 
-    detector_choice = models.CharField(max_length=20, choices=DETECTOR_CHOICES, default=HANFORD, blank=True)
+    detector_choice = models.CharField(max_length=20, choices=DETECTOR_CHOICES, default=HANFORD)
     signal_duration = models.IntegerField(blank=False, null=False, default=4, validators=[MinValueValidator(0)])
     sample_frequency = models.IntegerField(blank=False, null=False, default=2048, validators=[MinValueValidator(0)])
     start_time = models.FloatField(blank=False, default=0., validators=[MinValueValidator(0)])
+
+    def as_json(self):
+        return dict(
+            id=self.id,
+            value=dict(
+                job=self.job.id,
+                detector_choice=self.detector_choice,
+                signal_duration=self.signal_duration,
+                sample_frequency=self.sample_frequency,
+                start_time=self.start_time,
+            ),
+        )
 
 
 class Prior(models.Model):

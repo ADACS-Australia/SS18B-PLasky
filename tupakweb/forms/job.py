@@ -1,26 +1,26 @@
+import logging
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from ..models import Job
 
-FIELDS = ['name', 'description']
+logger = logging.getLogger(__name__)
 
-WIDGETS = {
-    'name': forms.TextInput(
-        attrs={'class': 'form-control'},
-    ),
-    'description': forms.Textarea(
-        attrs={'class': 'form-control'},
-    ),
-}
+FIELDS = [
+    'name',
+    'description',
+]
 
 LABELS = {
     'name': _('Job name'),
     'description': _('Job description'),
 }
 
+
 class StartJobForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
+        self.job = kwargs.pop('job', None)
         super(StartJobForm, self).__init__(*args, **kwargs)
         self.fields['name'].widget.attrs.update({'class': 'form-control'})
         self.fields['description'].widget.attrs.update({'class': 'form-control'})
@@ -29,38 +29,34 @@ class StartJobForm(forms.ModelForm):
         model = Job
         fields = FIELDS
         labels = LABELS
-        widgets = WIDGETS
 
-    def clean(self):
-        cleaned_data = super(StartJobForm, self).clean()
-        name = cleaned_data.get('name')  # new job name
-
-        # the user either needs to select a draft job from the list or enter a new
-        # job name for which a draft is going to be created
-        if name is None or name == '':
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        if Job.objects.filter(
+                user=self.request.user,
+                name=self.cleaned_data.get('name')
+        ).exists():
+            logger.error("You already have a job with the same name")
             raise forms.ValidationError(
-                "You must select a job or provide a job name"
+                "You already have a job with the same name"
             )
-        else:
-            if Job.objects.filter(
-                    user=self.request.user,
-                    name=self.cleaned_data.get('name')
-            ).exists():
-                raise forms.ValidationError(
-                    "You already have a job with the same name"
-                )
-        return cleaned_data
+        return name
 
     def save(self, **kwargs):
         self.full_clean()
         data = self.cleaned_data
 
-        job_created = Job.objects.create(
+        job_created, created = Job.objects.update_or_create(
             user=self.request.user,
-            name=data.get('name')
+            name=self.job.name if self.job else None,
+            defaults={
+                'name': data.get('name'),
+                'description': data.get('description'),
+            }
         )
-        if job_created[1]:
-            self.request.session['draft_job'] = job_created[0].as_json()
+
+        self.request.session['draft_job'] = job_created.as_json()
+
 
 class EditJobForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -72,9 +68,10 @@ class EditJobForm(forms.ModelForm):
             except:
                 pass
         super(EditJobForm, self).__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs.update({'class': 'form-control'})
+        self.fields['description'].widget.attrs.update({'class': 'form-control'})
 
     class Meta:
         model = Job
         fields = FIELDS
         labels = LABELS
-        widgets = WIDGETS

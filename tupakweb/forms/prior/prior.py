@@ -2,7 +2,9 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from ...models import Job, Prior
 
-FIELDS = ['prior_choice',]
+FIELDS = [
+    'prior_choice',
+]
 
 WIDGETS = {
     'prior_choice': forms.Select(
@@ -14,8 +16,8 @@ LABELS = {
     'prior_choice': _('Prior'),
 }
 
-class PriorForm(forms.ModelForm):
 
+class PriorForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         self.id = kwargs.pop('id', None)
@@ -40,11 +42,6 @@ class PriorForm(forms.ModelForm):
 
         self.request.session['prior'] = self.as_array(data)
 
-    class Meta:
-        model = Prior
-        fields = FIELDS
-        widgets = WIDGETS
-        labels = LABELS
 
 class EditPriorForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

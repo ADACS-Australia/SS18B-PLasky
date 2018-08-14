@@ -2,7 +2,9 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from ...models import Job, SamplerDynesty
 
-FIELDS = ['n_livepoints',]
+FIELDS = [
+    'n_livepoints',
+]
 
 WIDGETS = {
     'n_livepoints': forms.TextInput(
@@ -14,12 +16,13 @@ LABELS = {
     'n_livepoints': _('Number of live points'),
 }
 
+
 class SamplerDynestyForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         self.id = kwargs.pop('id', None)
-        super(SamplerDynesty, self).__init__(*args, **kwargs)
+        super(SamplerDynestyForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = SamplerDynesty
@@ -39,6 +42,7 @@ class SamplerDynestyForm(forms.ModelForm):
         )
 
         self.request.session['sampler_dynesty'] = self.as_array(data)
+
 
 class EditSamplerDynestyForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

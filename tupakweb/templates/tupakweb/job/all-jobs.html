@@ -1,5 +1,70 @@
 {% extends 'base/base.html' %}
+{% load static %}
 
 {% block page_header %}
     Jobs
 {% endblock page_header %}
+
+{% block additional_styles %}
+    <link rel="stylesheet" href="{% static 'tupakweb/style/styles.css' %}"/>
+{% endblock additional_styles %}
+
+{% block content %}
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Status</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for job in jobs %}
+                <tr>
+                    <th scope="row">{{ job.name }}</th>
+                    <td>{{ job.description }}</td>
+                    <td>{{ job.status }}</td>
+                    <td>{% if job.status == 'Draft' %}Delete{% else %}&nbsp;{% endif %}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <div class="pagination">
+
+                {% if jobs.has_previous %}
+                    <a class="pagination-action" href="?page=1">
+                        <i class="fa fa-angle-double-left" aria-hidden="true"></i>
+                    </a>
+                    <a class="pagination-action" href="?page={{ jobs.previous_page_number }}">
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    </a>
+                {% endif %}
+
+                {% for num in jobs.paginator.page_range %}
+
+                    {% if jobs.number == num %}
+                        <span class="pagination-number pagination-current">{{ num }} of {{ jobs.paginator.num_pages }}</span>
+                    {% elif num > jobs.number|add:'-3' and num < jobs.number|add:'3' %}
+                        <a class="pagination-number" href="?page={{ num }}">{{ num }}</a>
+                    {% endif %}
+
+                {% endfor %}
+
+                {% if jobs.has_next %}
+                    <a class="pagination-action" href="?page={{ jobs.next_page_number }}">
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+                    <a class="pagination-action" href="?page={{ jobs.paginator.num_pages }}">
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

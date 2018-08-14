@@ -2,10 +2,12 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from ...models import Job, DataSimulated
 
-FIELDS = ['detector_choice',
-          'signal_duration',
-          'sample_frequency',
-          'start_time',]
+FIELDS = [
+    'detector_choice',
+    'signal_duration',
+    'sample_frequency',
+    'start_time',
+]
 
 WIDGETS = {
     'detector_choice': forms.Select(
@@ -29,12 +31,12 @@ LABELS = {
     'start_time': _('Start time'),
 }
 
-class DataSimulatedForm(forms.ModelForm):
 
+class DataSimulatedForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
-        self.id = kwargs.pop('id', None)
-        super(DataSimulated, self).__init__(*args, **kwargs)
+        self.job = kwargs.pop('job', None)
+        super(DataSimulatedForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = DataSimulated
@@ -46,17 +48,18 @@ class DataSimulatedForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        job = Job.objects.get(id=self.id)
-
-        result = DataSimulated.objects.create(
-            data=job.data,
-            detector_choice=data.get('detector_choice'),
-            signal_duration=data.get('signal_duration'),
-            sample_frequency=data.get('sample_frequency'),
-            start_time=data.get('start_time'),
+        DataSimulated.objects.update_or_create(
+            job=self.job,
+            defaults={
+                'detector_choice': data.get('detector_choice'),
+                'signal_duration': data.get('signal_duration'),
+                'sample_frequency': data.get('sample_frequency'),
+                'start_time': data.get('start_time'),
+            }
         )
 
-        self.request.session['data_simulated'] = self.as_array(data)
+        # self.request.session['data_simulated'] = self.as_array(data)
+
 
 class EditDataSimulatedForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

@@ -5,7 +5,7 @@ from ...models import Job, DataOpen
 FIELDS = ['detector_choice',
           'signal_duration',
           'sample_frequency',
-          'start_time',]
+          'start_time', ]
 
 WIDGETS = {
     'detector_choice': forms.Select(
@@ -29,12 +29,12 @@ LABELS = {
     'start_time': _('Start time'),
 }
 
-class DataOpenForm(forms.ModelForm):
 
+class DataOpenForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
-        self.id = kwargs.pop('id', None)
-        super(DataOpen, self).__init__(*args, **kwargs)
+        self.job = kwargs.pop('job', None)
+        super(DataOpenForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = DataOpen
@@ -46,17 +46,18 @@ class DataOpenForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        job = Job.objects.get(id=self.id)
-
-        result = DataOpen.objects.create(
-            data=job.data,
-            detector_choice=data.get('detector_choice'),
-            signal_duration=data.get('signal_duration'),
-            sample_frequency=data.get('sample_frequency'),
-            start_time=data.get('start_time'),
+        DataOpen.objects.update_or_create(
+            job=self.job,
+            defaults={
+                'detector_choice': data.get('detector_choice'),
+                'signal_duration': data.get('signal_duration'),
+                'sample_frequency': data.get('sample_frequency'),
+                'start_time': data.get('start_time'),
+            }
         )
 
-        self.request.session['data_open'] = self.as_array(data)
+        # self.request.session['data_open'] = self.as_array(data)
+
 
 class EditDataOpenForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

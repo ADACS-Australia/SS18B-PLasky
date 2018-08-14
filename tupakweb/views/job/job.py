@@ -8,29 +8,32 @@ from ...utility.job_iterables import model_instance_to_iterable
 from django.utils.timezone import now
 import json
 
+
 def build_task_json(request):
-    pass
+    return None
+
 
 def process_active_tab(request, active_tab, id):
     instance = None
     get_instance = False
+    form = None
 
     if active_tab != LAUNCH:
         if request.method == 'POST':
             if active_tab == START:
                 instance = MODELS[active_tab].objects.get(id=id)
                 form = FORMS_EDIT[active_tab](request.POST,
-                                         instance=instance,
-                                         request=request,
-                                         job_id=id)
+                                              instance=instance,
+                                              request=request,
+                                              job_id=id)
             else:
                 try:
                     # Update
                     instance = MODELS[active_tab].objects.get(job_id=id)
                     form = FORMS_EDIT[active_tab](request.POST,
-                                             instance=instance,
-                                             request=request,
-                                             job_id=id)
+                                                  instance=instance,
+                                                  request=request,
+                                                  job_id=id)
 
                 # We should catch something better... This is what was in GBKFIT
                 except:
@@ -44,7 +47,6 @@ def process_active_tab(request, active_tab, id):
                     instance = MODELS[previous_tab(active_tab)].objects.get(job_id=id)
                 if 'previous' in request.POST:
                     instance = MODELS[next_tab(active_tab)].objects.get(job_id=id)
-
 
         else:
             if active_tab == START:
@@ -67,11 +69,12 @@ def process_active_tab(request, active_tab, id):
 
     return instance, form, active_tab
 
-def act_on_request_method(request, active_tab, id):
+
+def act_on_request_method(request, active_tab):
     tab_checker = active_tab
 
     # ACTIVE TAB
-    instance, form, active_tab = process_active_tab(request, active_tab, id)
+    instance, form, active_tab = process_active_tab(request, active_tab)
 
     # OTHER TABS
     forms = {}
@@ -93,7 +96,7 @@ def act_on_request_method(request, active_tab, id):
     views[START] = model_instance_to_iterable(job) if job else None
 
     for model in MODELS:
-        if model not in [START, SIGNAL_BBH_PARAMETERS]: # Not yet handling BBH_PARAMETERS...
+        if model not in [START, SIGNAL_BBH_PARAMETERS]:  # Not yet handling BBH_PARAMETERS...
             if tab_checker != model:
                 try:
                     variables[model] = MODELS[model].objects.get(job_id=id)
@@ -106,46 +109,123 @@ def act_on_request_method(request, active_tab, id):
 
             forms[model] = form_variables[model]
             views[model] = model_instance_to_iterable(variables[model],
-                                                                      model=model,
-                                                                      views=views) if variables[model] else None
+                                                      model=model,
+                                                      views=views) if variables[model] else None
 
     request.session['task'] = build_task_json(request)
 
     return active_tab, forms, views
 
+
+def get_to_be_active_tab(active_tab, previous=False):
+    error = False  # keep tract of out of index tab, might be beneficial to detect the last page
+
+    active_tab_index = TABS_INDEXES.get(active_tab)
+
+    if previous:
+        active_tab_index -= 1
+    else:
+        active_tab_index += 1
+
+    try:
+        active_tab = TABS[active_tab_index]
+    except IndexError:
+        error = True
+
+    return active_tab, error
+
+
+def generate_forms(job=None, request=None):
+    forms = {
+        START: StartJobForm(prefix=START),
+        DATA: DataForm(prefix=DATA),
+        DATA_OPEN: DataOpenForm(prefix=DATA_OPEN),
+        DATA_SIMULATED: DataSimulatedForm(prefix=DATA_SIMULATED),
+        SIGNAL: SignalForm(prefix=SIGNAL),
+        PRIOR: PriorForm(prefix=PRIOR),
+        PRIOR_FIXED: PriorFixedForm(prefix=PRIOR_FIXED),
+        PRIOR_UNIFORM: PriorUniformForm(prefix=PRIOR_UNIFORM),
+        SAMPLER: SamplerForm(prefix=SAMPLER),
+        SAMPLER_DYNESTY: SamplerDynestyForm(prefix=SAMPLER_DYNESTY),
+    }
+
+    if job:
+        forms.update({
+            START: StartJobForm(instance=job),
+        })
+
+        # try:
+        #     data_object = Data.objects.get(job=job)
+        #
+        #     forms.update({
+        #         DATA: DataForm(instance=data_object, job=job),
+        #     })
+        # except Data.DoesNotExist:
+        #     pass
+
+        for model in MODELS:
+            print(model)
+
+            if model in [START, SIGNAL_BBH_PARAMETERS, PRIOR, PRIOR_FIXED, PRIOR_UNIFORM, SAMPLER_DYNESTY,
+                         SAMPLER_NESTLE, SAMPLER_EMCEE]:
+                continue
+
+            try:
+                instance = MODELS[model].objects.get(job=job)
+
+                forms.update({
+                    model: FORMS_NEW[model](instance=instance, job=job, prefix=model)
+                })
+            except MODELS[model].DoesNotExist:
+                pass
+
+    return forms
+
+
+def save_tab(request, active_tab):
+    try:
+        job = Job.objects.get(id=request.session['draft_job'].get('id', None))
+    except (KeyError, AttributeError, Job.DoesNotExist):
+        job = None
+
+    forms = generate_forms(job, request=request)
+
+    forms_to_save = TAB_FORMS.get(active_tab)
+
+    error_in_form = False
+
+    for form_to_save in forms_to_save:
+
+        forms[form_to_save] = FORMS_NEW[form_to_save](request.POST, request=request, job=job, prefix=form_to_save)
+
+        if forms[form_to_save].is_valid():
+            forms[form_to_save].save()
+        else:
+            error_in_form = True
+
+    if not error_in_form:
+        active_tab, error = get_to_be_active_tab(active_tab, )
+
+    return active_tab, forms
+
+
 @login_required
 def new_job(request):
-    active_tab = START
     if request.method == 'POST':
-        form = FORMS_NEW[active_tab](request.POST, request=request)
-        active_tab = save_form(form, request, active_tab)
+        active_tab = request.POST.get('form-tab', START)
+        active_tab, forms = save_tab(request, active_tab)
     else:
-        form = FORMS_NEW[active_tab](request=request)
+        active_tab = START
+        forms = generate_forms()
 
-    if active_tab == START:
-        return render(
-            request,
-            "tupakweb/job/new-job.html",
-            {
-                'active_tab': active_tab,
-                'disable_other_tabs': True,
-                'start_form': form,
-                'new_job': True,
-            }
-        )
-    else:
-        return redirect('job_data_model_edit', id=request.session['draft_job']['id'])
+        request.session['draft_job'] = None
 
-@login_required
-def edit_job(request, id):
-    active_tab = START
-    active_tab, forms, views = act_on_request_method(request, active_tab, id)
+    # print(active_tab)
 
     return render(
         request,
         "tupakweb/job/edit-job.html",
         {
-            'job_id': id,
             'active_tab': active_tab,
             'disable_other_tabs': False,
             'new_job': False,
@@ -155,38 +235,122 @@ def edit_job(request, id):
             'data_simulated_form': forms[DATA_SIMULATED],
             'data_open_form': forms[DATA_OPEN],
             'signal_form': forms[SIGNAL],
-            'prior': forms[PRIOR],
-            'prior_uniform': forms[PRIOR_UNIFORM],
-            'prior_fixed': forms[PRIOR_FIXED],
-            'sampler': forms[SAMPLER],
-            'sampler_dynesty': forms[SAMPLER_DYNESTY],
+            'prior_form': forms[PRIOR],
+            'prior_uniform_form': forms[PRIOR_UNIFORM],
+            'prior_fixed_form': forms[PRIOR_FIXED],
+            'sampler_form': forms[SAMPLER],
+            'sampler_dynesty_form': forms[SAMPLER_DYNESTY],
 
-            'start_view': views[START],
-            'data_view': views[DATA],
-            'data_simulated_view': views[DATA_SIMULATED],
-            'data_open_view': views[DATA_OPEN],
-            'signal_view': views[SIGNAL],
-            'prior': views[PRIOR],
-            'prior_uniview': views[PRIOR_UNIFORM],
-            'prior_fixed': views[PRIOR_FIXED],
-            'sampler': views[SAMPLER],
-            'sampler_dynesty': views[SAMPLER_DYNESTY],
         }
     )
 
-def job_data(request, id):
-    pass
+# @login_required
+# def new_job(request):
+#     active_tab = START
+#     if request.method == 'POST':
+#         form = FORMS_NEW[active_tab](request.POST, request=request)
+#         active_tab = save_form(form, request, active_tab)
+#     else:
+#         form = FORMS_NEW[active_tab](request=request)
+#
+#     if active_tab == START:
+#         return render(
+#             request,
+#             "tupakweb/job/new-job.html",
+#             {
+#                 'active_tab': active_tab,
+#                 'disable_other_tabs': True,
+#                 'start_form': form,
+#                 'new_job': True,
+#             }
+#         )
+#     else:
+#         return redirect('job_data_edit', id=request.session['draft_job']['id'])
 
-def job_signal(request, id):
-    pass
 
-def job_prior(request, id):
-    pass
-
-def job_sampler(request, id):
-    pass
-
-def job_launch(request, id):
-    pass
-
-
+# def job_data(request, id):
+#     active_tab = DATA
+#     active_tab, forms, views = act_on_request_method(request, active_tab, id)
+#
+#     return render(
+#         request,
+#         "tupakweb/job/edit-job.html",
+#         {
+#             'job_id': id,
+#             'active_tab': active_tab,
+#             'disable_other_tabs': False,
+#             'new_job': False,
+#
+#             'start_form': forms[START],
+#             'data_form': forms[DATA],
+#             'data_simulated_form': forms[DATA_SIMULATED],
+#             'data_open_form': forms[DATA_OPEN],
+#             'signal_form': forms[SIGNAL],
+#             'prior_form': forms[PRIOR],
+#             'prior_uniform_form': forms[PRIOR_UNIFORM],
+#             'prior_fixed_form': forms[PRIOR_FIXED],
+#             'sampler_form': forms[SAMPLER],
+#             'sampler_dynesty_form': forms[SAMPLER_DYNESTY],
+#
+#             'start_view': views[START],
+#             'data_view': views[DATA],
+#             'data_simulated_view': views[DATA_SIMULATED],
+#             'data_open_view': views[DATA_OPEN],
+#             'signal_view': views[SIGNAL],
+#             'prior_view': views[PRIOR],
+#             'prior_uniform_view': views[PRIOR_UNIFORM],
+#             'prior_fixed_view': views[PRIOR_FIXED],
+#             'sampler_view': views[SAMPLER],
+#             'sampler_dynesty_view': views[SAMPLER_DYNESTY],
+#         }
+#     )
+#
+#
+# def job_signal(request, id):
+#     active_tab = SIGNAL
+#     active_tab, forms, views = act_on_request_method(request, active_tab, id)
+#
+#     return render(
+#         request,
+#         "tupakweb/job/edit-job.html",
+#         {
+#             'job_id': id,
+#             'active_tab': active_tab,
+#             'disable_other_tabs': False,
+#             'new_job': False,
+#
+#             'start_form': forms[START],
+#             'data_form': forms[DATA],
+#             'data_simulated_form': forms[DATA_SIMULATED],
+#             'data_open_form': forms[DATA_OPEN],
+#             'signal_form': forms[SIGNAL],
+#             'prior_form': forms[PRIOR],
+#             'prior_uniform_form': forms[PRIOR_UNIFORM],
+#             'prior_fixed_form': forms[PRIOR_FIXED],
+#             'sampler_form': forms[SAMPLER],
+#             'sampler_dynesty_form': forms[SAMPLER_DYNESTY],
+#
+#             'start_view': views[START],
+#             'data_view': views[DATA],
+#             'data_simulated_view': views[DATA_SIMULATED],
+#             'data_open_view': views[DATA_OPEN],
+#             'signal_view': views[SIGNAL],
+#             'prior_view': views[PRIOR],
+#             'prior_uniform_view': views[PRIOR_UNIFORM],
+#             'prior_fixed_view': views[PRIOR_FIXED],
+#             'sampler_view': views[SAMPLER],
+#             'sampler_dynesty_view': views[SAMPLER_DYNESTY],
+#         }
+#     )
+#
+#
+# def job_prior(request, id):
+#     pass
+#
+#
+# def job_sampler(request, id):
+#     pass
+#
+#
+# def job_launch(request, id):
+#     pass

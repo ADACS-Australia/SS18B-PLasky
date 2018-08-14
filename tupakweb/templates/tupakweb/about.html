@@ -1,8 +1,7 @@
 {% extends 'base/base.html' %}
 
 {% block main_content %}
-    <div class="jumbotron" id="welcome-message">
-        <h1>Gravitational Wave Modelling</h1>
-        <h3>made simple.</h3>
+    <div class="single-form-wrapper mx-auto">
+        {% include 'tupakweb/job/form-snippets/edit_job_form.html' %}
     </div>
 {% endblock main_content %}

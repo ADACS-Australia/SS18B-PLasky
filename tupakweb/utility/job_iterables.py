@@ -1,54 +1,55 @@
 from django.utils.translation import ugettext_lazy as _
 from collections import OrderedDict
 from os.path import basename
+
 from ..utility.constants import *
 from ..forms.job import (
-    FIELDS as fields_job,
-    LABELS as labels_job
+    FIELDS as FIELDS_JOB,
+    LABELS as LABELS_JOB
 )
 from ..forms.data.data import (
-    FIELDS as fields_data,
-    LABELS as labels_data
+    FIELDS as FIELDS_DATA,
+    LABELS as LABELS_DATA,
 )
 from ..forms.data.data_simulated import (
-    FIELDS as fields_data_simulated,
-    LABELS as labels_data_simulated
+    FIELDS as FIELDS_DATA_SIMULATED,
+    LABELS as LABELS_DATA_SIMULATED,
 )
 from ..forms.data.data_open import (
-    FIELDS as fields_data_open,
-    LABELS as labels_data_open
+    FIELDS as FIELDS_DATA_OPEN,
+    LABELS as LABELS_DATA_OPEN
 )
 from ..forms.signal.signal import (
-    FIELDS as fields_signal,
-    LABELS as labels_signal
+    FIELDS as FIELDS_SIGNAL,
+    LABELS as LABELS_SIGNAL
 )
 from ..forms.prior.prior import (
-    FIELDS as fields_prior,
-    LABELS as labels_prior
+    FIELDS as FIELDS_PRIOR,
+    LABELS as LABELS_PRIOR
 )
 from ..forms.prior.prior_uniform import (
-    FIELDS as fields_prior_uniform,
-    LABELS as labels_prior_uniform
+    FIELDS as FIELDS_PRIOR_UNIFORM,
+    LABELS as LABELS_PRIOR_UNIFORM
 )
 from ..forms.prior.prior_fixed import (
-    FIELDS as fields_prior_fixed,
-    LABELS as labels_prior_fixed
+    FIELDS as FIELDS_PRIOR_FIXED,
+    LABELS as LABELS_PRIOR_FIXED
 )
 from ..forms.sampler.sampler import (
-    FIELDS as fields_sampler, 
-    LABELS as labels_sampler
+    FIELDS as FIELDS_SAMPLER,
+    LABELS as LABELS_SAMPLER,
 )
 from ..forms.sampler.sampler_dynesty import (
-    FIELDS as fields_sampler_dynesty,
-    LABELS as labels_sampler_dynesty
+    FIELDS as FIELDS_SAMPLER_DYNESTY,
+    LABELS as LABELS_SAMPLER_DYNESTY
 )
 from ..forms.sampler.sampler_emcee import (
-    FIELDS as fields_sampler_emcee,
-    LABELS as labels_sampler_emcee
+    FIELDS as FIELDS_SAMPLER_EMCEE,
+    LABELS as LABELS_SAMPLER_EMCEE
 )
 
 
-def model_instance_to_iterable(object, model=START, views=[]):
+def model_instance_to_iterable(object, model=START, views=None):
     """Converts the object returned from a Model query into an iterable object to be used by a template
 
     Parameters
@@ -69,17 +70,18 @@ def model_instance_to_iterable(object, model=START, views=[]):
 
     try:
         object.fields = OrderedDict(((field.name, [labels[field.name], field.value_to_string(object)])
-                             if 'file' not in field.name else
+                                     if 'file' not in field.name else
                                      ((field.name, [labels[field.name], basename(field.value_to_string(object))])
                                       if 'filename' not in field.name else
                                       (field.name, [labels[field.name], field.value_to_string(object)])
                                       )
                                      )
-                             for field in object._meta.fields if field.name in fields)
+                                    for field in object._meta.fields if field.name in fields)
 
         return object
     except:
         return None
+
 
 def get_metadata(model, views, object):
     """Get metadata about a model
@@ -99,47 +101,51 @@ def get_metadata(model, views, object):
     fields, labels
     """
     if model == START:
-        fields = fields_job
-        labels = labels_job
+        fields = FIELDS_JOB
+        labels = LABELS_JOB
 
-    if model == DATA:
-        fields = fields_data
-        labels = labels_data
+    elif model == DATA:
+        fields = FIELDS_DATA
+        labels = LABELS_DATA
 
-    if model == DATA_OPEN:
-        fields = fields_data_open
-        labels = labels_data_open
+    elif model == DATA_OPEN:
+        fields = FIELDS_DATA_OPEN
+        labels = LABELS_DATA_OPEN
 
-    if model == DATA_SIMULATED:
-        fields = fields_data_simulated
-        labels = labels_data_simulated
+    elif model == DATA_SIMULATED:
+        fields = FIELDS_DATA_SIMULATED
+        labels = LABELS_DATA_SIMULATED
 
-    if model == SIGNAL:
-        fields = fields_signal
-        labels = labels_signal
+    elif model == SIGNAL:
+        fields = FIELDS_SIGNAL
+        labels = LABELS_SIGNAL
 
-    if model == PRIOR:
-        fields = fields_prior
-        labels = labels_prior
+    elif model == PRIOR:
+        fields = FIELDS_PRIOR
+        labels = LABELS_PRIOR
 
-    if model == PRIOR_FIXED:
-        fields = fields_prior_fixed
-        labels = labels_prior_fixed
+    elif model == PRIOR_FIXED:
+        fields = FIELDS_PRIOR_FIXED
+        labels = LABELS_PRIOR_FIXED
 
-    if model == PRIOR_UNIFORM:
-        fields = fields_prior_uniform
-        labels = labels_prior_uniform
+    elif model == PRIOR_UNIFORM:
+        fields = FIELDS_PRIOR_UNIFORM
+        labels = LABELS_PRIOR_UNIFORM
 
-    if model == SAMPLER:
-        fields = fields_sampler
-        labels = labels_sampler
+    elif model == SAMPLER:
+        fields = FIELDS_SAMPLER
+        labels = LABELS_SAMPLER
 
-    if model == SAMPLER_DYNESTY:
-        fields = fields_sampler_dynesty
-        labels = labels_sampler_dynesty
+    elif model == SAMPLER_DYNESTY:
+        fields = FIELDS_SAMPLER_DYNESTY
+        labels = LABELS_SAMPLER_DYNESTY
 
-    if model == SAMPLER_EMCEE:
-        fields = fields_sampler_emcee
-        labels = labels_sampler_emcee
+    elif model == SAMPLER_EMCEE:
+        fields = FIELDS_SAMPLER_EMCEE
+        labels = LABELS_SAMPLER_EMCEE
+
+    else:
+        fields = None
+        labels = None
 
     return fields, labels

@@ -1,6 +1,7 @@
 from .constants import TABS, TABS_INDEXES
 from ..models import Job
 
+
 def set_list(l, i, v):
     """Set a value v at index i in list l.
 
@@ -24,11 +25,14 @@ def set_list(l, i, v):
             l.append(None)
         l[i] = v
 
+
 def previous_tab(active_tab):
     return TABS[TABS_INDEXES[active_tab] - 1]
 
+
 def next_tab(active_tab):
     return TABS[TABS_INDEXES[active_tab] + 1]
+
 
 def check_permission_save(form, request, active_tab, id):
     job = Job.objects.get(id=id)
@@ -36,6 +40,7 @@ def check_permission_save(form, request, active_tab, id):
         active_tab = save_form(form, request, active_tab, id)
 
     return active_tab
+
 
 def save_form(form, request, active_tab, id=None):
     if 'skip' in request.POST:
