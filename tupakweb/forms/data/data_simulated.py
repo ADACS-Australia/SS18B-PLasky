@@ -26,8 +26,8 @@ WIDGETS = {
 
 LABELS = {
     'detector_choice': _('Detector choice'),
-    'signal_duration': _('Signal duration (s)'),
-    'sample_frequency': _('Signal frequency (Hz)'),
+    'signal_duration': _('Signal duration(s)'),
+    'sample_frequency': _('Sampling frequency(Hz)'),
     'start_time': _('Start time'),
 }
 

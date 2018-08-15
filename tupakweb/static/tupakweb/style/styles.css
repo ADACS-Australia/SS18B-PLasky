@@ -28,3 +28,8 @@
 .pagination-action:hover, .pagination-previous, .pagination-next {
     color: darkgreen;
 }
+
+
+.table-row {
+    margin: 0;
+}
