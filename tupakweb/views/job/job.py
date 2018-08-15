@@ -217,9 +217,16 @@ def new_job(request):
         active_tab, forms = save_tab(request, active_tab)
     else:
         active_tab = START
-        forms = generate_forms()
 
-        request.session['draft_job'] = None
+        request.session['draft_job'] = request.session['to_load'] if request.session['to_load'] else None
+        request.session['to_load'] = None
+
+        try:
+            job = Job.objects.get(id=request.session['draft_job'].get('id', None))
+        except (KeyError, AttributeError, Job.DoesNotExist):
+            job = None
+
+        forms = generate_forms(job=job)
 
     # print(active_tab)
 

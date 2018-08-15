@@ -26,7 +26,7 @@
                     <th scope="row">{{ job.name }}</th>
                     <td>{{ job.description }}</td>
                     <td>{{ job.status }}</td>
-                    <td>{% if job.status == 'Draft' %}Delete{% else %}&nbsp;{% endif %}</td>
+                    <td>{% if job.status == 'Draft' %}Delete{% else %}&nbsp;{% endif %} <a href="{% url 'edit_job' job.id %}">Edit</a></td>
                 </tr>
             {% endfor %}
             </tbody>
