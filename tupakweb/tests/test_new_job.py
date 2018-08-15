@@ -36,8 +36,8 @@ class TestNewJob(TestCase):
     def test_new_job_start(self):
         self.client.login(username=self.members[0].username, password=PASSWORD_MEMBER)
         response = self.client.post(reverse('new_job'), data={
-            'name': 'a job',
-            'description': 'a job description',
+            'start-name': 'a job',
+            'start-description': 'a job description',
         })
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
@@ -61,8 +61,8 @@ class TestNewJob(TestCase):
         with LogCapture() as logger:
             # try using the same name and description
             response = self.client.post(reverse('new_job'), data={
-                'name': job_name,
-                'description': job_description,
+                'start-name': job_name,
+                'start-description': job_description,
             })
 
         logger.check(('tupakweb.forms.job', 'ERROR', 'You already have a job with the same name'), )
