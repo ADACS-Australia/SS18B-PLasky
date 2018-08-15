@@ -1,0 +1,7 @@
+{% if drafted_job %}
+    Name: {{ drafted_job.job.name }}
+    Description: {{ drafted_job.job.description }}
+{% else %}
+    No job so far
+{% endif %}
+

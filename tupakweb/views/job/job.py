@@ -1,6 +1,8 @@
 import os
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+
+from ...utility.job import TupakJob
 from ...models import user_job_input_file_directory_path
 from ...utility.constants import *
 from ...utility.job_utils import *
@@ -233,6 +235,10 @@ def new_job(request):
         forms = generate_forms(job=job)
 
     # print(active_tab)
+    try:
+        tupak_job = TupakJob(job_id=request.session['draft_job'].get('id', None))
+    except (KeyError, AttributeError):
+        tupak_job = None
 
     return render(
         request,
@@ -252,6 +258,9 @@ def new_job(request):
             'prior_fixed_form': forms[PRIOR_FIXED],
             'sampler_form': forms[SAMPLER],
             'sampler_dynesty_form': forms[SAMPLER_DYNESTY],
+
+            # job so far...
+            'drafted_job': tupak_job,
 
         }
     )

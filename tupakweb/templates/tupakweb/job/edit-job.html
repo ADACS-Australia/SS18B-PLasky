@@ -1,7 +1,4 @@
-{% extends 'base/base.html' %}
-
-{% block info-bar %}
-{% endblock info-bar %}
+{% extends 'base/base-two-columns.html' %}
 
 {% block page_header %}
     New Job
@@ -43,3 +40,8 @@
 
     </div>
 {% endblock content %}
+
+
+{% block info-bar %}
+    {% include 'tupakweb/job/summary_job.html' %}
+{% endblock info-bar %}
