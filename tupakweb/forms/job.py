@@ -32,6 +32,9 @@ class StartJobForm(forms.ModelForm):
 
     def clean_name(self):
         name = self.cleaned_data['name']
+        if self.job and self.job.name == name:
+            return name
+
         if Job.objects.filter(
                 user=self.request.user,
                 name=self.cleaned_data.get('name')
