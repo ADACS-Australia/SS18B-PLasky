@@ -218,7 +218,11 @@ def new_job(request):
     else:
         active_tab = START
 
-        request.session['draft_job'] = request.session['to_load'] if request.session['to_load'] else None
+        try:
+            request.session['draft_job'] = request.session['to_load']
+        except (AttributeError, KeyError):
+            request.session['draft_job'] = None
+
         request.session['to_load'] = None
 
         try:
