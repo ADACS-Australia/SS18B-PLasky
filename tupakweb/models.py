@@ -30,6 +30,7 @@ class Job(models.Model):
     ]
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, blank=False, default=DRAFT)
     creation_time = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now_add=True)
     submission_time = models.DateTimeField(null=True, blank=True)
 
     class Meta:
