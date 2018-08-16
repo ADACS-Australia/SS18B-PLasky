@@ -208,6 +208,10 @@ def save_tab(request, active_tab):
             error_in_form = True
 
     if not error_in_form:
+        if job:
+            job.refresh_from_db()
+            job.last_updated = timezone.now()
+            job.save()
         active_tab, error = get_to_be_active_tab(active_tab, )
 
     return active_tab, forms
