@@ -12,8 +12,12 @@
 
             <div id="collapseJob" class="collapse show" aria-labelledby="headingJob" data-parent="#accordion">
                 <div class="card-body">
-                    <p>Name: {{ drafted_job.job.name }}</p>
-                    <p>Description: {{ drafted_job.job.description }}</p>
+                    <div class="info-job info-heading">Name</div>
+                    <div class="info-job info-content text-justify">{{ drafted_job.job.name }}</div>
+                    {% if drafted_job.job.description %}
+                        <div class="info-job info-heading">Description</div>
+                        <div class="info-job info-content text-justify">{{ drafted_job.job.description }}</div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -29,18 +33,27 @@
                 </div>
                 <div id="collapseData" class="collapse" aria-labelledby="headingData" data-parent="#accordion">
                     <div class="card-body">
-                        <p>Type: {{ drafted_job.data.data_choice }}</p>
+                        <div class="info-job info-heading">Type</div>
+                        <div class="info-job info-content text-justify">{{ drafted_job.data.data_choice }}</div>
                         {% if drafted_job.data_simulated %}
-                            <p>Detector choice: {{ drafted_job.data_simulated.detector_choice }}</p>
-                            <p>Signal duration(s): {{ drafted_job.data_simulated.signal_duration }}</p>
-                            <p>Sampling frequency(Hz): {{ drafted_job.data_simulated.sample_frequency }}</p>
-                            <p>Start time: {{ drafted_job.data_simulated.start_time }}</p>
+                            <div class="info-job info-heading">Detector choice</div>
+                            <div class="info-job info-content text-justify">{{ drafted_job.data_simulated.detector_choice }}</div>
+                            <div class="info-job info-heading">Signal duration(s)</div>
+                            <div class="info-job info-content text-justify">{{ drafted_job.data_simulated.signal_duration }}</div>
+                            <div class="info-job info-heading">Sampling frequency(Hz)</div>
+                            <div class="info-job info-content text-justify">{{ drafted_job.data_simulated.sample_frequency }}</div>
+                            <div class="info-job info-heading">Start time</div>
+                            <div class="info-job info-content text-justify">{{ drafted_job.data_simulated.start_time }}</div>
                         {% endif %}
                         {% if drafted_job.data_open %}
-                            <p>Detector choice: {{ drafted_job.data_open.detector_choice }}</p>
-                            <p>Signal duration(s): {{ drafted_job.data_open.signal_duration }}</p>
-                            <p>Sampling frequency(Hz): {{ drafted_job.data_open.sample_frequency }}</p>
-                            <p>Start time: {{ drafted_job.data_open.start_time }}</p>
+                            <div class="info-job info-heading">Detector choice</div>
+                            <div class="info-job info-content text-justify">{{ drafted_job.data_open.detector_choice }}</div>
+                            <div class="info-job info-heading">Signal duration(s)</div>
+                            <div class="info-job info-content text-justify">{{ drafted_job.data_open.signal_duration }}</div>
+                            <div class="info-job info-heading">Sampling frequency(Hz)</div>
+                            <div class="info-job info-content text-justify">{{ drafted_job.data_open.sample_frequency }}</div>
+                            <div class="info-job info-heading">Start time</div>
+                            <div class="info-job info-content text-justify">{{ drafted_job.data_open.start_time }}</div>
                         {% endif %}
                     </div>
                 </div>

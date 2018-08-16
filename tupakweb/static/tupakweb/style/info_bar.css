@@ -1,0 +1,14 @@
+.card-header .btn-link, .info-job {
+    font-family: Cantarell, sans-serif;
+    font-size: small;
+}
+
+.info-job.info-heading {
+    border-bottom: 1px dotted rgba(255, 0, 0, .5);
+    margin-bottom: 5px;
+    color: darkcyan;
+}
+
+.info-job.info-content {
+    margin-bottom: 10px;
+}
