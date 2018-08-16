@@ -3,21 +3,16 @@ from django.utils.translation import ugettext_lazy as _
 from ...models import Job, Signal
 
 FIELDS = [
-    'inject_or_not',
     'signal_choice',
 ]
 
 WIDGETS = {
-    'inject_or_not': forms.Select(
-        attrs={'class': 'form-control'},
-    ),
     'signal_choice': forms.Select(
         attrs={'class': 'form-control'},
     ),
 }
 
 LABELS = {
-    'inject_or_not': _('Inject a signal?'),
     'signal_choice': _('Signal type'),
 }
 
@@ -25,7 +20,7 @@ LABELS = {
 class SignalForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
-        self.id = kwargs.pop('id', None)
+        self.job = kwargs.pop('job', None)
         super(SignalForm, self).__init__(*args, **kwargs)
 
     class Meta:
@@ -38,10 +33,8 @@ class SignalForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        job = Job.objects.get(id=self.id)
-
-        result = Signal.objects.create(
-            job=job,
+        Signal.objects.create(
+            job=self.job,
             data_choice=data.get('signal_choice'),
         )
 

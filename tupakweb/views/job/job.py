@@ -154,7 +154,7 @@ def generate_forms(job=None, request=None):
     if job:
         for model in MODELS:
 
-            if model in [SIGNAL_BBH_PARAMETERS, PRIOR, PRIOR_FIXED, PRIOR_UNIFORM, SAMPLER_DYNESTY,
+            if model in [SIGNAL_PARAMETER, PRIOR, PRIOR_FIXED, PRIOR_UNIFORM, SAMPLER_DYNESTY,
                          SAMPLER_NESTLE, SAMPLER_EMCEE]:
                 continue
 

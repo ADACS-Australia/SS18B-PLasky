@@ -3,15 +3,15 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 """
 
 from django import forms
-from ...models import SignalBbhParameter
+from ...models import SignalParameter
 
 # GLOBAL DECLARATIONS
 RADIO = 'radio'
 SELECT = 'select'
 TEXT = 'text'
 NUMBER = 'number'
-DEFAULT_CHOICES = SignalBbhParameter.NAME_CHOICES
-DEFAULT_INITIAL = SignalBbhParameter.MASS1
+DEFAULT_CHOICES = SignalParameter.NAME_CHOICES
+DEFAULT_INITIAL = SignalParameter.MASS1
 
 
 def get_radio_input(label, choices=None, initial=None):
@@ -71,7 +71,7 @@ def get_select_input(label, choices=None, initial=None):
     )
 
 
-class SignalBbhParameter(forms.Form):
+class SignalParameter(forms.Form):
     """Class to represent a SignalBbhParameter. It can be any of the following types:
     1. Radio (Currently in use)
     2. Select
@@ -89,7 +89,7 @@ class SignalBbhParameter(forms.Form):
     field_type = field_types[2]
 
     def __init__(self, name, label, choices=None, initial=None, field_type='', placeholder='', *args, **kwargs):
-        super(SignalBbhParameter, self).__init__(*args, **kwargs)
+        super(SignalParameter, self).__init__(*args, **kwargs)
 
         self.field_type = field_type if self.field_types.__contains__(field_type) else self.field_type
 

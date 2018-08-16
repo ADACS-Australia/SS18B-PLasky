@@ -6,7 +6,7 @@ from .models import (
     DataOpen,
     DataSimulated,
     Signal,
-    SignalBbhParameter,
+    SignalParameter,
     Prior,
     PriorFixed,
     PriorUniform,
@@ -18,7 +18,7 @@ from .models import (
 
 # Register your models here.
 admin.site.register(Signal)
-admin.site.register(SignalBbhParameter)
+admin.site.register(SignalParameter)
 admin.site.register(Prior)
 admin.site.register(PriorFixed)
 admin.site.register(PriorUniform)

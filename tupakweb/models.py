@@ -152,48 +152,20 @@ class DataSimulated(models.Model):
         )
 
 
-class Prior(models.Model):
-    FIXED = 'fixed'
-    UNIFORM = 'uniform'
-    CHOICES = [
-        (FIXED, 'Fixed'),
-        (UNIFORM, 'Uniform'),
-    ]
-    prior_choice = models.CharField(max_length=20, choices=CHOICES, default=FIXED, blank=True)
-
-
-class PriorFixed(models.Model):
-    prior = models.OneToOneField(Prior, related_name='prior_prior_fixed', on_delete=models.CASCADE)
-    value = models.FloatField(null=True)
-
-
-class PriorUniform(models.Model):
-    prior = models.OneToOneField(Prior, related_name='prior_prior_uniform', on_delete=models.CASCADE)
-    value_min = models.FloatField(null=True)
-    value_max = models.FloatField(null=True)
-
-
 class Signal(models.Model):
     job = models.OneToOneField(Job, related_name='job_signal', on_delete=models.CASCADE)
 
-    BOOL_CHOICES = (
-        (True, 'Yes'),
-        (False, 'No'),
-    )
-
-    inject_or_not = models.BooleanField(choices=BOOL_CHOICES, default=False)
-
-    BINARY_BLACK_HOLE = "bbh"
+    BINARY_BLACK_HOLE = "binary_black_hole"
 
     SIGNAL_CHOICES = [
         (BINARY_BLACK_HOLE, 'Binary Black Hole'),
     ]
 
-    signal_choice = models.CharField(max_length=50, choices=SIGNAL_CHOICES, default=BINARY_BLACK_HOLE, blank=True)
+    signal_choice = models.CharField(max_length=50, choices=SIGNAL_CHOICES, default=BINARY_BLACK_HOLE)
 
 
-class SignalBbhParameter(models.Model):
-    signal = models.OneToOneField(Job, related_name='signal_signal_bbh_parameter', on_delete=models.CASCADE)
+class SignalParameter(models.Model):
+    signal = models.OneToOneField(Signal, related_name='signal_signal_parameter', on_delete=models.CASCADE)
 
     MASS1 = 'mass_1'
     MASS2 = 'mass_2'
@@ -217,9 +189,29 @@ class SignalBbhParameter(models.Model):
         (DEC, 'Declination'),
     ]
 
-    name = models.CharField(max_length=20, choices=NAME_CHOICES, default=MASS1, blank=True)
+    name = models.CharField(max_length=20, choices=NAME_CHOICES, blank=False, null=False)
+    value = models.FloatField(null=True, blank=True)
+
+
+class Prior(models.Model):
+    FIXED = 'fixed'
+    UNIFORM = 'uniform'
+    CHOICES = [
+        (FIXED, 'Fixed'),
+        (UNIFORM, 'Uniform'),
+    ]
+    prior_choice = models.CharField(max_length=20, choices=CHOICES, default=FIXED, blank=True)
+
+
+class PriorFixed(models.Model):
+    prior = models.OneToOneField(Prior, related_name='prior_prior_fixed', on_delete=models.CASCADE)
     value = models.FloatField(null=True)
-    prior = models.OneToOneField(Prior, related_name='prior_signal_bbh', on_delete=models.CASCADE)
+
+
+class PriorUniform(models.Model):
+    prior = models.OneToOneField(Prior, related_name='prior_prior_uniform', on_delete=models.CASCADE)
+    value_min = models.FloatField(null=True)
+    value_max = models.FloatField(null=True)
 
 
 class Sampler(models.Model):

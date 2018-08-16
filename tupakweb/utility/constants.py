@@ -1,7 +1,7 @@
 from ..models import (
     Job,
     Data, DataOpen, DataSimulated,
-    Signal, SignalBbhParameter,
+    Signal, SignalParameter,
     Prior, PriorFixed, PriorUniform,
     Sampler, SamplerDynesty, SamplerEmcee, SamplerNestle
 )
@@ -47,7 +47,7 @@ DATA = 'data'
 DATA_OPEN = 'data-open'
 DATA_SIMULATED = 'data-simulated'
 SIGNAL = 'signal'
-SIGNAL_BBH_PARAMETERS = 'signal-bbh-parameter'
+SIGNAL_PARAMETER = 'signal-parameter'
 PRIOR = 'prior'
 PRIOR_FIXED = 'prior-fixed'
 PRIOR_UNIFORM = 'prior-uniform'
@@ -78,7 +78,7 @@ BLOCKS = [
     DATA_SIMULATED,
     DATA_OPEN,
     SIGNAL,
-    SIGNAL_BBH_PARAMETERS,
+    SIGNAL_PARAMETER,
     PRIOR,
     PRIOR_FIXED,
     PRIOR_UNIFORM,
@@ -95,7 +95,7 @@ FORMS_NEW = {
     DATA_SIMULATED: DataSimulatedForm,
     DATA_OPEN: DataOpenForm,
     SIGNAL: SignalForm,
-    SIGNAL_BBH_PARAMETERS: None,  # Need to figure this one out!
+    SIGNAL_PARAMETER: None,  # Need to figure this one out!
     PRIOR: PriorForm,
     PRIOR_FIXED: PriorFixedForm,
     PRIOR_UNIFORM: PriorUniformForm,
@@ -110,7 +110,7 @@ FORMS_EDIT = {
     DATA_SIMULATED: EditDataSimulatedForm,
     DATA_OPEN: EditDataOpenForm,
     SIGNAL: EditSignalForm,
-    SIGNAL_BBH_PARAMETERS: None,  # Need to figure this one out!
+    SIGNAL_PARAMETER: None,  # Need to figure this one out!
     PRIOR: EditPriorForm,
     PRIOR_FIXED: EditPriorFixedForm,
     PRIOR_UNIFORM: EditPriorUniformForm,
@@ -125,7 +125,7 @@ MODELS = {
     DATA_SIMULATED: DataSimulated,
     DATA_OPEN: DataOpen,
     SIGNAL: Signal,
-    SIGNAL_BBH_PARAMETERS: SignalBbhParameter,
+    SIGNAL_PARAMETER: SignalParameter,
     PRIOR: Prior,
     PRIOR_FIXED: PriorFixed,
     PRIOR_UNIFORM: PriorUniform,
