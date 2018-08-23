@@ -3,3 +3,4 @@ mysqlclient==1.3.13
 
 six
 testfixtures
+django-jsonforms
