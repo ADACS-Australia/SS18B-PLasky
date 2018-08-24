@@ -23,6 +23,12 @@ class SamplerForm(forms.ModelForm):
         self.id = kwargs.pop('id', None)
         super(SamplerForm, self).__init__(*args, **kwargs)
 
+    class Meta:
+        model = Sampler
+        fields = FIELDS
+        widgets = WIDGETS
+        labels = LABELS
+
     def save(self, **kwargs):
         self.full_clean()
         data = self.cleaned_data
@@ -33,29 +39,3 @@ class SamplerForm(forms.ModelForm):
             job=job,
             sampler_choice=data.get('sampler_choice'),
         )
-
-        self.request.session['sampler'] = self.as_array(data)
-
-    class Meta:
-        model = Sampler
-        fields = FIELDS
-        widgets = WIDGETS
-        labels = LABELS
-
-
-class EditSamplerForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
-        self.job_id = kwargs.pop('job_id', None)
-        if self.job_id:
-            try:
-                self.request.session['sampler'] = Sampler.objects.get(job_id=self.job_id).as_json()
-            except:
-                pass
-        super(EditSamplerForm, self).__init__(*args, **kwargs)
-
-    class Meta:
-        model = Sampler
-        fields = FIELDS
-        widgets = WIDGETS
-        labels = LABELS

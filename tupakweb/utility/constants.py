@@ -6,17 +6,18 @@ from ..models import (
     Sampler, SamplerDynesty, SamplerEmcee, SamplerNestle
 )
 
-from ..forms.job import StartJobForm, EditJobForm
-from ..forms.data.data import DataForm, EditDataForm
-from ..forms.data.data_simulated import DataSimulatedForm, EditDataSimulatedForm
-from ..forms.data.data_open import DataOpenForm, EditDataOpenForm
-from ..forms.signal.signal import SignalForm, EditSignalForm
-from ..forms.prior.prior import PriorForm, EditPriorForm
-from ..forms.prior.prior_uniform import PriorUniformForm, EditPriorUniformForm
-from ..forms.prior.prior_fixed import PriorFixedForm, EditPriorFixedForm
-from ..forms.sampler.sampler import SamplerForm, EditSamplerForm
-from ..forms.sampler.sampler_dynesty import SamplerDynestyForm, EditSamplerDynestyForm
-from ..forms.sampler.sampler_emcee import SamplerEmceeForm, EditSamplerEmceeForm
+from ..forms.job import StartJobForm
+from ..forms.data.data import DataForm
+from ..forms.data.data_simulated import DataSimulatedForm
+from ..forms.data.data_open import DataOpenForm
+from ..forms.signal.signal import SignalForm
+from ..forms.signal.signal_parameter import SignalParameterBbhForm
+from ..forms.prior.prior import PriorForm
+from ..forms.prior.prior_uniform import PriorUniformForm
+from ..forms.prior.prior_fixed import PriorFixedForm
+from ..forms.sampler.sampler import SamplerForm
+from ..forms.sampler.sampler_dynesty import SamplerDynestyForm
+from ..forms.sampler.sampler_emcee import SamplerEmceeForm
 
 
 def set_dict_indices(my_array):
@@ -47,7 +48,7 @@ DATA = 'data'
 DATA_OPEN = 'data-open'
 DATA_SIMULATED = 'data-simulated'
 SIGNAL = 'signal'
-SIGNAL_PARAMETER = 'signal-parameter'
+SIGNAL_PARAMETER_BBH = 'signal-parameter-bbh'
 PRIOR = 'prior'
 PRIOR_FIXED = 'prior-fixed'
 PRIOR_UNIFORM = 'prior-uniform'
@@ -70,6 +71,7 @@ TABS_INDEXES = set_dict_indices(TABS)
 TAB_FORMS = {
     START: [START],
     DATA: [DATA, DATA_SIMULATED, DATA_OPEN, ],
+    SIGNAL: [SIGNAL, SIGNAL_PARAMETER_BBH, ],
 }
 
 BLOCKS = [
@@ -78,7 +80,7 @@ BLOCKS = [
     DATA_SIMULATED,
     DATA_OPEN,
     SIGNAL,
-    SIGNAL_PARAMETER,
+    SIGNAL_PARAMETER_BBH,
     PRIOR,
     PRIOR_FIXED,
     PRIOR_UNIFORM,
@@ -95,7 +97,7 @@ FORMS_NEW = {
     DATA_SIMULATED: DataSimulatedForm,
     DATA_OPEN: DataOpenForm,
     SIGNAL: SignalForm,
-    SIGNAL_PARAMETER: None,  # Need to figure this one out!
+    SIGNAL_PARAMETER_BBH: SignalParameterBbhForm,
     PRIOR: PriorForm,
     PRIOR_FIXED: PriorFixedForm,
     PRIOR_UNIFORM: PriorUniformForm,
@@ -104,28 +106,12 @@ FORMS_NEW = {
     SAMPLER_EMCEE: SamplerEmceeForm,
 }
 
-FORMS_EDIT = {
-    START: EditJobForm,
-    DATA: EditDataForm,
-    DATA_SIMULATED: EditDataSimulatedForm,
-    DATA_OPEN: EditDataOpenForm,
-    SIGNAL: EditSignalForm,
-    SIGNAL_PARAMETER: None,  # Need to figure this one out!
-    PRIOR: EditPriorForm,
-    PRIOR_FIXED: EditPriorFixedForm,
-    PRIOR_UNIFORM: EditPriorUniformForm,
-    SAMPLER: EditSamplerForm,
-    SAMPLER_DYNESTY: EditSamplerDynestyForm,
-    SAMPLER_EMCEE: EditSamplerEmceeForm,
-}
-
 MODELS = {
     START: Job,
     DATA: Data,
     DATA_SIMULATED: DataSimulated,
     DATA_OPEN: DataOpen,
     SIGNAL: Signal,
-    SIGNAL_PARAMETER: SignalParameter,
     PRIOR: Prior,
     PRIOR_FIXED: PriorFixed,
     PRIOR_UNIFORM: PriorUniform,

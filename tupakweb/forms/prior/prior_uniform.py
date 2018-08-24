@@ -30,6 +30,12 @@ class PriorUniformForm(forms.ModelForm):
         self.id = kwargs.pop('id', None)
         super(PriorUniformForm, self).__init__(*args, **kwargs)
 
+    class Meta:
+        model = PriorUniform
+        fields = FIELDS
+        widgets = WIDGETS
+        labels = LABELS
+
     def save(self, **kwargs):
         self.full_clean()
         data = self.cleaned_data
@@ -43,29 +49,3 @@ class PriorUniformForm(forms.ModelForm):
             value_min=data.get('value_min'),
             value_max=data.get('value_max'),
         )
-
-        self.request.session['prior_uniform'] = self.as_array(data)
-
-    class Meta:
-        model = PriorUniform
-        fields = FIELDS
-        widgets = WIDGETS
-        labels = LABELS
-
-
-class EditPriorUniformForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
-        self.job_id = kwargs.pop('job_id', None)
-        if self.job_id:
-            try:
-                self.request.session['prior_uniform'] = PriorUniform.objects.get(job_id=self.job_id).as_json()
-            except:
-                pass
-        super(EditPriorUniformForm, self).__init__(*args, **kwargs)
-
-    class Meta:
-        model = PriorUniform
-        fields = FIELDS
-        widgets = WIDGETS
-        labels = LABELS

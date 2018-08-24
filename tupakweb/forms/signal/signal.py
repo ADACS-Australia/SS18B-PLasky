@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from ...models import Job, Signal
+from ...models import Signal
 
 FIELDS = [
     'signal_choice',
@@ -37,23 +37,3 @@ class SignalForm(forms.ModelForm):
             job=self.job,
             data_choice=data.get('signal_choice'),
         )
-
-        self.request.session['signal'] = self.as_array(data)
-
-
-class EditSignalForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
-        self.job_id = kwargs.pop('job_id', None)
-        if self.job_id:
-            try:
-                self.request.session['signal'] = Signal.objects.get(job_id=self.job_id).as_json()
-            except:
-                pass
-        super(EditSignalForm, self).__init__(*args, **kwargs)
-
-    class Meta:
-        model = Signal
-        fields = FIELDS
-        widgets = WIDGETS
-        labels = LABELS

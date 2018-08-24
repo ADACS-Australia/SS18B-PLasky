@@ -37,23 +37,3 @@ class DataForm(forms.ModelForm):
                 'data_choice': data.get('data_choice'),
             }
         )
-
-        # self.request.session['data'] = self.as_array(data)
-
-
-class EditDataForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
-        self.job_id = kwargs.pop('job_id', None)
-        if self.job_id:
-            try:
-                self.request.session['data'] = Data.objects.get(job_id=self.job_id).as_json()
-            except:
-                pass
-        super(EditDataForm, self).__init__(*args, **kwargs)
-
-    class Meta:
-        model = Data
-        fields = FIELDS
-        widgets = WIDGETS
-        labels = LABELS

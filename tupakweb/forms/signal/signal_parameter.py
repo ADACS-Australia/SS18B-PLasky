@@ -2,117 +2,81 @@
 Distributed under the MIT License. See LICENSE.txt for more info.
 """
 
-from django import forms
+from ..dynamic.form import DynamicForm
 from ...models import SignalParameter
 
-# GLOBAL DECLARATIONS
-RADIO = 'radio'
-SELECT = 'select'
-TEXT = 'text'
-NUMBER = 'number'
-DEFAULT_CHOICES = SignalParameter.NAME_CHOICES
-DEFAULT_INITIAL = SignalParameter.MASS1
+BBH_FIELDS_PROPERTIES = {
+    SignalParameter.MASS1: {
+        'type': 'text',
+        'label': 'Mass 1 (M☉)',
+        'placeholder': '2.0',
+        'initial': None,
+        'required': True,
+    },
+    SignalParameter.MASS2: {
+        'type': 'text',
+        'label': 'Mass 2 (M☉)',
+        'placeholder': '1.0',
+        'initial': None,
+        'required': True,
+    },
+    SignalParameter.LUMINOSITY_DISTANCE: {
+        'type': 'text',
+        'label': 'Luminosity distance (Mpc)',
+        'placeholder': '2000',
+        'initial': None,
+        'required': True,
+    },
+    SignalParameter.IOTA: {
+        'type': 'text',
+        'label': 'iota',
+        'placeholder': '0.4',
+        'initial': None,
+        'required': True,
+    },
+    SignalParameter.PSI: {
+        'type': 'text',
+        'label': 'psi',
+        'placeholder': '2.659',
+        'initial': None,
+        'required': True,
+    },
+    SignalParameter.PHASE: {
+        'type': 'text',
+        'label': 'phase',
+        'placeholder': '1.3',
+        'initial': None,
+        'required': True,
+    },
+    SignalParameter.MERGER_TIME: {
+        'type': 'text',
+        'label': 'Merger time (GPS time)',
+        'placeholder': '1126259642.413',
+        'initial': None,
+        'required': True,
+    },
+    SignalParameter.RA: {
+        'type': 'text',
+        'label': 'Right ascension',
+        'placeholder': '1.375',
+        'initial': None,
+        'required': True,
+    },
+    SignalParameter.DEC: {
+        'type': 'text',
+        'label': 'Declination',
+        'placeholder': '-1.2108',
+        'initial': None,
+        'required': True,
+    },
+}
 
 
-def get_radio_input(label, choices=None, initial=None):
-    if not choices:
-        choices = DEFAULT_CHOICES
-        initial = DEFAULT_INITIAL
-
-    return forms.ChoiceField(
-        label=label,
-        widget=forms.RadioSelect,
-        choices=choices,
-        initial=initial,
-    )
-
-
-def get_text_input(label, placeholder=None, initial=None):
-    return forms.CharField(
-        label=label,
-        widget=forms.TextInput(
-            attrs={
-                'class': 'form-control',
-                'placeholder': placeholder,
-            }
-        ),
-        required=False,
-        initial=initial,
-    )
-
-
-def get_number_input(label):
-    return forms.CharField(
-        label=label,
-        widget=forms.NumberInput(
-            attrs={
-                'class': 'form-control',
-            }
-        ),
-        required=False,
-    )
-
-
-def get_select_input(label, choices=None, initial=None):
-    if not choices:
-        choices = DEFAULT_CHOICES
-        initial = DEFAULT_INITIAL
-
-    return forms.ChoiceField(
-        label=label,
-        widget=forms.Select(
-            attrs={
-                'class': 'form-control',
-            }
-        ),
-        choices=choices,
-        initial=initial,
-
-    )
-
-
-class SignalParameter(forms.Form):
+class SignalParameterBbhForm(DynamicForm):
     """Class to represent a SignalBbhParameter. It can be any of the following types:
-    1. Radio (Currently in use)
-    2. Select
-    3. Text (Currently in use)
-    4. Number
-
     """
-    field_types = [
-        RADIO,
-        SELECT,
-        TEXT,
-        NUMBER,
-    ]
 
-    field_type = field_types[2]
-
-    def __init__(self, name, label, choices=None, initial=None, field_type='', placeholder='', *args, **kwargs):
-        super(SignalParameter, self).__init__(*args, **kwargs)
-
-        self.field_type = field_type if self.field_types.__contains__(field_type) else self.field_type
-
-        # adding custom fields
-        if self.field_type == RADIO:
-            self.fields[name] = get_radio_input(
-                label=label,
-                choices=choices,
-                initial=initial
-            )
-        elif self.field_type == SELECT:
-            self.fields[name] = get_select_input(
-                label=label,
-                choices=choices,
-                initial=initial,
-            )
-        elif self.field_type == TEXT:
-            self.fields[name] = get_text_input(
-                label=label,
-                placeholder=placeholder,
-                initial=initial,
-            )
-        elif self.field_type == NUMBER:
-            self.fields[name] = get_number_input(
-                label=label,
-            )
+    def __init__(self, *args, **kwargs):
+        kwargs['name'] = 'signal-binary_black_hole'
+        kwargs['fields_properties'] = BBH_FIELDS_PROPERTIES
+        super(SignalParameterBbhForm, self).__init__(*args, **kwargs)

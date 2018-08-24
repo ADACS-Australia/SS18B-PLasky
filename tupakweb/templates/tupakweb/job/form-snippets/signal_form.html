@@ -22,7 +22,43 @@
 
         </div>
     {% endfor %}
+
+    <div id="div_signal_parameter_bbh">
+        {% for field in signal_parameter_bbh_form %}
+            <div class="row field
+                        {% if field.field.required %}required{% endif %}
+                        {% if field.errors %}error{% endif %}">
+
+                <!-- Label -->
+                <label class="col-md-4 control-label" for="{{ field.auto_id }}">
+                    {{ field.label }}
+                </label>
+
+                <!-- Field -->
+                <div class="col-md-8">
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
     
-{#    <input class="btn btn-primary" type="submit" value="Save and next" />#}
     {% include 'tupakweb/job/snippets/pager-with-skip.html' %}
 </form>
+
+{% block additional_javascript %}
+<script type="text/javascript">
+
+    if ($("#id_signal-signal_choice").val() === 'binary_black_hole') {
+        $("#div_signal_parameter_bbh").show();
+    }
+
+    $("#id_signal-signal_choice").change(function() {
+        if ($(this).val() === 'binary_black_hole') {
+            $("#div_signal_parameter_bbh").show();
+        }
+    });
+
+</script>
+{% endblock additional_javascript %}

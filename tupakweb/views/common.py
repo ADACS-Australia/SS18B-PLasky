@@ -49,13 +49,13 @@ def about(request):
     fields_properties = {
         'Name': {
             'type': 'text',
-            'placeholder': None,
+            'placeholder': 'Job Name',
             'initial': None,
             'required': True,
         },
         'Description': {
             'type': 'text-area',
-            'placeholder': 'write a description about this job...',
+            'placeholder': 'write a description about this jobs...',
         },
     }
 

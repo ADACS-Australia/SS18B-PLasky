@@ -166,7 +166,7 @@ class Signal(models.Model):
 
 
 class SignalParameter(models.Model):
-    signal = models.OneToOneField(Signal, related_name='signal_signal_parameter', on_delete=models.CASCADE)
+    signal = models.ForeignKey(Signal, related_name='signal_signal_parameter', on_delete=models.CASCADE)
 
     MASS1 = 'mass_1'
     MASS2 = 'mass_2'
