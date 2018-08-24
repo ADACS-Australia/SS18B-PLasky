@@ -64,7 +64,7 @@ BBH_FIELDS_PROPERTIES = {
         'required': True,
     },
     SignalParameter.DEC: {
-        'type': 'text',
+        'type': field.FLOAT,
         'label': 'Declination',
         'placeholder': '-1.2108',
         'initial': None,
@@ -80,4 +80,5 @@ class SignalParameterBbhForm(DynamicForm):
     def __init__(self, *args, **kwargs):
         kwargs['name'] = 'signal-binary_black_hole'
         kwargs['fields_properties'] = BBH_FIELDS_PROPERTIES
+        self.job = kwargs.pop('job', None)
         super(SignalParameterBbhForm, self).__init__(*args, **kwargs)

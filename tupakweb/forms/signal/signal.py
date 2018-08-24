@@ -35,5 +35,5 @@ class SignalForm(forms.ModelForm):
 
         Signal.objects.create(
             job=self.job,
-            data_choice=data.get('signal_choice'),
+            signal_choice=data.get('signal_choice'),
         )
