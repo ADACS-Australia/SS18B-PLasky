@@ -45,13 +45,16 @@ def index(request):
 def about(request):
     from ..forms.job import StartJobForm
     from ..forms.dynamic.form import DynamicForm
+    from ..utility.validators import validate_positive_float
+    from django.core.validators import MinLengthValidator
 
     fields_properties = {
         'Name': {
-            'type': 'text',
+            'type': 'zero-to-pi',
             'placeholder': 'Job Name',
             'initial': None,
             'required': True,
+            'validators': [],
         },
         'Description': {
             'type': 'text-area',

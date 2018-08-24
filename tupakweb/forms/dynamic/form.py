@@ -1,16 +1,24 @@
 from django import forms
+
 from .field import (
     get_text_input,
     get_text_area_input,
     get_select_input,
     get_radio_input,
     get_number_input,
+    get_positive_float_input,
+    get_zero_to_pi_input,
+    get_zero_to_2pi_input,
+    get_float_input,
+    FLOAT,
+    POSITIVE_FLOAT,
+    ZERO_TO_PI,
+    ZERO_TO_2PI,
+    TEXT,
+    TEXT_AREA,
+    SELECT,
+    RADIO,
 )
-
-TEXT = 'text'
-TEXT_AREA = 'text-area'
-SELECT = 'select'
-RADIO = 'radio'
 
 
 class DynamicForm(forms.Form):
@@ -33,6 +41,7 @@ class DynamicForm(forms.Form):
                     placeholder=properties.get('placeholder', None),
                     initial=properties.get('initial', None),
                     required=properties.get('required', False),
+                    validators=properties.get('validators', ()),
                 )
 
             elif properties.get('type') == TEXT_AREA:
@@ -41,4 +50,40 @@ class DynamicForm(forms.Form):
                     placeholder=properties.get('placeholder', None),
                     initial=properties.get('initial', None),
                     required=properties.get('required', False),
+                )
+
+            elif properties.get('type') == POSITIVE_FLOAT:
+                self.fields[name] = get_positive_float_input(
+                    label=properties.get('label', name),
+                    placeholder=properties.get('placeholder', None),
+                    initial=properties.get('initial', None),
+                    required=properties.get('required', False),
+                    validators=properties.get('validators', ()),
+                )
+
+            elif properties.get('type') == ZERO_TO_PI:
+                self.fields[name] = get_zero_to_pi_input(
+                    label=properties.get('label', name),
+                    placeholder=properties.get('placeholder', None),
+                    initial=properties.get('initial', None),
+                    required=properties.get('required', False),
+                    validators=properties.get('validators', ()),
+                )
+
+            elif properties.get('type') == ZERO_TO_2PI:
+                self.fields[name] = get_zero_to_2pi_input(
+                    label=properties.get('label', name),
+                    placeholder=properties.get('placeholder', None),
+                    initial=properties.get('initial', None),
+                    required=properties.get('required', False),
+                    validators=properties.get('validators', ()),
+                )
+
+            elif properties.get('type') == FLOAT:
+                self.fields[name] = get_float_input(
+                    label=properties.get('label', name),
+                    placeholder=properties.get('placeholder', None),
+                    initial=properties.get('initial', None),
+                    required=properties.get('required', False),
+                    validators=properties.get('validators', ()),
                 )
