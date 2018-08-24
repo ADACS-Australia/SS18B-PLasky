@@ -58,6 +58,8 @@ def generate_forms(job=None, request=None):
             except MODELS[model].DoesNotExist:
                 pass
 
+        # non-model forms update
+        forms[SIGNAL_PARAMETER_BBH].update_from_database(job=job)
     return forms
 
 

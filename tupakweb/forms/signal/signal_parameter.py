@@ -96,3 +96,14 @@ class SignalParameterBbhForm(DynamicForm):
                     'value': value,
                 }
             )
+
+    def update_from_database(self, job):
+        if not job:
+            return
+
+        for name in BBH_FIELDS_PROPERTIES.keys():
+            try:
+                value = SignalParameter.objects.get(signal__job=job, name=name).value
+                self.fields[name].initial = value
+            except SignalParameter.DoesNotExist:
+                continue
