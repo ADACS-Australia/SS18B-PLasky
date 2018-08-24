@@ -17,8 +17,6 @@ from .models import (
 )
 
 # Register your models here.
-admin.site.register(Signal)
-admin.site.register(SignalParameter)
 admin.site.register(Prior)
 admin.site.register(PriorFixed)
 admin.site.register(PriorUniform)
@@ -50,3 +48,27 @@ class DataOpen(admin.ModelAdmin):
 class DataSimulated(admin.ModelAdmin):
     list_display = ('job', 'detector_choice', 'signal_duration', 'sample_frequency', 'start_time', )
     search_fields = ['job__name', ]
+
+
+@admin.register(Signal)
+class Signal(admin.ModelAdmin):
+    list_display = ('job', 'signal_choice', )
+    search_fields = ['job__name', 'signal_choice', ]
+
+
+@admin.register(SignalParameter)
+class SignalParameter(admin.ModelAdmin):
+    list_display = ('get_job', 'get_signal', 'name', 'value')
+    search_fields = ['name', 'value']
+
+    def get_job(self, obj):
+        return obj.signal.job.name
+
+    get_job.admin_order_field = 'signal__job'  # Allows column order sorting
+    get_job.short_description = 'Job'  # Renames column head
+
+    def get_signal(self, obj):
+        return obj.signal.signal_choice
+
+    get_signal.admin_order_field = 'signal'  # Allows column order sorting
+    get_signal.short_description = 'Signal'  # Renames column head

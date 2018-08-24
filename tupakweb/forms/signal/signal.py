@@ -33,7 +33,9 @@ class SignalForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        Signal.objects.create(
+        Signal.objects.update_or_create(
             job=self.job,
-            signal_choice=data.get('signal_choice'),
+            defaults={
+                'signal_choice': data.get('signal_choice'),
+            }
         )

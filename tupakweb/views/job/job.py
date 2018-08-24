@@ -91,16 +91,21 @@ def save_tab(request, active_tab):
 
         forms[form_to_save] = FORMS_NEW[form_to_save](request.POST, request=request, job=job, prefix=form_to_save)
 
-        if forms[form_to_save].is_valid():
-            forms[form_to_save].save()
-        else:
+        if not forms[form_to_save].is_valid():
             error_in_form = True
 
     if not error_in_form:
+        # save the forms
+        for form_to_save in forms_to_save:
+            forms[form_to_save].save()
+
+        # update the job
         if job:
             job.refresh_from_db()
             job.last_updated = timezone.now()
             job.save()
+
+        # get the active tab
         active_tab, error = get_to_be_active_tab(active_tab, )
 
     return active_tab, forms
