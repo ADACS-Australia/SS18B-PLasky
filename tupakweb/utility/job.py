@@ -3,7 +3,7 @@ from ..models import (
     Data,
     DataSimulated,
     DataOpen,
-)
+    Signal)
 
 
 class TupakJob:
@@ -12,8 +12,11 @@ class TupakJob:
     data = None
     data_simulated = None
     data_open = None
+    signal = None
+    signal_parameters = None
 
     def __init__(self, job_id):
+        # populating data tab information
         try:
             self.data = Data.objects.get(job=self.job)
         except Data.DoesNotExist:
@@ -29,6 +32,15 @@ class TupakJob:
                     self.data_open = DataOpen.objects.get(job=self.job)
                 except DataOpen.DoesNotExist:
                     pass
+
+        # populating signal tab information
+        try:
+            self.signal = Signal.objects.get(job=self.job)
+        except Signal.DoesNotExist:
+            pass
+        else:
+            # finding the correct signal parameters for the signal type
+            pass
 
     def __new__(cls, *args, **kwargs):
         try:

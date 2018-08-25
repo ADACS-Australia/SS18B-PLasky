@@ -83,8 +83,17 @@ def save_tab(request, active_tab):
     except (KeyError, AttributeError, Job.DoesNotExist):
         job = None
 
+    # generating the forms for the UI
     forms = generate_forms(job, request=request)
 
+    # do we need to skip the form save? or remove whatever the form has in the database?
+    # lets determine it here by checking the skip button.
+    skip_or_remove = request.POST.get('skip', None)
+
+    # here, the forms are saved in the database as required.
+    # not all of them are saved, only the forms that are in the tab are considered.
+    # additionally, it is based on the user input
+    # filtering the required forms to be save based on user input
     forms_to_save = filter_as_per_input(TAB_FORMS.get(active_tab), request)
 
     error_in_form = False

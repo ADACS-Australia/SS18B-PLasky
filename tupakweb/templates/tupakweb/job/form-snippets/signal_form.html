@@ -44,8 +44,12 @@
             </div>
         {% endfor %}
     </div>
-    
-    {% include 'tupakweb/job/snippets/pager-with-skip.html' %}
+
+    {% if drafted_job.signal %}
+        {% include 'tupakweb/job/snippets/pager-with-remove.html' %}
+    {% else %}
+        {% include 'tupakweb/job/snippets/pager-with-skip.html' %}
+    {% endif %}
 </form>
 
 {% block additional_javascript %}

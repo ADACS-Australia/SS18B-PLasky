@@ -58,6 +58,11 @@ SAMPLER_EMCEE = 'sampler-emcee'
 SAMPLER_NESTLE = 'sampler-nestle'
 LAUNCH = 'launch'
 
+SKIP_FORWARD = 'SKIP >'
+SKIP_BACKWARD = '< SKIP'
+REMOVE_FORWARD = 'REMOVE >'
+REMOVE_BACKWARD = '< REMOVE'
+
 TABS = [
     START,
     DATA,

@@ -59,6 +59,34 @@
                 </div>
             </div>
         {% endif %}
+        {% if drafted_job.signal %}
+            <div class="card">
+                <div class="card-header" id="headingSignal">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseSignal"
+                                aria-expanded="true" aria-controls="collapseTwo">
+                            Signal
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapseSignal" class="collapse" aria-labelledby="headingSignal" data-parent="#accordion">
+                    <div class="card-body">
+                        <div class="info-job info-heading">Type</div>
+                        <div class="info-job info-content text-justify">{{ drafted_job.signal.signal_choice }}</div>
+                        {% if drafted_job.signal_parameters %}
+                            <div class="info-job info-heading">Detector choice</div>
+                            <div class="info-job info-content text-justify">{{ drafted_job.data_simulated.detector_choice }}</div>
+                            <div class="info-job info-heading">Signal duration(s)</div>
+                            <div class="info-job info-content text-justify">{{ drafted_job.data_simulated.signal_duration }}</div>
+                            <div class="info-job info-heading">Sampling frequency(Hz)</div>
+                            <div class="info-job info-content text-justify">{{ drafted_job.data_simulated.sample_frequency }}</div>
+                            <div class="info-job info-heading">Start time</div>
+                            <div class="info-job info-content text-justify">{{ drafted_job.data_simulated.start_time }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     </div>
 {% else %}
     <div id="accordion">
