@@ -45,25 +45,12 @@
         {% endfor %}
     </div>
 
-    {% if drafted_job.signal %}
-        {% include 'tupakweb/job/snippets/pager-with-remove.html' %}
-    {% else %}
-        {% include 'tupakweb/job/snippets/pager-with-skip.html' %}
-    {% endif %}
+    <div id="signal-tab-navigation">
+        {% if drafted_job.signal %}
+            {% include 'tupakweb/job/snippets/pager-with-remove.html' %}
+        {% else %}
+            {% include 'tupakweb/job/snippets/pager-with-skip.html' %}
+        {% endif %}
+    </div>
 </form>
 
-{% block additional_javascript %}
-<script type="text/javascript">
-
-    if ($("#id_signal-signal_choice").val() === 'binary_black_hole') {
-        $("#div_signal_parameter_bbh").show();
-    }
-
-    $("#id_signal-signal_choice").change(function() {
-        if ($(this).val() === 'binary_black_hole') {
-            $("#div_signal_parameter_bbh").show();
-        }
-    });
-
-</script>
-{% endblock additional_javascript %}

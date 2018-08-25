@@ -8,15 +8,15 @@ from ...utility.constants import *
 from ...utility.job_utils import *
 
 
-def get_to_be_active_tab(active_tab, previous=False):
-    error = False  # keep tract of out of index tab, might be beneficial to detect the last page
+def get_to_be_active_tab(active_tab, previous=False, skip=0):
+    error = False  # keep track of out of index tab, might be beneficial to detect the last page
 
     active_tab_index = TABS_INDEXES.get(active_tab)
 
     if previous:
         active_tab_index -= 1
     else:
-        active_tab_index += 1
+        active_tab_index += 1 + skip
 
     try:
         active_tab = TABS[active_tab_index]
@@ -89,6 +89,14 @@ def save_tab(request, active_tab):
     # do we need to skip the form save? or remove whatever the form has in the database?
     # lets determine it here by checking the skip button.
     skip_or_remove = request.POST.get('skip', None)
+
+    if skip_or_remove:
+        active_tab, error = get_to_be_active_tab(
+            active_tab,
+            skip=1 if active_tab == SIGNAL else 0,
+        )
+
+        return active_tab, forms
 
     # here, the forms are saved in the database as required.
     # not all of them are saved, only the forms that are in the tab are considered.
