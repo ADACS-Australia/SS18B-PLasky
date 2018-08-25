@@ -108,7 +108,10 @@ def save_tab(request, active_tab):
             job.save()
 
         # get the active tab
-        active_tab, error = get_to_be_active_tab(active_tab, )
+        active_tab, error = get_to_be_active_tab(
+            active_tab,
+            previous=request.POST.get('previous', False),
+        )
 
     return active_tab, forms
 
