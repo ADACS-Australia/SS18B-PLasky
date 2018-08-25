@@ -14,13 +14,22 @@ WIDGETS = {
         attrs={'class': 'form-control'},
     ),
     'signal_duration': forms.TextInput(
-        attrs={'class': 'form-control'},
+        attrs={
+            'class': 'form-control',
+            'placeholder': '4',
+        },
     ),
     'sample_frequency': forms.TextInput(
-        attrs={'class': 'form-control'},
+        attrs={
+            'class': 'form-control',
+            'placeholder': '2048',
+        },
     ),
     'start_time': forms.TextInput(
-        attrs={'class': 'form-control'},
+        attrs={
+            'class': 'form-control',
+            'placeholder': '0.0',
+        },
     ),
 }
 

@@ -105,9 +105,9 @@ class DataOpen(models.Model):
     ]
 
     detector_choice = models.CharField(max_length=20, choices=DETECTOR_CHOICES, default=HANFORD)
-    signal_duration = models.IntegerField(blank=False, null=False, default=4, validators=[MinValueValidator(0)])
-    sample_frequency = models.IntegerField(blank=False, null=False, default=2048, validators=[MinValueValidator(0)])
-    start_time = models.FloatField(blank=False, default=0., validators=[MinValueValidator(0)])
+    signal_duration = models.IntegerField(blank=False, null=False, validators=[MinValueValidator(0)])
+    sample_frequency = models.IntegerField(blank=False, null=False, validators=[MinValueValidator(0)])
+    start_time = models.FloatField(blank=False, validators=[MinValueValidator(0)])
 
     def as_json(self):
         return dict(
@@ -136,9 +136,9 @@ class DataSimulated(models.Model):
     ]
 
     detector_choice = models.CharField(max_length=20, choices=DETECTOR_CHOICES, default=HANFORD)
-    signal_duration = models.IntegerField(blank=False, null=False, default=4, validators=[MinValueValidator(0)])
-    sample_frequency = models.IntegerField(blank=False, null=False, default=2048, validators=[MinValueValidator(0)])
-    start_time = models.FloatField(blank=False, default=0., validators=[MinValueValidator(0)])
+    signal_duration = models.IntegerField(blank=False, null=False, validators=[MinValueValidator(0)])
+    sample_frequency = models.IntegerField(blank=False, null=False, validators=[MinValueValidator(0)])
+    start_time = models.FloatField(blank=False, validators=[MinValueValidator(0)])
 
     def as_json(self):
         return dict(
