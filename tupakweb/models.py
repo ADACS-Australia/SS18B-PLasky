@@ -91,6 +91,12 @@ class Data(models.Model):
         )
 
 
+class DataParameter(models.Model):
+    data = models.ForeignKey(Data, on_delete=models.CASCADE)
+    name = models.CharField(max_length=20, blank=False, null=False)
+    value = models.CharField(max_length=100, null=True, blank=True)
+
+
 class DataOpen(models.Model):
     job = models.OneToOneField(Job, related_name='job_data_open', on_delete=models.CASCADE)
 

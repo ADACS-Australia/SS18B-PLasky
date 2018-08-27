@@ -10,6 +10,7 @@ from ...utility.validators import (
 # field types
 TEXT = 'text'
 FLOAT = 'float'
+MULTIPLE_CHOICES = 'multiple-choices'
 POSITIVE_FLOAT = 'positive-float'
 ZERO_TO_PI = 'zero-to-pi'
 ZERO_TO_2PI = 'zero-to-2pi'
@@ -178,4 +179,14 @@ def get_select_input(label, choices=None, initial=None):
         choices=choices,
         initial=initial,
 
+    )
+
+
+def get_multiple_choices_input(label, required, choices=None, initial=None):
+    return forms.MultipleChoiceField(
+        label=label,
+        widget=forms.CheckboxSelectMultiple(),
+        choices=choices,
+        initial=initial,
+        required=required,
     )

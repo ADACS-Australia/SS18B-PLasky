@@ -6,12 +6,14 @@ from .field import (
     get_select_input,
     get_radio_input,
     get_number_input,
+    get_multiple_choices_input,
     get_positive_float_input,
     get_zero_to_pi_input,
     get_zero_to_2pi_input,
     get_float_input,
     FLOAT,
     POSITIVE_FLOAT,
+    MULTIPLE_CHOICES,
     ZERO_TO_PI,
     ZERO_TO_2PI,
     TEXT,
@@ -24,7 +26,7 @@ from .field import (
 class DynamicForm(forms.Form):
     def __init__(self, *args, **kwargs):
         # name of the form
-        self.name = kwargs.pop('name')
+        self.name = kwargs.pop('name', None)
         # dictionary of fields, each containing field_name as key, field_type, placeholder, choices etc. as values
         self.fields_properties = kwargs.pop('fields_properties')
 
@@ -86,4 +88,13 @@ class DynamicForm(forms.Form):
                     initial=properties.get('initial', None),
                     required=properties.get('required', False),
                     validators=properties.get('validators', ()),
+                )
+
+            elif properties.get('type') == MULTIPLE_CHOICES:
+                self.fields[name] = get_multiple_choices_input(
+                    label=properties.get('label', name),
+                    initial=properties.get('initial', None),
+                    required=properties.get('required', False),
+                    # validators=properties.get('validators', ()),
+                    choices=properties.get('choices'),
                 )

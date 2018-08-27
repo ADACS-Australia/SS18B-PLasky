@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.forms import Form
 from django_jsonforms.forms import JSONSchemaField, JSONSchemaForm
 
+from tupakweb.forms.data.data_parameter import DataParameterForm
 
 json_schema = {
             'type': 'object',
@@ -64,18 +65,25 @@ def about(request):
 
     dynamic_form = DynamicForm(name='testform', fields_properties=fields_properties)
 
+    data_param_form = DataParameterForm()
+
     # start_form = StartJobForm()
 
     # json_form = JSONTestForm()
 
     if request.method == 'POST':
         # start_form = StartJobForm(request.POST, request=request)
-        dynamic_form = DynamicForm(request.POST, name='testform', fields_properties=fields_properties, request=request,)
+        print(request.POST.get('detector_choice'))
+        data_param_form = DataParameterForm(request.POST, request=request)
+        # dynamic_form = DynamicForm(request.POST, name='testform', fields_properties=fields_properties, request=request,)
+        if data_param_form.is_valid():
+            data = data_param_form.cleaned_data
+            print(data)
 
     return render(
         request,
         'tupakweb/about.html',
         {
-            'start_form': dynamic_form,
+            'start_form': data_param_form,
         }
     )
