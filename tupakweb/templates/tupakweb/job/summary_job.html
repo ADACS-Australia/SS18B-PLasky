@@ -74,14 +74,10 @@
                         <div class="info-job info-heading">Type</div>
                         <div class="info-job info-content text-justify">{{ drafted_job.signal.signal_choice }}</div>
                         {% if drafted_job.signal_parameters %}
-                            <div class="info-job info-heading">Detector choice</div>
-                            <div class="info-job info-content text-justify">{{ drafted_job.data_simulated.detector_choice }}</div>
-                            <div class="info-job info-heading">Signal duration(s)</div>
-                            <div class="info-job info-content text-justify">{{ drafted_job.data_simulated.signal_duration }}</div>
-                            <div class="info-job info-heading">Sampling frequency(Hz)</div>
-                            <div class="info-job info-content text-justify">{{ drafted_job.data_simulated.sample_frequency }}</div>
-                            <div class="info-job info-heading">Start time</div>
-                            <div class="info-job info-content text-justify">{{ drafted_job.data_simulated.start_time }}</div>
+                            {% for signal_parameter in drafted_job.signal_parameters %}
+                                <div class="info-job info-heading">{{ signal_parameter.name }}</div>
+                                <div class="info-job info-content text-justify">{{ signal_parameter.value }}</div>
+                            {% endfor %}
                         {% endif %}
                     </div>
                 </div>

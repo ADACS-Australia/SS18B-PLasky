@@ -3,7 +3,11 @@ from ..models import (
     Data,
     DataSimulated,
     DataOpen,
-    Signal)
+    Signal,
+    SignalParameter,
+)
+
+from ..forms.signal.signal_parameter import BBH_FIELDS_PROPERTIES
 
 
 class TupakJob:
@@ -39,8 +43,11 @@ class TupakJob:
         except Signal.DoesNotExist:
             pass
         else:
+            self.signal_parameters = []
             # finding the correct signal parameters for the signal type
-            pass
+            all_signal_parameters = SignalParameter.objects.filter(signal=self.signal)
+            for name in BBH_FIELDS_PROPERTIES.keys():
+                self.signal_parameters.append(all_signal_parameters.get(name=name))
 
     def __new__(cls, *args, **kwargs):
         try:
