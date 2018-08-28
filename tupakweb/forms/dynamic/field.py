@@ -2,12 +2,14 @@ import itertools
 from django import forms
 
 from ...utility.validators import (
+    validate_positive_integer,
     validate_positive_float,
     validate_less_than_pi,
     validate_less_than_2pi,
 )
 
 # field types
+POSITIVE_INTEGER = 'positive-integer'
 TEXT = 'text'
 FLOAT = 'float'
 MULTIPLE_CHOICES = 'multiple-choices'
@@ -49,7 +51,7 @@ def get_text_input(label, required, placeholder=None, initial=None, validators=(
 
 class CustomFloatField(forms.FloatField):
 
-    description = "A custom text field"
+    description = "A custom float field"
 
     def __init__(self, placeholder=None, **kwargs):
 
@@ -152,15 +154,33 @@ def get_radio_input(label, choices=None, initial=None):
     )
 
 
-def get_number_input(label):
-    return forms.CharField(
+class CustomIntegerField(forms.IntegerField):
+
+    description = "A custom integer field"
+
+    def __init__(self, placeholder=None, **kwargs):
+
+        super(CustomIntegerField, self).__init__(**kwargs)
+
+        # apply bootstrap theme
+        extra_attrs = {
+            'class': 'form-control',
+            'placeholder': placeholder if placeholder else '',
+        }
+
+        self.widget = forms.TextInput()
+        self.widget.attrs.update(extra_attrs)
+
+
+def get_positive_integer_input(label, required, placeholder=None, initial=None, validators=()):
+    default_validators = [validate_positive_integer, ]
+
+    return CustomFloatField(
         label=label,
-        widget=forms.NumberInput(
-            attrs={
-                'class': 'form-control',
-            }
-        ),
-        required=False,
+        required=required,
+        initial=initial,
+        placeholder=placeholder,
+        validators=list(itertools.chain(default_validators, validators)),
     )
 
 

@@ -12,6 +12,15 @@ def validate_positive_float(value):
         raise ValidationError(_("Must be a float number"))
 
 
+def validate_positive_integer(value):
+    try:
+        int_val = int(value)
+        if int_val <= 0 or int_val != value:
+            raise ValidationError(_("Must be greater than 0 and whole number"))
+    except ValueError:
+        raise ValidationError(_("Must be a number"))
+
+
 def validate_less_than_pi(value):
     try:
         float_val = float(value)

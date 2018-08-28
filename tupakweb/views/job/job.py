@@ -8,15 +8,33 @@ from ...utility.constants import *
 from ...utility.job_utils import *
 
 
-def get_to_be_active_tab(active_tab, previous=False, skip=0):
+def get_to_be_active_tab(active_tab, previous=False, job=None):
     error = False  # keep track of out of index tab, might be beneficial to detect the last page
 
     active_tab_index = TABS_INDEXES.get(active_tab)
 
+    skip = 0
+
+    # skip priors from signal tab if no signal entered.
+    # checks:
+    # 1. active_tab is 'SIGNAL'
+    # 2. not going previous, and
+    # 3. no signal information
+    if active_tab == SIGNAL and job and not Signal.objects.filter(job=job).exists() and not previous:
+        skip = 1
+
+    # skip priors from sampler tab if no signal entered.
+    # checks:
+    # 1. active_tab is 'SAMPLER'
+    # 2. going previous, and
+    # 3. no signal information
+    if active_tab == SAMPLER and job and not Signal.objects.filter(job=job).exists() and previous:
+        skip = 1
+
     if previous:
-        active_tab_index -= 1
+        active_tab_index -= (1 + skip)
     else:
-        active_tab_index += 1 + skip
+        active_tab_index += (1 + skip)
 
     try:
         active_tab = TABS[active_tab_index]
@@ -67,7 +85,7 @@ def generate_forms(job=None, request=None):
 
 def filter_as_per_input(forms_to_save, request):
 
-    # returning the corrected forms needs to be saved for DATA tab
+    # returning the corrected forms need to be saved for DATA tab
     if DATA in forms_to_save:
         data_choice = request.POST.get('data-data_choice', None)
 
@@ -75,6 +93,15 @@ def filter_as_per_input(forms_to_save, request):
             forms_to_save = [DATA, DATA_SIMULATED, ]
         else:
             forms_to_save = [DATA, DATA_OPEN, ]
+
+    # returning the corrected forms need to be saved for SIGNAL tab
+    if SIGNAL in forms_to_save:
+        signal_choice = request.POST.get('signal-signal_choice', None)
+
+        if signal_choice == Signal.SKIP:
+            forms_to_save = [SIGNAL, ]
+        elif signal_choice in SIGNAL_PARAMETER_BBH:
+            forms_to_save = [SIGNAL, SIGNAL_PARAMETER_BBH, ]
 
     return forms_to_save
 
@@ -87,18 +114,6 @@ def save_tab(request, active_tab):
 
     # generating the forms for the UI
     forms = generate_forms(job, request=request)
-
-    # do we need to skip the form save? or remove whatever the form has in the database?
-    # lets determine it here by checking the skip button.
-    skip_or_remove = request.POST.get('skip', None)
-
-    if skip_or_remove:
-        active_tab, error = get_to_be_active_tab(
-            active_tab,
-            skip=1 if active_tab == SIGNAL else 0,
-        )
-
-        return active_tab, forms
 
     # here, the forms are saved in the database as required.
     # not all of them are saved, only the forms that are in the tab are considered.
@@ -130,6 +145,7 @@ def save_tab(request, active_tab):
         active_tab, error = get_to_be_active_tab(
             active_tab,
             previous=request.POST.get('previous', False),
+            job=job,
         )
 
     return active_tab, forms
@@ -157,7 +173,6 @@ def new_job(request):
 
         forms = generate_forms(job=job)
 
-    # print(active_tab)
     try:
         tupak_job = TupakJob(job_id=request.session['draft_job'].get('id', None))
     except (KeyError, AttributeError):

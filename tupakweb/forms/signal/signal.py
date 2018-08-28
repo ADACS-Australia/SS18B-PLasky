@@ -33,9 +33,14 @@ class SignalForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        Signal.objects.update_or_create(
-            job=self.job,
-            defaults={
-                'signal_choice': data.get('signal_choice'),
-            }
-        )
+        signal_choice = data.get('signal_choice')
+
+        if signal_choice == Signal.SKIP:
+            Signal.objects.filter(job=self.job).delete()
+        else:
+            Signal.objects.update_or_create(
+                job=self.job,
+                defaults={
+                    'signal_choice': data.get('signal_choice'),
+                }
+            )

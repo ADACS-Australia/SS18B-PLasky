@@ -46,11 +46,7 @@
     </div>
 
     <div id="signal-tab-navigation">
-        {% if drafted_job.signal %}
-            {% include 'tupakweb/job/snippets/pager-with-remove.html' %}
-        {% else %}
-            {% include 'tupakweb/job/snippets/pager-with-skip.html' %}
-        {% endif %}
+        {% include 'tupakweb/job/snippets/pager.html' %}
     </div>
 </form>
 

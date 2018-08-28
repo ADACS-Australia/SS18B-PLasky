@@ -10,7 +10,7 @@ from ..forms.data.data_open import DATA_FIELDS_PROPERTIES as OPEN_DATA_FIELDS_PR
 from ..forms.data.data_simulated import DATA_FIELDS_PROPERTIES as SIMULATED_DATA_FIELDS_PROPERTIES
 
 
-class TupakJob:
+class TupakJob(object):
 
     job = None
     data = None

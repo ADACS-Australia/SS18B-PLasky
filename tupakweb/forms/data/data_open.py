@@ -32,14 +32,14 @@ DATA_FIELDS_PROPERTIES = OrderedDict([
         'choices': DETECTOR_CHOICES,
     }),
     ('signal_duration', {
-        'type': field.POSITIVE_FLOAT,
+        'type': field.POSITIVE_INTEGER,
         'label': 'Signal duration (s)',
         'placeholder': '2',
         'initial': None,
         'required': True,
     }),
     ('sampling_frequency', {
-        'type': field.POSITIVE_FLOAT,
+        'type': field.POSITIVE_INTEGER,
         'label': 'Sampling frequency (Hz)',
         'placeholder': '2',
         'initial': None,
@@ -80,8 +80,11 @@ class OpenDataParameterForm(DynamicForm):
         if not job:
             return
         else:
-            data = Data.objects.get(job=job)
-            if data.data_choice != Data.OPEN_DATA:
+            try:
+                data = Data.objects.get(job=job)
+                if data.data_choice != Data.OPEN_DATA:
+                    return
+            except Data.DoesNotExist:
                 return
 
         for name in DATA_FIELDS_PROPERTIES.keys():

@@ -103,13 +103,15 @@ class DataParameter(models.Model):
 class Signal(models.Model):
     job = models.OneToOneField(Job, related_name='job_signal', on_delete=models.CASCADE)
 
+    SKIP = 'skip'
     BINARY_BLACK_HOLE = "binary_black_hole"
 
     SIGNAL_CHOICES = [
+        (SKIP, 'None'),
         (BINARY_BLACK_HOLE, 'Binary Black Hole'),
     ]
 
-    signal_choice = models.CharField(max_length=50, choices=SIGNAL_CHOICES, default=BINARY_BLACK_HOLE)
+    signal_choice = models.CharField(max_length=50, choices=SIGNAL_CHOICES, default=SKIP)
 
 
 class SignalParameter(models.Model):
@@ -131,7 +133,7 @@ class SignalParameter(models.Model):
         (LUMINOSITY_DISTANCE, 'Luminosity distance (Mpc)'),
         (IOTA, 'iota'),
         (PSI, 'psi'),
-        (PHASE, 'phase'),
+        (PHASE, 'Phase'),
         (MERGER_TIME, 'Merger time (GPS time)'),
         (RA, 'Right ascension'),
         (DEC, 'Declination'),
