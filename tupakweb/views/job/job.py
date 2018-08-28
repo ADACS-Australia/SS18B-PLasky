@@ -30,8 +30,8 @@ def generate_forms(job=None, request=None):
     forms = {
         START: StartJobForm(prefix=START),
         DATA: DataForm(prefix=DATA),
-        DATA_OPEN: DataOpenForm(prefix=DATA_OPEN),
-        DATA_SIMULATED: DataSimulatedForm(prefix=DATA_SIMULATED),
+        DATA_OPEN: OpenDataParameterForm(prefix=DATA_OPEN),
+        DATA_SIMULATED: SimulatedDataParameterForm(prefix=DATA_SIMULATED),
         SIGNAL: SignalForm(prefix=SIGNAL),
         SIGNAL_PARAMETER_BBH: SignalParameterBbhForm(prefix=SIGNAL_PARAMETER_BBH),
         PRIOR: PriorForm(prefix=PRIOR),
@@ -59,6 +59,8 @@ def generate_forms(job=None, request=None):
                 pass
 
         # non-model forms update
+        forms[DATA_OPEN].update_from_database(job=job)
+        forms[DATA_SIMULATED].update_from_database(job=job)
         forms[SIGNAL_PARAMETER_BBH].update_from_database(job=job)
     return forms
 

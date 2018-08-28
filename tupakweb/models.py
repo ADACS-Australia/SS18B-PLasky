@@ -96,67 +96,8 @@ class DataParameter(models.Model):
     name = models.CharField(max_length=20, blank=False, null=False)
     value = models.CharField(max_length=100, null=True, blank=True)
 
-
-class DataOpen(models.Model):
-    job = models.OneToOneField(Job, related_name='job_data_open', on_delete=models.CASCADE)
-
-    HANFORD = 'hanford'
-    LIVINGSTON = 'livingston'
-    VIRGO = 'virgo'
-
-    DETECTOR_CHOICES = [
-        (HANFORD, 'Hanford'),
-        (LIVINGSTON, 'Livingston'),
-        (VIRGO, 'Virgo'),
-    ]
-
-    detector_choice = models.CharField(max_length=20, choices=DETECTOR_CHOICES, default=HANFORD)
-    signal_duration = models.IntegerField(blank=False, null=False, validators=[MinValueValidator(0)])
-    sample_frequency = models.IntegerField(blank=False, null=False, validators=[MinValueValidator(0)])
-    start_time = models.FloatField(blank=False, validators=[MinValueValidator(0)])
-
-    def as_json(self):
-        return dict(
-            id=self.id,
-            value=dict(
-                job=self.job.id,
-                detector_choice=self.detector_choice,
-                signal_duration=self.signal_duration,
-                sample_frequency=self.sample_frequency,
-                start_time=self.start_time,
-            ),
-        )
-
-
-class DataSimulated(models.Model):
-    job = models.OneToOneField(Job, related_name='job_data_simulated', on_delete=models.CASCADE)
-
-    HANFORD = 'hanford'
-    LIVINGSTON = 'livingston'
-    VIRGO = 'virgo'
-
-    DETECTOR_CHOICES = [
-        (HANFORD, 'Hanford'),
-        (LIVINGSTON, 'Livingston'),
-        (VIRGO, 'Virgo'),
-    ]
-
-    detector_choice = models.CharField(max_length=20, choices=DETECTOR_CHOICES, default=HANFORD)
-    signal_duration = models.IntegerField(blank=False, null=False, validators=[MinValueValidator(0)])
-    sample_frequency = models.IntegerField(blank=False, null=False, validators=[MinValueValidator(0)])
-    start_time = models.FloatField(blank=False, validators=[MinValueValidator(0)])
-
-    def as_json(self):
-        return dict(
-            id=self.id,
-            value=dict(
-                job=self.job.id,
-                detector_choice=self.detector_choice,
-                signal_duration=self.signal_duration,
-                sample_frequency=self.sample_frequency,
-                start_time=self.start_time,
-            ),
-        )
+    def __str__(self):
+        return '{} - {} ({})'.format(self.name, self.value, self.data)
 
 
 class Signal(models.Model):

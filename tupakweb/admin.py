@@ -3,8 +3,7 @@ from django.contrib import admin
 from .models import (
     Job,
     Data,
-    DataOpen,
-    DataSimulated,
+    DataParameter,
     Signal,
     SignalParameter,
     Prior,
@@ -38,16 +37,22 @@ class Data(admin.ModelAdmin):
     search_fields = ['job__name', 'data_choice', ]
 
 
-@admin.register(DataOpen)
-class DataOpen(admin.ModelAdmin):
-    list_display = ('job', 'detector_choice', 'signal_duration', 'sample_frequency', 'start_time', )
-    search_fields = ['job__name', ]
+@admin.register(DataParameter)
+class DataParameter(admin.ModelAdmin):
+    list_display = ('get_job', 'get_data', 'name', 'value')
+    search_fields = ['name', 'value']
 
+    def get_job(self, obj):
+        return obj.data.job.name
 
-@admin.register(DataSimulated)
-class DataSimulated(admin.ModelAdmin):
-    list_display = ('job', 'detector_choice', 'signal_duration', 'sample_frequency', 'start_time', )
-    search_fields = ['job__name', ]
+    get_job.admin_order_field = 'data__job'  # Allows column order sorting
+    get_job.short_description = 'Job'  # Renames column head
+
+    def get_data(self, obj):
+        return obj.data.data_choice
+
+    get_data.admin_order_field = 'data'  # Allows column order sorting
+    get_data.short_description = 'data'  # Renames column head
 
 
 @admin.register(Signal)

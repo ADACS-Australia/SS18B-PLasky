@@ -1,21 +1,20 @@
 from ..models import (
     Job,
     Data,
-    DataSimulated,
-    DataOpen,
     Signal,
     SignalParameter,
-)
+    DataParameter)
 
 from ..forms.signal.signal_parameter import BBH_FIELDS_PROPERTIES
+from ..forms.data.data_open import DATA_FIELDS_PROPERTIES as OPEN_DATA_FIELDS_PROPERTIES
+from ..forms.data.data_simulated import DATA_FIELDS_PROPERTIES as SIMULATED_DATA_FIELDS_PROPERTIES
 
 
 class TupakJob:
 
     job = None
     data = None
-    data_simulated = None
-    data_open = None
+    data_parameters = None
     signal = None
     signal_parameters = None
 
@@ -26,16 +25,16 @@ class TupakJob:
         except Data.DoesNotExist:
             pass
         else:
-            if self.data.data_choice == Data.SIMULATED_DATA:
-                try:
-                    self.data_simulated = DataSimulated.objects.get(job=self.job)
-                except DataSimulated.DoesNotExist:
-                    pass
-            elif self.data.data_choice == Data.OPEN_DATA:
-                try:
-                    self.data_open = DataOpen.objects.get(job=self.job)
-                except DataOpen.DoesNotExist:
-                    pass
+            self.data_parameters = []
+            # finding the correct signal parameters for the signal type
+            all_data_parameters = DataParameter.objects.filter(data=self.data)
+
+            if self.data.data_choice == Data.OPEN_DATA:
+                for name in OPEN_DATA_FIELDS_PROPERTIES.keys():
+                    self.data_parameters.append(all_data_parameters.get(name=name))
+            elif self.data.data_choice == Data.SIMULATED_DATA:
+                for name in SIMULATED_DATA_FIELDS_PROPERTIES.keys():
+                    self.data_parameters.append(all_data_parameters.get(name=name))
 
         # populating signal tab information
         try:

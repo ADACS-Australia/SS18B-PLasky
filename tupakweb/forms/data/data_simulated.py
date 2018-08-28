@@ -1,68 +1,91 @@
+import ast
+from collections import OrderedDict
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from ...models import Job, DataSimulated
 
-FIELDS = [
-    'detector_choice',
-    'signal_duration',
-    'sample_frequency',
-    'start_time',
+from ..dynamic import field
+from ...models import Job, DataParameter, Data
+from ..dynamic.form import DynamicForm
+
+
+HANFORD = 'hanford'
+LIVINGSTON = 'livingston'
+VIRGO = 'virgo'
+
+DETECTOR_CHOICES = [
+    (HANFORD, 'Hanford'),
+    (LIVINGSTON, 'Livingston'),
+    (VIRGO, 'Virgo'),
 ]
 
-WIDGETS = {
-    'detector_choice': forms.Select(
-        attrs={'class': 'form-control'},
-    ),
-    'signal_duration': forms.TextInput(
-        attrs={
-            'class': 'form-control',
-            'placeholder': '4',
-        },
-    ),
-    'sample_frequency': forms.TextInput(
-        attrs={
-            'class': 'form-control',
-            'placeholder': '2048',
-        },
-    ),
-    'start_time': forms.TextInput(
-        attrs={
-            'class': 'form-control',
-            'placeholder': '0.0',
-        },
-    ),
-}
-
-LABELS = {
-    'detector_choice': _('Detector choice'),
-    'signal_duration': _('Signal duration(s)'),
-    'sample_frequency': _('Sampling frequency(Hz)'),
-    'start_time': _('Start time'),
-}
+detectors = forms.MultipleChoiceField(choices=DETECTOR_CHOICES)
 
 
-class DataSimulatedForm(forms.ModelForm):
+DATA_FIELDS_PROPERTIES = OrderedDict([
+    ('detector_choice', {
+        'type': field.MULTIPLE_CHOICES,
+        'label': 'Detector choice',
+        'initial': None,
+        'required': True,
+        'choices': DETECTOR_CHOICES,
+    }),
+    ('signal_duration', {
+        'type': field.POSITIVE_FLOAT,
+        'label': 'Signal duration (s)',
+        'placeholder': '2',
+        'initial': None,
+        'required': True,
+    }),
+    ('sampling_frequency', {
+        'type': field.POSITIVE_FLOAT,
+        'label': 'Sampling frequency (Hz)',
+        'placeholder': '2',
+        'initial': None,
+        'required': True,
+    }),
+    ('start_time', {
+        'type': field.POSITIVE_FLOAT,
+        'label': 'Start time',
+        'placeholder': '2.1',
+        'initial': None,
+        'required': True,
+    }),
+])
+
+
+class SimulatedDataParameterForm(DynamicForm):
+
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
+        kwargs['name'] = 'data-parameter'
+        kwargs['fields_properties'] = DATA_FIELDS_PROPERTIES
         self.job = kwargs.pop('job', None)
-        super(DataSimulatedForm, self).__init__(*args, **kwargs)
 
-    class Meta:
-        model = DataSimulated
-        fields = FIELDS
-        widgets = WIDGETS
-        labels = LABELS
+        super(SimulatedDataParameterForm, self).__init__(*args, **kwargs)
 
-    def save(self, **kwargs):
-        self.full_clean()
-        data = self.cleaned_data
+    def save(self):
+        # find the data first
+        data = Data.objects.get(job=self.job)
+        for name, value in self.cleaned_data.items():
+            DataParameter.objects.update_or_create(
+                data=data,
+                name=name,
+                defaults={
+                    'value': value,
+                }
+            )
 
-        DataSimulated.objects.update_or_create(
-            job=self.job,
-            defaults={
-                'detector_choice': data.get('detector_choice'),
-                'signal_duration': data.get('signal_duration'),
-                'sample_frequency': data.get('sample_frequency'),
-                'start_time': data.get('start_time'),
-            }
-        )
+    def update_from_database(self, job):
+        if not job:
+            return
+        else:
+            data = Data.objects.get(job=job)
+            if data.data_choice != Data.SIMULATED_DATA:
+                return
+
+        for name in DATA_FIELDS_PROPERTIES.keys():
+            try:
+                value = DataParameter.objects.get(data=data, name=name).value
+                self.fields[name].initial = ast.literal_eval(value) if name == 'detector_choice' else value
+            except DataParameter.DoesNotExist:
+                continue

@@ -35,25 +35,11 @@
                     <div class="card-body">
                         <div class="info-job info-heading">Type</div>
                         <div class="info-job info-content text-justify">{{ drafted_job.data.data_choice }}</div>
-                        {% if drafted_job.data_simulated %}
-                            <div class="info-job info-heading">Detector choice</div>
-                            <div class="info-job info-content text-justify">{{ drafted_job.data_simulated.detector_choice }}</div>
-                            <div class="info-job info-heading">Signal duration(s)</div>
-                            <div class="info-job info-content text-justify">{{ drafted_job.data_simulated.signal_duration }}</div>
-                            <div class="info-job info-heading">Sampling frequency(Hz)</div>
-                            <div class="info-job info-content text-justify">{{ drafted_job.data_simulated.sample_frequency }}</div>
-                            <div class="info-job info-heading">Start time</div>
-                            <div class="info-job info-content text-justify">{{ drafted_job.data_simulated.start_time }}</div>
-                        {% endif %}
-                        {% if drafted_job.data_open %}
-                            <div class="info-job info-heading">Detector choice</div>
-                            <div class="info-job info-content text-justify">{{ drafted_job.data_open.detector_choice }}</div>
-                            <div class="info-job info-heading">Signal duration(s)</div>
-                            <div class="info-job info-content text-justify">{{ drafted_job.data_open.signal_duration }}</div>
-                            <div class="info-job info-heading">Sampling frequency(Hz)</div>
-                            <div class="info-job info-content text-justify">{{ drafted_job.data_open.sample_frequency }}</div>
-                            <div class="info-job info-heading">Start time</div>
-                            <div class="info-job info-content text-justify">{{ drafted_job.data_open.start_time }}</div>
+                        {% if drafted_job.data_parameters %}
+                            {% for data_parameter in drafted_job.data_parameters %}
+                                <div class="info-job info-heading">{{ data_parameter.name }}</div>
+                                <div class="info-job info-content text-justify">{{ data_parameter.value }}</div>
+                            {% endfor %}
                         {% endif %}
                     </div>
                 </div>

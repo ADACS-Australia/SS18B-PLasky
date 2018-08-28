@@ -1,15 +1,15 @@
 from ..models import (
     Job,
-    Data, DataOpen, DataSimulated,
-    Signal, SignalParameter,
+    Data,
+    Signal,
     Prior, PriorFixed, PriorUniform,
     Sampler, SamplerDynesty, SamplerEmcee, SamplerNestle
 )
 
 from ..forms.job import StartJobForm
 from ..forms.data.data import DataForm
-from ..forms.data.data_simulated import DataSimulatedForm
-from ..forms.data.data_open import DataOpenForm
+from ..forms.data.data_simulated import SimulatedDataParameterForm
+from ..forms.data.data_open import OpenDataParameterForm
 from ..forms.signal.signal import SignalForm
 from ..forms.signal.signal_parameter import SignalParameterBbhForm
 from ..forms.prior.prior import PriorForm
@@ -99,8 +99,8 @@ BLOCKS_INDEXES = set_dict_indices(BLOCKS)
 FORMS_NEW = {
     START: StartJobForm,
     DATA: DataForm,
-    DATA_SIMULATED: DataSimulatedForm,
-    DATA_OPEN: DataOpenForm,
+    DATA_SIMULATED: SimulatedDataParameterForm,
+    DATA_OPEN: OpenDataParameterForm,
     SIGNAL: SignalForm,
     SIGNAL_PARAMETER_BBH: SignalParameterBbhForm,
     PRIOR: PriorForm,
@@ -114,8 +114,6 @@ FORMS_NEW = {
 MODELS = {
     START: Job,
     DATA: Data,
-    DATA_SIMULATED: DataSimulated,
-    DATA_OPEN: DataOpen,
     SIGNAL: Signal,
     PRIOR: Prior,
     PRIOR_FIXED: PriorFixed,
