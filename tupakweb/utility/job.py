@@ -1,3 +1,5 @@
+import json
+
 from ..models import (
     Job,
     Data,
@@ -48,6 +50,8 @@ class TupakJob(object):
             for name in BBH_FIELDS_PROPERTIES.keys():
                 self.signal_parameters.append(all_signal_parameters.get(name=name))
 
+        self.as_json()
+
     def __new__(cls, *args, **kwargs):
         try:
             cls.job = Job.objects.get(id=kwargs.get('job_id', None))
@@ -55,3 +59,35 @@ class TupakJob(object):
             return None
 
         return super(TupakJob, cls).__new__(cls)
+
+    def as_json(self):
+        # data_dict
+        data_dict = dict()
+        if self.data:
+            data_dict.update({
+                'type': self.data.data_choice,
+            })
+            for data_parameter in self.data_parameters:
+                data_dict.update({
+                    data_parameter.name: data_parameter.value,
+                })
+
+        # signal_dict
+        signal_dict = dict()
+        if self.signal:
+            signal_dict.update({
+                'type': self.signal.signal_choice,
+            })
+            for signal_parameter in self.signal_parameters:
+                signal_dict.update({
+                    signal_parameter.name: signal_parameter.value,
+                })
+
+        json_dict = dict(
+            name=self.job.name,
+            description=self.job.description,
+            data=data_dict,
+            signal=signal_dict,
+        )
+
+        return json.dumps(json_dict, indent=4)

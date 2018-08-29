@@ -200,6 +200,7 @@ def new_job(request):
 
             # job so far...
             'drafted_job': tupak_job,
+            'job_json': tupak_job.as_json() if tupak_job else None,
 
         }
     )
