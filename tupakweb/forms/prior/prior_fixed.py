@@ -22,7 +22,7 @@ LABELS = {
 class PriorFixedForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
-        self.id = kwargs.pop('id', None)
+        self.job = kwargs.pop('job', None)
         super(PriorFixedForm, self).__init__(*args, **kwargs)
 
     class Meta:
@@ -35,9 +35,8 @@ class PriorFixedForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        job = Job.objects.get(id=self.id)
-        if job.signal.signal_choice == Signal.BINARY_BLACK_HOLE:
-            prior = job.signal.signal_bbh_parameter.prior
+        if self.job.signal.signal_choice == Signal.BINARY_BLACK_HOLE:
+            prior = self.job.signal.signal_bbh_parameter.prior
 
         result = PriorFixed.objects.create(
             prior=prior,

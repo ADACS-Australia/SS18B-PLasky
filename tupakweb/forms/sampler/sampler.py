@@ -20,7 +20,7 @@ LABELS = {
 class SamplerForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
-        self.id = kwargs.pop('id', None)
+        self.job = kwargs.pop('job', None)
         super(SamplerForm, self).__init__(*args, **kwargs)
 
     class Meta:
@@ -33,9 +33,7 @@ class SamplerForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        job = Job.objects.get(id=self.id)
-
         result = Sampler.objects.create(
-            job=job,
+            job=self.job,
             sampler_choice=data.get('sampler_choice'),
         )

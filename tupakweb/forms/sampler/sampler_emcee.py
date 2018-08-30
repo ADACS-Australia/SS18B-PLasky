@@ -20,7 +20,7 @@ LABELS = {
 class SamplerEmceeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
-        self.id = kwargs.pop('id', None)
+        self.job = kwargs.pop('job', None)
         super(SamplerEmceeForm, self).__init__(*args, **kwargs)
 
     class Meta:
@@ -33,9 +33,7 @@ class SamplerEmceeForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        job = Job.objects.get(id=self.id)
-
         result = SamplerEmcee.objects.create(
-            sampler=job.sampler,
+            sampler=self.job.sampler,
             n_steps=data.get('n_steps'),
         )

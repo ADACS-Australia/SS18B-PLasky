@@ -44,20 +44,21 @@ def get_to_be_active_tab(active_tab, previous=False, job=None):
     return active_tab, error
 
 
-def generate_forms(job=None, request=None):
-    forms = {
-        START: StartJobForm(prefix=START),
-        DATA: DataForm(prefix=DATA),
-        DATA_OPEN: OpenDataParameterForm(prefix=DATA_OPEN),
-        DATA_SIMULATED: SimulatedDataParameterForm(prefix=DATA_SIMULATED),
-        SIGNAL: SignalForm(prefix=SIGNAL),
-        SIGNAL_PARAMETER_BBH: SignalParameterBbhForm(prefix=SIGNAL_PARAMETER_BBH),
-        PRIOR: PriorForm(prefix=PRIOR),
-        PRIOR_FIXED: PriorFixedForm(prefix=PRIOR_FIXED),
-        PRIOR_UNIFORM: PriorUniformForm(prefix=PRIOR_UNIFORM),
-        SAMPLER: SamplerForm(prefix=SAMPLER),
-        SAMPLER_DYNESTY: SamplerDynestyForm(prefix=SAMPLER_DYNESTY),
-    }
+def generate_forms(job=None, request=None, forms=None):
+    if not forms:
+        forms = {
+            START: None,
+            DATA: None,
+            DATA_OPEN: None,
+            DATA_SIMULATED: None,
+            SIGNAL: None,
+            SIGNAL_PARAMETER_BBH: None,
+            PRIOR: None,
+            PRIOR_FIXED: None,
+            PRIOR_UNIFORM: None,
+            SAMPLER: None,
+            SAMPLER_DYNESTY: None,
+        }
 
     if job:
         for model in MODELS:
@@ -70,16 +71,25 @@ def generate_forms(job=None, request=None):
                 # START Form is the Job instance, for other forms it is referenced
                 instance = job if model == START else MODELS[model].objects.get(job=job)
 
-                forms.update({
-                    model: FORMS_NEW[model](instance=instance, job=job, prefix=model)
-                })
+                if not forms.get(model, None):
+                    forms.update({
+                        model: FORMS_NEW[model](instance=instance, job=job, prefix=model)
+                    })
             except MODELS[model].DoesNotExist:
                 pass
 
+    for name in FORMS_NEW.keys():
+        if not forms.get(name, None):
+            forms.update({
+                name: FORMS_NEW[name](job=job, prefix=name)
+            })
+
+    if job:
         # non-model forms update
         forms[DATA_OPEN].update_from_database(job=job)
         forms[DATA_SIMULATED].update_from_database(job=job)
         forms[SIGNAL_PARAMETER_BBH].update_from_database(job=job)
+
     return forms
 
 
@@ -113,7 +123,7 @@ def save_tab(request, active_tab):
         job = None
 
     # generating the forms for the UI
-    forms = generate_forms(job, request=request)
+    forms = dict()
 
     # here, the forms are saved in the database as required.
     # not all of them are saved, only the forms that are in the tab are considered.
@@ -147,6 +157,8 @@ def save_tab(request, active_tab):
             previous=request.POST.get('previous', False),
             job=job,
         )
+
+    forms = generate_forms(job, request=request, forms=forms)
 
     return active_tab, forms
 

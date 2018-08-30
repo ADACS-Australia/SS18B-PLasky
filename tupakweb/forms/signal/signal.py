@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from ...models import Signal
+from ...models import Signal, Data
 
 FIELDS = [
     'signal_choice',
@@ -22,6 +22,23 @@ class SignalForm(forms.ModelForm):
         self.request = kwargs.pop('request', None)
         self.job = kwargs.pop('job', None)
         super(SignalForm, self).__init__(*args, **kwargs)
+
+        # checking the data_choice to decide whether skip should be there
+        show_skip = True
+        if self.job:
+            try:
+                data = Data.objects.get(job=self.job)
+                if data.data_choice != Data.OPEN_DATA:
+                    show_skip = False
+            except Data.DoesNotExist:
+                pass
+
+        self.fields['signal_choice'] = forms.ChoiceField(
+            choices=Signal.SIGNAL_CHOICES[1:] if not show_skip else Signal.SIGNAL_CHOICES,
+            widget=forms.Select(
+                attrs={'class': 'form-control'},
+            )
+        )
 
     class Meta:
         model = Signal
