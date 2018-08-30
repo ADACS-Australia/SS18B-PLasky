@@ -22,6 +22,7 @@
 }
 
 .job-json textarea, .job-json textarea:focus {
+    padding: 10px;
     width:100%;
     border: none;
     overflow: auto;
