@@ -3,9 +3,32 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 
+from ...models import (
+    Signal,
+    Job,
+)
+
 from ...utility.job import TupakJob
-from ...utility.constants import *
-from ...utility.job_utils import *
+from ...utility.constants import (
+    START,
+    DATA,
+    DATA_OPEN,
+    DATA_SIMULATED,
+    SIGNAL,
+    SIGNAL_PARAMETER_BBH,
+    PRIOR,
+    PRIOR_FIXED,
+    PRIOR_UNIFORM,
+    SAMPLER,
+    SAMPLER_DYNESTY,
+    SAMPLER_NESTLE,
+    SAMPLER_EMCEE,
+    MODELS,
+    FORMS_NEW,
+    TAB_FORMS,
+    TABS,
+    TABS_INDEXES,
+)
 
 
 def get_to_be_active_tab(active_tab, previous=False, job=None):
