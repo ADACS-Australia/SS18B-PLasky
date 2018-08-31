@@ -100,6 +100,15 @@ class DynamicForm(forms.Form):
                     validators=properties.get('validators', ()),
                 )
 
+            elif properties.get('type') == SELECT:
+                self.fields[name] = get_select_input(
+                    label=properties.get('label', name),
+                    initial=properties.get('initial', None),
+                    # required=properties.get('required', False),
+                    # validators=properties.get('validators', ()),
+                    choices=properties.get('choices'),
+                )
+
             elif properties.get('type') == MULTIPLE_CHOICES:
                 self.fields[name] = get_multiple_choices_input(
                     label=properties.get('label', name),

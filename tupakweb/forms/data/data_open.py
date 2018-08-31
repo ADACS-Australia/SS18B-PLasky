@@ -2,11 +2,8 @@ import ast
 
 from collections import OrderedDict
 
-from django import forms
-from django.utils.translation import ugettext_lazy as _
-
 from tupakweb.forms.dynamic import field
-from ...models import Job, DataParameter, Data
+from ...models import DataParameter, Data
 from ..dynamic.form import DynamicForm
 
 
@@ -19,9 +16,6 @@ DETECTOR_CHOICES = [
     (LIVINGSTON, 'Livingston'),
     (VIRGO, 'Virgo'),
 ]
-
-detectors = forms.MultipleChoiceField(choices=DETECTOR_CHOICES)
-
 
 DATA_FIELDS_PROPERTIES = OrderedDict([
     ('detector_choice', {
