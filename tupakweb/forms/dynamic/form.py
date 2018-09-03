@@ -107,6 +107,7 @@ class DynamicForm(forms.Form):
                     # required=properties.get('required', False),
                     # validators=properties.get('validators', ()),
                     choices=properties.get('choices'),
+                    extra_class=properties.get('extra_class', None),
                 )
 
             elif properties.get('type') == MULTIPLE_CHOICES:

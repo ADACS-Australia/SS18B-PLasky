@@ -15,6 +15,7 @@ def prior_type_field(field_name, field_value):
         'label': 'Type',
         'type': SELECT,
         'choices': PRIOR_TYPES,
+        'extra_class': 'prior-type',
     })
     return name + '_type', value
 

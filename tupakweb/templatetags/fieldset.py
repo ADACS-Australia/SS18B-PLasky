@@ -37,6 +37,12 @@ from collections import OrderedDict
 register = template.Library()
 
 
+@register.filter(name='uniform')
+def uniform(value):
+    index = value.rfind('_')
+    return 'div-' + value[:(index+1)] + 'uniform'
+
+
 def get_fieldset(parser, token):
     try:
         args = token.split_contents()
