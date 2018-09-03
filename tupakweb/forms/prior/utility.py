@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from ...models import Signal, Prior
+from ...models import Signal, Prior, SignalParameter
 
 from ..dynamic.field import SELECT
 from ..signal.signal_parameter import BBH_FIELDS_PROPERTIES
@@ -20,12 +20,21 @@ def prior_type_field(field_name, field_value):
     return name + '_type', value
 
 
-def prior_fixed_field(field_name, field_value):
+def prior_fixed_field(field_name, field_value, signal=None):
     name = field_name
     value = field_value.copy()
 
+    initial = None
+
+    if signal:
+        try:
+            initial = SignalParameter.objects.get(signal=signal, name=name).value
+        except SignalParameter.DoesNotExist:
+            pass
+
     value.update({
         'label': 'Value',
+        'initial': initial,
     })
     return name + '_fixed', value
 
@@ -50,10 +59,10 @@ def prior_max_field(field_name, field_value):
     return name + '_max', value
 
 
-def get_field_properties_by_signal_choice(signal_choice):
+def get_field_properties_by_signal_choice(signal):
     field_properties = OrderedDict()
     fieldsets = dict()
-    if signal_choice == Signal.BINARY_BLACK_HOLE:
+    if signal.signal_choice == Signal.BINARY_BLACK_HOLE:
         for name, value in BBH_FIELDS_PROPERTIES.items():
             fieldset_fields = []
             # setting up the type field
@@ -65,7 +74,7 @@ def get_field_properties_by_signal_choice(signal_choice):
             fieldset_fields.append(name_for_field)
 
             # setting up the fixed value field
-            name_for_field, value_for_filed = prior_fixed_field(name, value)
+            name_for_field, value_for_filed = prior_fixed_field(name, value, signal)
             field_properties.update({
                 name_for_field: value_for_filed,
             })

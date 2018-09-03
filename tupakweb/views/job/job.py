@@ -86,8 +86,7 @@ def generate_forms(job=None, request=None, forms=None):
     if job:
         for model in MODELS:
 
-            if model in [PRIOR, PRIOR_FIXED, PRIOR_UNIFORM, SAMPLER_DYNESTY,
-                         SAMPLER_NESTLE, SAMPLER_EMCEE]:
+            if model in [SAMPLER_DYNESTY, SAMPLER_NESTLE, SAMPLER_EMCEE]:
                 continue
 
             try:
@@ -228,8 +227,6 @@ def new_job(request):
             'signal_form': forms[SIGNAL],
             'signal_parameter_bbh_form': forms[SIGNAL_PARAMETER_BBH],
             'prior_form': forms[PRIOR],
-            'prior_uniform_form': forms[PRIOR_UNIFORM],
-            'prior_fixed_form': forms[PRIOR_FIXED],
             'sampler_form': forms[SAMPLER],
             'sampler_dynesty_form': forms[SAMPLER_DYNESTY],
 

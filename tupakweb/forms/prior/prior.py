@@ -38,7 +38,7 @@ class PriorForm(DynamicForm):
         else:
             try:
                 signal = Signal.objects.get(job=self.job)
-                self.fieldsets, field_properties = get_field_properties_by_signal_choice(signal.signal_choice)
+                self.fieldsets, field_properties = get_field_properties_by_signal_choice(signal)
                 return field_properties
             except Signal.DoesNotExist:
                 return OrderedDict()
@@ -50,10 +50,11 @@ class PriorForm(DynamicForm):
         labels = LABELS
 
     def save(self, **kwargs):
-        self.full_clean()
-        data = self.cleaned_data
-
-        result = Prior.objects.create(
-            job=self.job,
-            prior_choice=data.get('prior_choice'),
-        )
+        # self.full_clean()
+        # data = self.cleaned_data
+        #
+        # result = Prior.objects.create(
+        #     job=self.job,
+        #     prior_choice=data.get('prior_choice'),
+        # )
+        pass

@@ -1,6 +1,8 @@
 <form action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
+    <input type="hidden" name="form-tab" value="prior"/>
+
     {% include 'tupakweb/job/snippets/errors.html' %}
 
     {% for fieldset_name, fields in prior_form.fieldsets.items %}

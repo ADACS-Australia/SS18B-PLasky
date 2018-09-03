@@ -77,6 +77,7 @@ TAB_FORMS = {
     START: [START],
     DATA: [DATA, DATA_SIMULATED, DATA_OPEN, ],
     SIGNAL: [SIGNAL, SIGNAL_PARAMETER_BBH, ],
+    PRIOR: [PRIOR, ],
 }
 
 # BLOCKS = [
@@ -104,8 +105,8 @@ FORMS_NEW = {
     SIGNAL: SignalForm,
     SIGNAL_PARAMETER_BBH: SignalParameterBbhForm,
     PRIOR: PriorForm,
-    PRIOR_FIXED: PriorFixedForm,
-    PRIOR_UNIFORM: PriorUniformForm,
+    # PRIOR_FIXED: PriorFixedForm,
+    # PRIOR_UNIFORM: PriorUniformForm,
     SAMPLER: SamplerForm,
     SAMPLER_DYNESTY: SamplerDynestyForm,
     SAMPLER_EMCEE: SamplerEmceeForm,
@@ -115,9 +116,9 @@ MODELS = {
     START: Job,
     DATA: Data,
     SIGNAL: Signal,
-    PRIOR: Prior,
-    PRIOR_FIXED: PriorFixed,
-    PRIOR_UNIFORM: PriorUniform,
+    # PRIOR: Prior,
+    # PRIOR_FIXED: PriorFixed,
+    # PRIOR_UNIFORM: PriorUniform,
     SAMPLER: Sampler,
     SAMPLER_DYNESTY: SamplerDynesty,
     SAMPLER_EMCEE: SamplerEmcee,
