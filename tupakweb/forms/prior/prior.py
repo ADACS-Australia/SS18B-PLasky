@@ -23,6 +23,8 @@ LABELS = {
 
 
 class PriorForm(DynamicForm):
+    fieldsets = None
+
     def __init__(self, *args, **kwargs):
         kwargs['name'] = 'prior'
         self.job = kwargs.pop('job', None)
@@ -36,7 +38,8 @@ class PriorForm(DynamicForm):
         else:
             try:
                 signal = Signal.objects.get(job=self.job)
-                return get_field_properties_by_signal_choice(signal.signal_choice)
+                self.fieldsets, field_properties = get_field_properties_by_signal_choice(signal.signal_choice)
+                return field_properties
             except Signal.DoesNotExist:
                 return OrderedDict()
 

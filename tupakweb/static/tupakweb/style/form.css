@@ -51,3 +51,18 @@
 .download-json div {
     margin: 5px;
 }
+
+/******************/
+/* PRIOR FIELDSET */
+/******************/
+.fieldset-name {
+    padding: 0 0 10px 0;
+    margin: 20px -5px 15px;
+    border-bottom: 1px dotted darksalmon;
+    color: darkslategray;
+    font-style: italic;
+}
+
+/******************/
+/* END FIELDSET */
+/******************/

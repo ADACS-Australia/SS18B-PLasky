@@ -12,7 +12,7 @@ def prior_type_field(field_name, field_value):
     name = field_name
     value = field_value.copy()
     value.update({
-        'label': value.get('label') + ' type',
+        'label': 'Type',
         'type': SELECT,
         'choices': PRIOR_TYPES,
     })
@@ -24,7 +24,7 @@ def prior_fixed_field(field_name, field_value):
     value = field_value.copy()
 
     value.update({
-        'label': 'Fixed',
+        'label': 'Value',
     })
     return name + '_fixed', value
 
@@ -51,30 +51,44 @@ def prior_max_field(field_name, field_value):
 
 def get_field_properties_by_signal_choice(signal_choice):
     field_properties = OrderedDict()
+    fieldsets = dict()
     if signal_choice == Signal.BINARY_BLACK_HOLE:
         for name, value in BBH_FIELDS_PROPERTIES.items():
+            fieldset_fields = []
             # setting up the type field
-            name_for_type, value_for_type = prior_type_field(name, value)
+            name_for_field, value_for_filed = prior_type_field(name, value)
             field_properties.update({
-                name_for_type: value_for_type,
+                name_for_field: value_for_filed,
             })
+
+            fieldset_fields.append(name_for_field)
 
             # setting up the fixed value field
-            name_for_fixed, value_for_fixed = prior_fixed_field(name, value)
+            name_for_field, value_for_filed = prior_fixed_field(name, value)
             field_properties.update({
-                name_for_fixed: value_for_fixed,
+                name_for_field: value_for_filed,
             })
+
+            fieldset_fields.append(name_for_field)
 
             # setting up the min value field
-            name_for_min, value_for_min = prior_min_field(name, value)
+            name_for_field, value_for_filed = prior_min_field(name, value)
             field_properties.update({
-                name_for_min: value_for_min,
+                name_for_field: value_for_filed,
             })
+
+            fieldset_fields.append(name_for_field)
 
             # setting up the max value field
-            name_for_max, value_for_max = prior_max_field(name, value)
+            name_for_field, value_for_filed = prior_max_field(name, value)
             field_properties.update({
-                name_for_max: value_for_max,
+                name_for_field: value_for_filed,
             })
 
-        return field_properties
+            fieldset_fields.append(name_for_field)
+
+            fieldsets.update({
+                BBH_FIELDS_PROPERTIES.get(name).get('label'): fieldset_fields,
+            })
+
+        return fieldsets, field_properties
