@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.db import models
-from django.core.validators import MinValueValidator
 
 
 class Job(models.Model):
@@ -32,6 +31,7 @@ class Job(models.Model):
     creation_time = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now_add=True)
     submission_time = models.DateTimeField(null=True, blank=True)
+    json_representation = models.TextField(null=True, blank=True)
 
     class Meta:
         unique_together = (
@@ -144,6 +144,8 @@ class SignalParameter(models.Model):
 
 
 class Prior(models.Model):
+    signal_parameter = models.ForeignKey(SignalParameter, on_delete=models.CASCADE,
+                                         related_name='signal_parameter_prior')
     FIXED = 'fixed'
     UNIFORM = 'uniform'
     CHOICES = [
@@ -151,17 +153,9 @@ class Prior(models.Model):
         (UNIFORM, 'Uniform'),
     ]
     prior_choice = models.CharField(max_length=20, choices=CHOICES, default=FIXED, blank=True)
-
-
-class PriorFixed(models.Model):
-    prior = models.OneToOneField(Prior, related_name='prior_prior_fixed', on_delete=models.CASCADE)
-    value = models.FloatField(null=True)
-
-
-class PriorUniform(models.Model):
-    prior = models.OneToOneField(Prior, related_name='prior_prior_uniform', on_delete=models.CASCADE)
-    value_min = models.FloatField(null=True)
-    value_max = models.FloatField(null=True)
+    fixed_value = models.FloatField(blank=True, null=True)
+    uniform_min_value = models.FloatField(blank=True, null=True)
+    uniform_max_value = models.FloatField(blank=True, null=True)
 
 
 class Sampler(models.Model):

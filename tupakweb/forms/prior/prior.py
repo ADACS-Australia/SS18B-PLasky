@@ -45,7 +45,6 @@ class PriorForm(DynamicForm):
 
     def update_fields_to_required(self):
         for field_name in self.fields:
-            # print(self.fields[field_name].name, self.fields[field_name].required)
             self.fields[field_name].required = True
 
     def clean(self):
@@ -60,8 +59,6 @@ class PriorForm(DynamicForm):
                 try:
                     if float(min_data) >= float(max_data):
                         error_msg = forms.ValidationError("Must be less than Max")
-                        # field_name = field_classifications.get('min_field')
-                        # field = self.fields[field_name]
                         self.add_error(field_classifications.get('min_field'), error_msg)
                         error_msg = forms.ValidationError("Must greater than Min")
                         self.add_error(field_classifications.get('max_field'), error_msg)

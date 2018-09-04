@@ -7,8 +7,6 @@ from .models import (
     Signal,
     SignalParameter,
     Prior,
-    PriorFixed,
-    PriorUniform,
     Sampler,
     SamplerDynesty,
     SamplerEmcee,
@@ -16,9 +14,6 @@ from .models import (
 )
 
 # Register your models here.
-admin.site.register(Prior)
-admin.site.register(PriorFixed)
-admin.site.register(PriorUniform)
 admin.site.register(Sampler)
 admin.site.register(SamplerDynesty)
 admin.site.register(SamplerEmcee)
@@ -27,13 +22,13 @@ admin.site.register(SamplerNestle)
 
 @admin.register(Job)
 class Job(admin.ModelAdmin):
-    list_display = ('name', 'description', 'status', 'user', )
+    list_display = ('name', 'description', 'status', 'user',)
     search_fields = ['name', 'description', 'user__username', 'user__first_name', 'user__last_name', ]
 
 
 @admin.register(Data)
 class Data(admin.ModelAdmin):
-    list_display = ('job', 'data_choice', )
+    list_display = ('job', 'data_choice',)
     search_fields = ['job__name', 'data_choice', ]
 
 
@@ -57,7 +52,7 @@ class DataParameter(admin.ModelAdmin):
 
 @admin.register(Signal)
 class Signal(admin.ModelAdmin):
-    list_display = ('job', 'signal_choice', )
+    list_display = ('job', 'signal_choice',)
     search_fields = ['job__name', 'signal_choice', ]
 
 
@@ -74,6 +69,25 @@ class SignalParameter(admin.ModelAdmin):
 
     def get_signal(self, obj):
         return obj.signal.signal_choice
+
+    get_signal.admin_order_field = 'signal'  # Allows column order sorting
+    get_signal.short_description = 'Signal'  # Renames column head
+
+
+@admin.register(Prior)
+class Prior(admin.ModelAdmin):
+    list_display = ('get_job', 'get_signal', 'signal_parameter', 'prior_choice', 'fixed_value', 'uniform_min_value',
+                    'uniform_max_value')
+    search_fields = ['signal_parameter', 'get_signal', 'get_job']
+
+    def get_job(self, obj):
+        return obj.signal_parameter.signal.job.name
+
+    get_job.admin_order_field = 'signal__job'  # Allows column order sorting
+    get_job.short_description = 'Job'  # Renames column head
+
+    def get_signal(self, obj):
+        return obj.signal_parameter.signal.signal_choice
 
     get_signal.admin_order_field = 'signal'  # Allows column order sorting
     get_signal.short_description = 'Signal'  # Renames column head
