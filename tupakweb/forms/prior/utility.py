@@ -8,6 +8,29 @@ from ..signal.signal_parameter import BBH_FIELDS_PROPERTIES
 PRIOR_TYPES = Prior.CHOICES
 
 
+def classify_fields(field_names):
+    field_classifications = dict()
+    for field_name in field_names:
+        if field_name.endswith('_type'):
+            field_classifications.update({
+                'type_field': field_name
+            })
+        elif field_name.endswith('_fixed'):
+            field_classifications.update({
+                'fixed_field': field_name
+            })
+        elif field_name.endswith('_min'):
+            field_classifications.update({
+                'min_field': field_name
+            })
+        elif field_name.endswith('_max'):
+            field_classifications.update({
+                'max_field': field_name
+            })
+
+    return field_classifications
+
+
 def prior_type_field(field_name, field_value):
     name = field_name
     value = field_value.copy()
@@ -16,6 +39,7 @@ def prior_type_field(field_name, field_value):
         'type': SELECT,
         'choices': PRIOR_TYPES,
         'extra_class': 'prior-type',
+        'required': False,
     })
     return name + '_type', value
 
@@ -35,6 +59,7 @@ def prior_fixed_field(field_name, field_value, signal=None):
     value.update({
         'label': 'Value',
         'initial': initial,
+        'required': False,
     })
     return name + '_fixed', value
 
@@ -45,6 +70,7 @@ def prior_min_field(field_name, field_value):
 
     value.update({
         'label': 'Min',
+        'required': False,
     })
     return name + '_min', value
 
@@ -55,6 +81,7 @@ def prior_max_field(field_name, field_value):
 
     value.update({
         'label': 'Max',
+        'required': False,
     })
     return name + '_max', value
 
