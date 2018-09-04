@@ -67,7 +67,7 @@ class PriorForm(DynamicForm):
                     if float(min_data) >= float(max_data):
                         error_msg = forms.ValidationError("Must be less than Max")
                         self.add_error(field_classifications.get('min_field'), error_msg)
-                        error_msg = forms.ValidationError("Must greater than Min")
+                        error_msg = forms.ValidationError("Must be greater than Min")
                         self.add_error(field_classifications.get('max_field'), error_msg)
                 except TypeError:
                     pass

@@ -1,5 +1,4 @@
-import os
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 
@@ -17,8 +16,6 @@ from ...utility.constants import (
     SIGNAL,
     SIGNAL_PARAMETER_BBH,
     PRIOR,
-    PRIOR_FIXED,
-    PRIOR_UNIFORM,
     SAMPLER,
     SAMPLER_DYNESTY,
     SAMPLER_NESTLE,
@@ -77,8 +74,6 @@ def generate_forms(job=None, request=None, forms=None):
             SIGNAL: None,
             SIGNAL_PARAMETER_BBH: None,
             PRIOR: None,
-            PRIOR_FIXED: None,
-            PRIOR_UNIFORM: None,
             SAMPLER: None,
             SAMPLER_DYNESTY: None,
         }
