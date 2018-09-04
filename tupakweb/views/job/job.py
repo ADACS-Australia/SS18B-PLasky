@@ -111,6 +111,7 @@ def generate_forms(job=None, request=None, forms=None):
         forms[DATA_OPEN].update_from_database(job=job)
         forms[DATA_SIMULATED].update_from_database(job=job)
         forms[SIGNAL_PARAMETER_BBH].update_from_database(job=job)
+        forms[PRIOR].update_from_database(job=job)
 
         # because of too much dynamic nature, fields are by default set as non-required
         # once everything is processed with the form, all the fields are marked as required
@@ -118,10 +119,7 @@ def generate_forms(job=None, request=None, forms=None):
         # Using dynamic form for each prior
         # then use the same approach for job to decide which forms are going to be saved
         # the rest of the forms should be returned as initial
-        try:
-            forms[PRIOR].update_fields_to_required()
-        except KeyError:
-            pass
+        forms[PRIOR].update_fields_to_required()
 
     return forms
 

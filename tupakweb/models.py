@@ -113,6 +113,9 @@ class Signal(models.Model):
 
     signal_choice = models.CharField(max_length=50, choices=SIGNAL_CHOICES, default=SKIP)
 
+    def __str__(self):
+        return '{} - ({}[{}])'.format(self.signal_choice, self.job.name, self.job.user.username)
+
 
 class SignalParameter(models.Model):
     signal = models.ForeignKey(Signal, related_name='signal_signal_parameter', on_delete=models.CASCADE)
@@ -141,6 +144,9 @@ class SignalParameter(models.Model):
 
     name = models.CharField(max_length=20, choices=NAME_CHOICES, blank=False, null=False)
     value = models.FloatField(null=True, blank=True)
+
+    def __str__(self):
+        return '{}: {} ({})'.format(self.name, self.value, self.signal)
 
 
 class Prior(models.Model):

@@ -15,6 +15,10 @@ def classify_fields(field_names):
             field_classifications.update({
                 'type_field': field_name
             })
+            index = field_name.rfind('_')
+            field_classifications.update({
+                'signal_parameter_name': field_name[:index],
+            })
         elif field_name.endswith('_fixed'):
             field_classifications.update({
                 'fixed_field': field_name

@@ -4,8 +4,15 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from ..dynamic.form import DynamicForm
-from ...models import Job, Prior, Signal
-from .utility import get_field_properties_by_signal_choice, classify_fields
+from ...models import (
+    Prior,
+    Signal,
+    SignalParameter,
+)
+from .utility import (
+    get_field_properties_by_signal_choice,
+    classify_fields,
+)
 
 FIELDS = [
     'prior_choice',
@@ -71,12 +78,50 @@ class PriorForm(DynamicForm):
         widgets = WIDGETS
         labels = LABELS
 
-    def save(self, **kwargs):
-        # self.full_clean()
-        # data = self.cleaned_data
-        #
-        # result = Prior.objects.create(
-        #     job=self.job,
-        #     prior_choice=data.get('prior_choice'),
-        # )
-        pass
+    def save(self):
+        self.full_clean()
+        data = self.cleaned_data
+
+        for fieldset_fields in self.fieldsets.values():
+            field_classifications = classify_fields(fieldset_fields)
+
+            # get signal parameter
+            signal_parameter = SignalParameter.objects.get(
+                signal__job=self.job,
+                name=field_classifications.get('signal_parameter_name')
+            )
+
+            prior_choice = data.get(field_classifications.get('type_field'))
+
+            Prior.objects.update_or_create(
+                signal_parameter=signal_parameter,
+                defaults={
+                    'prior_choice': prior_choice,
+                    'fixed_value': data.get(
+                        field_classifications.get('fixed_field')) if prior_choice == Prior.FIXED else None,
+                    'uniform_min_value': data.get(
+                        field_classifications.get('min_field')) if prior_choice == Prior.UNIFORM else None,
+                    'uniform_max_value': data.get(
+                        field_classifications.get('max_field')) if prior_choice == Prior.UNIFORM else None,
+                },
+            )
+
+    def update_from_database(self, job):
+        if not job:
+            return
+
+        for fieldset_fields in self.fieldsets.values():
+            field_classifications = classify_fields(fieldset_fields)
+
+            # get prior
+            prior = Prior.objects.get(
+                signal_parameter=SignalParameter.objects.get(
+                    signal__job=self.job,
+                    name=field_classifications.get('signal_parameter_name')
+                ),
+            )
+
+            self.fields[field_classifications.get('type_field')].initial = prior.prior_choice
+            self.fields[field_classifications.get('fixed_field')].initial = prior.fixed_value
+            self.fields[field_classifications.get('min_field')].initial = prior.uniform_min_value
+            self.fields[field_classifications.get('max_field')].initial = prior.uniform_max_value
