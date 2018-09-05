@@ -55,6 +55,8 @@ class PriorForm(DynamicForm):
             self.fields[field_name].required = True
 
     def clean(self):
+        if not self.fieldsets:
+            return
         data = self.cleaned_data
         for fieldset_fields in self.fieldsets.values():
             field_classifications = classify_fields(fieldset_fields)
@@ -81,6 +83,9 @@ class PriorForm(DynamicForm):
     def save(self):
         self.full_clean()
         data = self.cleaned_data
+
+        if not self.fieldsets:
+            return
 
         for fieldset_fields in self.fieldsets.values():
             field_classifications = classify_fields(fieldset_fields)
