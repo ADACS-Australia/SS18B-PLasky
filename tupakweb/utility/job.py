@@ -5,7 +5,9 @@ from ..models import (
     Data,
     Signal,
     SignalParameter,
-    DataParameter)
+    DataParameter,
+    Prior,
+)
 
 from ..forms.signal.signal_parameter import BBH_FIELDS_PROPERTIES
 from ..forms.data.data_open import DATA_FIELDS_PROPERTIES as OPEN_DATA_FIELDS_PROPERTIES
@@ -19,6 +21,7 @@ class TupakJob(object):
     data_parameters = None
     signal = None
     signal_parameters = None
+    priors = None
 
     def __init__(self, job_id):
         # populating data tab information
@@ -45,10 +48,21 @@ class TupakJob(object):
             pass
         else:
             self.signal_parameters = []
+            self.priors = []
             # finding the correct signal parameters for the signal type
             all_signal_parameters = SignalParameter.objects.filter(signal=self.signal)
             for name in BBH_FIELDS_PROPERTIES.keys():
                 self.signal_parameters.append(all_signal_parameters.get(name=name))
+
+            # populating prior
+            for signal_parameter in all_signal_parameters:
+                try:
+                    prior = Prior.objects.get(signal_parameter=signal_parameter)
+                    self.priors.append(prior)
+                except Prior.DoesNotExist:
+                    # this can happen when user just filled up the signal parameters
+                    # yet to fill up the prior form
+                    pass
 
         self.as_json()
 
@@ -83,11 +97,33 @@ class TupakJob(object):
                     signal_parameter.name: signal_parameter.value,
                 })
 
+        # prior dict
+        priors_dict = dict()
+        if self.priors:
+            for prior in self.priors:
+                prior_dict = dict()
+                prior_dict.update({
+                    'type': prior.prior_choice,
+                })
+                if prior.prior_choice == Prior.FIXED:
+                    prior_dict.update({
+                        'value': prior.fixed_value,
+                    })
+                elif prior.prior_choice == Prior.UNIFORM:
+                    prior_dict.update({
+                        'min': prior.uniform_min_value,
+                        'max': prior.uniform_max_value,
+                    })
+                priors_dict.update({
+                    prior.signal_parameter.name: prior_dict,
+                })
+
         json_dict = dict(
             name=self.job.name,
             description=self.job.description,
             data=data_dict,
             signal=signal_dict,
+            priors=priors_dict,
         )
 
         return json.dumps(json_dict, indent=4)

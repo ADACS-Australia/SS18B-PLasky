@@ -107,7 +107,7 @@ class PriorForm(DynamicForm):
             )
 
     def update_from_database(self, job):
-        if not job:
+        if not job or not self.fieldsets:
             return
 
         for fieldset_fields in self.fieldsets.values():

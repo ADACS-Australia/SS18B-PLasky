@@ -69,6 +69,28 @@
                 </div>
             </div>
         {% endif %}
+        {% if drafted_job.priors %}
+            <div class="card">
+                <div class="card-header" id="headingPrior">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapsePrior"
+                                aria-expanded="true" aria-controls="collapseTwo">
+                            Priors
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapsePrior" class="collapse" aria-labelledby="headingPrior" data-parent="#accordion">
+                    <div class="card-body">
+                        {% for prior in drafted_job.priors %}
+                            <div class="info-job info-heading">{{ prior.signal_parameter.name }}</div>
+                            <div class="info-job info-content text-justify">
+                            {{ prior.prior_choice }}: {{ prior.get_display_value }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     </div>
 {% else %}
     <div id="accordion">

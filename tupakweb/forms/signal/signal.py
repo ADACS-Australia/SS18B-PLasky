@@ -53,6 +53,9 @@ class SignalForm(forms.ModelForm):
         signal_choice = data.get('signal_choice')
 
         if signal_choice == Signal.SKIP:
+            # signal should be deleted if there is a change of choice
+            # currently as there is only one available, it does not
+            # have any adverse effect.
             Signal.objects.filter(job=self.job).delete()
         else:
             Signal.objects.update_or_create(

@@ -163,6 +163,12 @@ class Prior(models.Model):
     uniform_min_value = models.FloatField(blank=True, null=True)
     uniform_max_value = models.FloatField(blank=True, null=True)
 
+    def get_display_value(self):
+        if self.prior_choice == self.FIXED:
+            return '{}'.format(self.fixed_value)
+        elif self.prior_choice == self.UNIFORM:
+            return '[{}, {}]'.format(self.uniform_min_value, self.uniform_max_value)
+
 
 class Sampler(models.Model):
     job = models.OneToOneField(Job, related_name='job_sampler', on_delete=models.CASCADE)
