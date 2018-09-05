@@ -1,31 +1,24 @@
 from django.conf import settings
 from django.db import models
 
+from .utility.display_names import *
+
 
 class Job(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_job', on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=False, null=False)
     description = models.TextField(blank=True, null=True)
 
-    DRAFT = 'Draft'
-    SUBMITTED = 'Submitted'
-    QUEUED = 'Queued'
-    IN_PROGRESS = 'In Progress'
-    COMPLETED = 'Completed'
-    ERROR = 'Error'
-    SAVED = 'Saved'
-    WALL_TIME_EXCEEDED = 'Wall Time Exceeded'
-    DELETED = 'Deleted'
     STATUS_CHOICES = [
-        (DRAFT, DRAFT),
-        (SUBMITTED, SUBMITTED),
-        (QUEUED, QUEUED),
-        (IN_PROGRESS, IN_PROGRESS),
-        (COMPLETED, COMPLETED),
-        (ERROR, ERROR),
-        (SAVED, SAVED),
-        (WALL_TIME_EXCEEDED, WALL_TIME_EXCEEDED),
-        (DELETED, DELETED),
+        (DRAFT, DRAFT_DISPLAY),
+        (SUBMITTED, SUBMITTED_DISPLAY),
+        (QUEUED, QUEUED_DISPLAY),
+        (IN_PROGRESS, IN_PROGRESS_DISPLAY),
+        (COMPLETED, COMPLETED_DISPLAY),
+        (ERROR, ERROR_DISPLAY),
+        (SAVED, SAVED_DISPLAY),
+        (WALL_TIME_EXCEEDED, WALL_TIME_EXCEEDED_DISPLAY),
+        (DELETED, DELETED_DISPLAY),
     ]
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, blank=False, default=DRAFT)
     creation_time = models.DateTimeField(auto_now_add=True)
@@ -68,12 +61,9 @@ def user_job_result_files_directory_path(instance, filename):
 class Data(models.Model):
     job = models.OneToOneField(Job, related_name='job_data', on_delete=models.CASCADE)
 
-    SIMULATED_DATA = 'simulated'
-    OPEN_DATA = 'open'
-
     DATA_CHOICES = [
-        (SIMULATED_DATA, 'Simulated data'),
-        (OPEN_DATA, 'Open data'),
+        (SIMULATED_DATA, SIMULATED_DATA_DISPLAY),
+        (OPEN_DATA, OPEN_DATA_DISPLAY),
     ]
 
     data_choice = models.CharField(max_length=20, choices=DATA_CHOICES, default=SIMULATED_DATA)
@@ -103,12 +93,9 @@ class DataParameter(models.Model):
 class Signal(models.Model):
     job = models.OneToOneField(Job, related_name='job_signal', on_delete=models.CASCADE)
 
-    SKIP = 'skip'
-    BINARY_BLACK_HOLE = "binary_black_hole"
-
     SIGNAL_CHOICES = [
-        (SKIP, 'None'),
-        (BINARY_BLACK_HOLE, 'Binary Black Hole'),
+        (SKIP, SKIP_DISPLAY),
+        (BINARY_BLACK_HOLE, BINARY_BLACK_HOLE_DISPLAY),
     ]
 
     signal_choice = models.CharField(max_length=50, choices=SIGNAL_CHOICES, default=SKIP)
@@ -120,26 +107,16 @@ class Signal(models.Model):
 class SignalParameter(models.Model):
     signal = models.ForeignKey(Signal, related_name='signal_signal_parameter', on_delete=models.CASCADE)
 
-    MASS1 = 'mass_1'
-    MASS2 = 'mass_2'
-    LUMINOSITY_DISTANCE = 'luminosity_distance'
-    IOTA = 'iota'
-    PSI = 'psi'
-    PHASE = 'phase'
-    MERGER_TIME = 'merger_time'
-    RA = 'ra'
-    DEC = 'dec'
-
     NAME_CHOICES = [
-        (MASS1, 'Mass 1 (M☉)'),
-        (MASS2, 'Mass 2 (M☉)'),
-        (LUMINOSITY_DISTANCE, 'Luminosity distance (Mpc)'),
-        (IOTA, 'iota'),
-        (PSI, 'psi'),
-        (PHASE, 'Phase'),
-        (MERGER_TIME, 'Merger time (GPS time)'),
-        (RA, 'Right ascension'),
-        (DEC, 'Declination'),
+        (MASS1, MASS1_DISPLAY),
+        (MASS2, MASS2_DISPLAY),
+        (LUMINOSITY_DISTANCE, LUMINOSITY_DISTANCE_DISPLAY),
+        (IOTA, IOTA_DISPLAY),
+        (PSI, PSI_DISPLAY),
+        (PHASE, PHASE_DISPLAY),
+        (MERGER_TIME, MERGER_TIME_DISPLAY),
+        (RA, RA_DISPLAY),
+        (DEC, DEC_DISPLAY),
     ]
 
     name = models.CharField(max_length=20, choices=NAME_CHOICES, blank=False, null=False)
@@ -152,11 +129,9 @@ class SignalParameter(models.Model):
 class Prior(models.Model):
     signal_parameter = models.ForeignKey(SignalParameter, on_delete=models.CASCADE,
                                          related_name='signal_parameter_prior')
-    FIXED = 'fixed'
-    UNIFORM = 'uniform'
     CHOICES = [
-        (FIXED, 'Fixed'),
-        (UNIFORM, 'Uniform'),
+        (FIXED, FIXED_DISPLAY),
+        (UNIFORM, UNIFORM_DISPLAY),
     ]
     prior_choice = models.CharField(max_length=20, choices=CHOICES, default=FIXED, blank=True)
     fixed_value = models.FloatField(blank=True, null=True)
@@ -164,23 +139,19 @@ class Prior(models.Model):
     uniform_max_value = models.FloatField(blank=True, null=True)
 
     def get_display_value(self):
-        if self.prior_choice == self.FIXED:
+        if self.prior_choice == FIXED:
             return '{}'.format(self.fixed_value)
-        elif self.prior_choice == self.UNIFORM:
+        elif self.prior_choice == UNIFORM:
             return '[{}, {}]'.format(self.uniform_min_value, self.uniform_max_value)
 
 
 class Sampler(models.Model):
     job = models.OneToOneField(Job, related_name='job_sampler', on_delete=models.CASCADE)
 
-    DYNESTY = 'dynesty'
-    NESTLE = 'nestle'
-    EMCEE = 'emcee'
-
     SAMPLER_CHOICES = [
-        (DYNESTY, 'Dynesty'),
-        (NESTLE, 'Nestle'),
-        (EMCEE, 'Emcee'),
+        (DYNESTY, DYNESTY_DISPLAY),
+        (NESTLE, NESTLE_DISPLAY),
+        (EMCEE, EMCEE_DISPLAY),
     ]
 
     sampler_choice = models.CharField(max_length=15, choices=SAMPLER_CHOICES, default=DYNESTY)

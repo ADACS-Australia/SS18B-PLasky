@@ -2,6 +2,7 @@ import ast
 
 from collections import OrderedDict
 
+from ...utility.display_names import OPEN_DATA
 from ..dynamic import field
 from ...models import DataParameter, Data
 from ..dynamic.form import DynamicForm
@@ -76,7 +77,7 @@ class OpenDataParameterForm(DynamicForm):
         else:
             try:
                 data = Data.objects.get(job=job)
-                if data.data_choice != Data.OPEN_DATA:
+                if data.data_choice != OPEN_DATA:
                     return
             except Data.DoesNotExist:
                 return

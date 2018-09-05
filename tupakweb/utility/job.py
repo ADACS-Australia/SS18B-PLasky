@@ -1,5 +1,15 @@
 import json
 
+from ..utility.display_names import (
+    OPEN_DATA,
+    SIMULATED_DATA,
+    DYNESTY,
+    NESTLE,
+    EMCEE,
+    FIXED,
+    UNIFORM,
+)
+
 from ..models import (
     Job,
     Data,
@@ -41,10 +51,10 @@ class TupakJob(object):
             # finding the correct data parameters for the data type
             all_data_parameters = DataParameter.objects.filter(data=self.data)
 
-            if self.data.data_choice == Data.OPEN_DATA:
+            if self.data.data_choice == OPEN_DATA:
                 for name in OPEN_DATA_FIELDS_PROPERTIES.keys():
                     self.data_parameters.append(all_data_parameters.get(name=name))
-            elif self.data.data_choice == Data.SIMULATED_DATA:
+            elif self.data.data_choice == SIMULATED_DATA:
                 for name in SIMULATED_DATA_FIELDS_PROPERTIES.keys():
                     self.data_parameters.append(all_data_parameters.get(name=name))
 
@@ -81,13 +91,13 @@ class TupakJob(object):
             # finding the correct sampler parameters for the sampler type
             all_sampler_parameters = SamplerParameter.objects.filter(sampler=self.sampler)
 
-            if self.sampler.sampler_choice == Sampler.DYNESTY:
+            if self.sampler.sampler_choice == DYNESTY:
                 for name in DYNESTY_FIELDS_PROPERTIES.keys():
                     self.sampler_parameters.append(all_sampler_parameters.get(name=name))
-            elif self.sampler.sampler_choice == Sampler.NESTLE:
+            elif self.sampler.sampler_choice == NESTLE:
                 for name in NESTLE_FIELDS_PROPERTIES.keys():
                     self.sampler_parameters.append(all_sampler_parameters.get(name=name))
-            elif self.sampler.sampler_choice == Sampler.EMCEE:
+            elif self.sampler.sampler_choice == EMCEE:
                 for name in EMCEE_FIELDS_PROPERTIES.keys():
                     self.sampler_parameters.append(all_sampler_parameters.get(name=name))
 
@@ -132,11 +142,11 @@ class TupakJob(object):
                 prior_dict.update({
                     'type': prior.prior_choice,
                 })
-                if prior.prior_choice == Prior.FIXED:
+                if prior.prior_choice == FIXED:
                     prior_dict.update({
                         'value': prior.fixed_value,
                     })
-                elif prior.prior_choice == Prior.UNIFORM:
+                elif prior.prior_choice == UNIFORM:
                     prior_dict.update({
                         'min': prior.uniform_min_value,
                         'max': prior.uniform_max_value,

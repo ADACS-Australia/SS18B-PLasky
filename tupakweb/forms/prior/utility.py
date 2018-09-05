@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
-from ...models import Signal, Prior, SignalParameter
+from ...utility.display_names import BINARY_BLACK_HOLE
+from ...models import Prior, SignalParameter
 
 from ..dynamic.field import SELECT
 from ..signal.signal_parameter import BBH_FIELDS_PROPERTIES
@@ -93,7 +94,7 @@ def prior_max_field(field_name, field_value):
 def get_field_properties_by_signal_choice(signal):
     field_properties = OrderedDict()
     fieldsets = dict()
-    if signal.signal_choice == Signal.BINARY_BLACK_HOLE:
+    if signal.signal_choice == BINARY_BLACK_HOLE:
         for name, value in BBH_FIELDS_PROPERTIES.items():
             fieldset_fields = []
             # setting up the type field

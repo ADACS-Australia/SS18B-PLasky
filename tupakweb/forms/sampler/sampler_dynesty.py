@@ -1,5 +1,6 @@
 from collections import OrderedDict
 
+from ...utility.display_names import DYNESTY
 from ..dynamic import field
 from ...models import SamplerParameter, Sampler
 from ..dynamic.form import DynamicForm
@@ -42,7 +43,7 @@ class SamplerDynestyParameterForm(DynamicForm):
         else:
             try:
                 sampler = Sampler.objects.get(job=job)
-                if sampler.sampler_choice != Sampler.DYNESTY:
+                if sampler.sampler_choice != DYNESTY:
                     return
             except Sampler.DoesNotExist:
                 return

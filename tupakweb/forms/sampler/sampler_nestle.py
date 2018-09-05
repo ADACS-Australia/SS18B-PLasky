@@ -1,5 +1,6 @@
 from collections import OrderedDict
 
+from ...utility.display_names import NESTLE
 from ..dynamic import field
 from ...models import SamplerParameter, Sampler
 from ..dynamic.form import DynamicForm
@@ -42,7 +43,7 @@ class SamplerNestleParameterForm(DynamicForm):
         else:
             try:
                 sampler = Sampler.objects.get(job=job)
-                if sampler.sampler_choice != Sampler.NESTLE:
+                if sampler.sampler_choice != NESTLE:
                     return
             except Sampler.DoesNotExist:
                 return

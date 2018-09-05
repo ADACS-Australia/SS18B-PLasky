@@ -7,65 +7,76 @@ from collections import OrderedDict
 from ..dynamic.form import DynamicForm
 from ..dynamic import field
 from ...models import SignalParameter, Signal
+from ...utility.display_names import (
+    MASS1,
+    MASS2,
+    LUMINOSITY_DISTANCE,
+    IOTA,
+    PSI,
+    PHASE,
+    MERGER_TIME,
+    RA,
+    DEC,
+)
 
 BBH_FIELDS_PROPERTIES = OrderedDict([
-    (SignalParameter.MASS1, {
+    (MASS1, {
         'type': field.POSITIVE_FLOAT,
         'label': 'Mass 1 (M☉)',
         'placeholder': '2.0',
         'initial': None,
         'required': True,
     }),
-    (SignalParameter.MASS2, {
+    (MASS2, {
         'type': field.POSITIVE_FLOAT,
         'label': 'Mass 2 (M☉)',
         'placeholder': '1.0',
         'initial': None,
         'required': True,
     }),
-    (SignalParameter.LUMINOSITY_DISTANCE, {
+    (LUMINOSITY_DISTANCE, {
         'type': field.POSITIVE_FLOAT,
         'label': 'Luminosity distance (Mpc)',
         'placeholder': '2000',
         'initial': None,
         'required': True,
     }),
-    (SignalParameter.IOTA, {
+    (IOTA, {
         'type': field.ZERO_TO_PI,
         'label': 'iota',
         'placeholder': '0.4',
         'initial': None,
         'required': True,
     }),
-    (SignalParameter.PSI, {
+    (PSI, {
         'type': field.ZERO_TO_2PI,
         'label': 'psi',
         'placeholder': '2.659',
         'initial': None,
         'required': True,
     }),
-    (SignalParameter.PHASE, {
+    (PHASE, {
         'type': field.ZERO_TO_2PI,
         'label': 'phase',
         'placeholder': '1.3',
         'initial': None,
         'required': True,
     }),
-    (SignalParameter.MERGER_TIME, {
+    (MERGER_TIME, {
         'type': field.POSITIVE_FLOAT,
         'label': 'Merger time (GPS time)',
         'placeholder': '1126259642.413',
         'initial': None,
         'required': True,
     }),
-    (SignalParameter.RA, {
+    (RA, {
         'type': field.POSITIVE_FLOAT,
         'label': 'Right ascension',
         'placeholder': '1.375',
         'initial': None,
         'required': True,
     }),
-    (SignalParameter.DEC, {
+    (DEC, {
         'type': field.FLOAT,
         'label': 'Declination',
         'placeholder': '-1.2108',

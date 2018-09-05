@@ -1,5 +1,6 @@
 from collections import OrderedDict
 
+from ...utility.display_names import EMCEE
 from ..dynamic import field
 from ...models import SamplerParameter, Sampler
 from ..dynamic.form import DynamicForm
@@ -42,7 +43,7 @@ class SamplerEmceeParameterForm(DynamicForm):
         else:
             try:
                 sampler = Sampler.objects.get(job=job)
-                if sampler.sampler_choice != Sampler.EMCEE:
+                if sampler.sampler_choice != EMCEE:
                     return
             except Sampler.DoesNotExist:
                 return

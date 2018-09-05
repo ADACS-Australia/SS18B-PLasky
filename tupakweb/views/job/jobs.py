@@ -1,15 +1,16 @@
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import render, redirect
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.paginator import Paginator
 
+from ...utility.display_names import DELETED
 from ...models import Job
 
 
 @login_required
 def jobs(request):
-    my_jobs = Job.objects.filter(Q(user=request.user), ~Q(status__in=[Job.DELETED, ])).order_by('-submission_time',
-                                                                                                '-creation_time')
+    my_jobs = Job.objects.filter(Q(user=request.user), ~Q(status__in=[DELETED, ])).order_by('-submission_time',
+                                                                                            '-creation_time')
     paginator = Paginator(my_jobs, 5)
 
     page = request.GET.get('page')

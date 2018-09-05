@@ -1,5 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+
+from ...utility.display_names import OPEN_DATA, SKIP
 from ...models import Signal, Data
 
 FIELDS = [
@@ -28,7 +30,7 @@ class SignalForm(forms.ModelForm):
         if self.job:
             try:
                 data = Data.objects.get(job=self.job)
-                if data.data_choice != Data.OPEN_DATA:
+                if data.data_choice != OPEN_DATA:
                     show_skip = False
             except Data.DoesNotExist:
                 pass
@@ -52,7 +54,7 @@ class SignalForm(forms.ModelForm):
 
         signal_choice = data.get('signal_choice')
 
-        if signal_choice == Signal.SKIP:
+        if signal_choice == SKIP:
             # signal should be deleted if there is a change of choice
             # currently as there is only one available, it does not
             # have any adverse effect.

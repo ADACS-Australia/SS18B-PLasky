@@ -2,10 +2,10 @@ import ast
 from collections import OrderedDict
 
 from django import forms
-from django.utils.translation import ugettext_lazy as _
 
+from ...utility.display_names import SIMULATED_DATA
 from ..dynamic import field
-from ...models import Job, DataParameter, Data
+from ...models import DataParameter, Data
 from ..dynamic.form import DynamicForm
 
 
@@ -81,7 +81,7 @@ class SimulatedDataParameterForm(DynamicForm):
         else:
             try:
                 data = Data.objects.get(job=job)
-                if data.data_choice != Data.SIMULATED_DATA:
+                if data.data_choice != SIMULATED_DATA:
                     return
             except Data.DoesNotExist:
                 return

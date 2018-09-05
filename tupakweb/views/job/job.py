@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 
+from ...utility.display_names import SKIP
 from ...models import (
     Signal,
     Job,
@@ -135,7 +136,7 @@ def filter_as_per_input(forms_to_save, request):
     if SIGNAL in forms_to_save:
         signal_choice = request.POST.get('signal-signal_choice', None)
 
-        if signal_choice == Signal.SKIP:
+        if signal_choice == SKIP:
             forms_to_save = [SIGNAL, ]
         elif signal_choice in SIGNAL_PARAMETER_BBH:
             forms_to_save = [SIGNAL, SIGNAL_PARAMETER_BBH, ]

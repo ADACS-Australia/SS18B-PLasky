@@ -142,10 +142,6 @@ def get_text_area_input(label, required, placeholder=None, initial=None):
 
 
 def get_radio_input(label, choices=None, initial=None):
-    # if not choices:
-    #     # choices = DEFAULT_CHOICES
-    #     # initial = DEFAULT_INITIAL
-
     return forms.ChoiceField(
         label=label,
         widget=forms.RadioSelect,
@@ -185,10 +181,6 @@ def get_positive_integer_input(label, required, placeholder=None, initial=None, 
 
 
 def get_select_input(label, choices=None, initial=None, extra_class=None):
-    # if not choices:
-    #     choices = DEFAULT_CHOICES
-    #     initial = DEFAULT_INITIAL
-
     return forms.ChoiceField(
         label=label,
         widget=forms.Select(

@@ -3,6 +3,7 @@ from collections import OrderedDict
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
+from ...utility.display_names import UNIFORM, FIXED
 from ..dynamic.form import DynamicForm
 from ...models import (
     Prior,
@@ -103,11 +104,11 @@ class PriorForm(DynamicForm):
                 defaults={
                     'prior_choice': prior_choice,
                     'fixed_value': data.get(
-                        field_classifications.get('fixed_field')) if prior_choice == Prior.FIXED else None,
+                        field_classifications.get('fixed_field')) if prior_choice == FIXED else None,
                     'uniform_min_value': data.get(
-                        field_classifications.get('min_field')) if prior_choice == Prior.UNIFORM else None,
+                        field_classifications.get('min_field')) if prior_choice == UNIFORM else None,
                     'uniform_max_value': data.get(
-                        field_classifications.get('max_field')) if prior_choice == Prior.UNIFORM else None,
+                        field_classifications.get('max_field')) if prior_choice == UNIFORM else None,
                 },
             )
 
@@ -119,14 +120,17 @@ class PriorForm(DynamicForm):
             field_classifications = classify_fields(fieldset_fields)
 
             # get prior
-            prior = Prior.objects.get(
-                signal_parameter=SignalParameter.objects.get(
-                    signal__job=self.job,
-                    name=field_classifications.get('signal_parameter_name')
-                ),
-            )
+            try:
+                prior = Prior.objects.get(
+                    signal_parameter=SignalParameter.objects.get(
+                        signal__job=self.job,
+                        name=field_classifications.get('signal_parameter_name')
+                    ),
+                )
 
-            self.fields[field_classifications.get('type_field')].initial = prior.prior_choice
-            self.fields[field_classifications.get('fixed_field')].initial = prior.fixed_value
-            self.fields[field_classifications.get('min_field')].initial = prior.uniform_min_value
-            self.fields[field_classifications.get('max_field')].initial = prior.uniform_max_value
+                self.fields[field_classifications.get('type_field')].initial = prior.prior_choice
+                self.fields[field_classifications.get('fixed_field')].initial = prior.fixed_value
+                self.fields[field_classifications.get('min_field')].initial = prior.uniform_min_value
+                self.fields[field_classifications.get('max_field')].initial = prior.uniform_max_value
+            except Prior.DoesNotExist:
+                pass
