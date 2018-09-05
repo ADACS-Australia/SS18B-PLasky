@@ -91,6 +91,30 @@
                 </div>
             </div>
         {% endif %}
+        {% if drafted_job.sampler %}
+            <div class="card">
+                <div class="card-header" id="headingSampler">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseSampler"
+                                aria-expanded="true" aria-controls="collapseTwo">
+                            Sampler
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapseSampler" class="collapse" aria-labelledby="headingSampler" data-parent="#accordion">
+                    <div class="card-body">
+                        <div class="info-job info-heading">Type</div>
+                        <div class="info-job info-content text-justify">{{ drafted_job.sampler.sampler_choice }}</div>
+                        {% if drafted_job.sampler_parameters %}
+                            {% for sampler_parameter in drafted_job.sampler_parameters %}
+                                <div class="info-job info-heading">{{ sampler_parameter.name }}</div>
+                                <div class="info-job info-content text-justify">{{ sampler_parameter.value }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     </div>
 {% else %}
     <div id="accordion">

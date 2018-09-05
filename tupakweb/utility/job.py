@@ -7,11 +7,16 @@ from ..models import (
     SignalParameter,
     DataParameter,
     Prior,
+    Sampler,
+    SamplerParameter,
 )
 
 from ..forms.signal.signal_parameter import BBH_FIELDS_PROPERTIES
 from ..forms.data.data_open import DATA_FIELDS_PROPERTIES as OPEN_DATA_FIELDS_PROPERTIES
 from ..forms.data.data_simulated import DATA_FIELDS_PROPERTIES as SIMULATED_DATA_FIELDS_PROPERTIES
+from ..forms.sampler.sampler_dynesty import DYNESTY_FIELDS_PROPERTIES
+from ..forms.sampler.sampler_nestle import NESTLE_FIELDS_PROPERTIES
+from ..forms.sampler.sampler_emcee import EMCEE_FIELDS_PROPERTIES
 
 
 class TupakJob(object):
@@ -22,6 +27,8 @@ class TupakJob(object):
     signal = None
     signal_parameters = None
     priors = None
+    sampler = None
+    sampler_parameters = None
 
     def __init__(self, job_id):
         # populating data tab information
@@ -31,7 +38,7 @@ class TupakJob(object):
             pass
         else:
             self.data_parameters = []
-            # finding the correct signal parameters for the signal type
+            # finding the correct data parameters for the data type
             all_data_parameters = DataParameter.objects.filter(data=self.data)
 
             if self.data.data_choice == Data.OPEN_DATA:
@@ -63,6 +70,26 @@ class TupakJob(object):
                     # this can happen when user just filled up the signal parameters
                     # yet to fill up the prior form
                     pass
+
+        # populating sampler tab information
+        try:
+            self.sampler = Sampler.objects.get(job=self.job)
+        except Sampler.DoesNotExist:
+            pass
+        else:
+            self.sampler_parameters = []
+            # finding the correct sampler parameters for the sampler type
+            all_sampler_parameters = SamplerParameter.objects.filter(sampler=self.sampler)
+
+            if self.sampler.sampler_choice == Sampler.DYNESTY:
+                for name in DYNESTY_FIELDS_PROPERTIES.keys():
+                    self.sampler_parameters.append(all_sampler_parameters.get(name=name))
+            elif self.sampler.sampler_choice == Sampler.NESTLE:
+                for name in NESTLE_FIELDS_PROPERTIES.keys():
+                    self.sampler_parameters.append(all_sampler_parameters.get(name=name))
+            elif self.sampler.sampler_choice == Sampler.EMCEE:
+                for name in EMCEE_FIELDS_PROPERTIES.keys():
+                    self.sampler_parameters.append(all_sampler_parameters.get(name=name))
 
         self.as_json()
 
@@ -118,12 +145,24 @@ class TupakJob(object):
                     prior.signal_parameter.name: prior_dict,
                 })
 
+        # sampler_dict
+        sampler_dict = dict()
+        if self.sampler:
+            sampler_dict.update({
+                'type': self.sampler.sampler_choice,
+            })
+            for sampler_parameter in self.sampler_parameters:
+                sampler_dict.update({
+                    sampler_parameter.name: sampler_parameter.value,
+                })
+
         json_dict = dict(
             name=self.job.name,
             description=self.job.description,
             data=data_dict,
             signal=signal_dict,
             priors=priors_dict,
+            sampler=sampler_dict,
         )
 
         return json.dumps(json_dict, indent=4)
