@@ -175,25 +175,33 @@ class Sampler(models.Model):
 
     DYNESTY = 'dynesty'
     NESTLE = 'nestle'
+    EMCEE = 'emcee'
 
     SAMPLER_CHOICES = [
         (DYNESTY, 'Dynesty'),
         (NESTLE, 'Nestle'),
+        (EMCEE, 'Emcee'),
     ]
 
-    sampler_choice = models.CharField(max_length=15, choices=SAMPLER_CHOICES, default=DYNESTY, blank=True)
+    sampler_choice = models.CharField(max_length=15, choices=SAMPLER_CHOICES, default=DYNESTY)
+
+    def __str__(self):
+        return '{} ({})'.format(self.sampler_choice, self.job.name)
+
+    def as_json(self):
+        return dict(
+            id=self.id,
+            value=dict(
+                job=self.job.id,
+                choice=self.sampler_choice,
+            ),
+        )
 
 
-class SamplerDynesty(models.Model):
-    sampler = models.OneToOneField(Sampler, related_name='sampler_sampler_dynesty', on_delete=models.CASCADE)
-    n_livepoints = models.IntegerField(null=True)
+class SamplerParameter(models.Model):
+    sampler = models.ForeignKey(Sampler, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50, blank=False, null=False)
+    value = models.CharField(max_length=100, null=True, blank=True)
 
-
-class SamplerNestle(models.Model):
-    sampler = models.OneToOneField(Sampler, related_name='sampler_sampler_nestle', on_delete=models.CASCADE)
-    n_steps = models.IntegerField(null=True)
-
-
-class SamplerEmcee(models.Model):
-    sampler = models.OneToOneField(Sampler, related_name='sampler_sampler_emcee', on_delete=models.CASCADE)
-    n_steps = models.IntegerField(null=True)
+    def __str__(self):
+        return '{} - {} ({})'.format(self.name, self.value, self.sampler)

@@ -76,14 +76,12 @@ def generate_forms(job=None, request=None, forms=None):
             PRIOR: None,
             SAMPLER: None,
             SAMPLER_DYNESTY: None,
+            SAMPLER_NESTLE: None,
+            SAMPLER_EMCEE: None,
         }
 
     if job:
         for model in MODELS:
-
-            if model in [SAMPLER_DYNESTY, SAMPLER_NESTLE, SAMPLER_EMCEE]:
-                continue
-
             try:
                 # START Form is the Job instance, for other forms it is referenced
                 instance = job if model == START else MODELS[model].objects.get(job=job)
@@ -107,6 +105,9 @@ def generate_forms(job=None, request=None, forms=None):
         forms[DATA_SIMULATED].update_from_database(job=job)
         forms[SIGNAL_PARAMETER_BBH].update_from_database(job=job)
         forms[PRIOR].update_from_database(job=job)
+        forms[SAMPLER_DYNESTY].update_from_database(job=job)
+        forms[SAMPLER_NESTLE].update_from_database(job=job)
+        forms[SAMPLER_EMCEE].update_from_database(job=job)
 
         # because of too much dynamic nature, fields are by default set as non-required
         # once everything is processed with the form, all the fields are marked as required
@@ -138,6 +139,17 @@ def filter_as_per_input(forms_to_save, request):
             forms_to_save = [SIGNAL, ]
         elif signal_choice in SIGNAL_PARAMETER_BBH:
             forms_to_save = [SIGNAL, SIGNAL_PARAMETER_BBH, ]
+
+    # returning the corrected forms need to be saved for SAMPLER tab
+    if SAMPLER in forms_to_save:
+        sampler_choice = request.POST.get('sampler-sampler_choice', None)
+
+        if sampler_choice in SAMPLER_DYNESTY:
+            forms_to_save = [SAMPLER, SAMPLER_DYNESTY, ]
+        elif sampler_choice in SAMPLER_NESTLE:
+            forms_to_save = [SAMPLER, SAMPLER_NESTLE, ]
+        elif sampler_choice in SAMPLER_EMCEE:
+            forms_to_save = [SAMPLER, SAMPLER_EMCEE, ]
 
     return forms_to_save
 
@@ -233,6 +245,8 @@ def new_job(request):
             'prior_form': forms[PRIOR],
             'sampler_form': forms[SAMPLER],
             'sampler_dynesty_form': forms[SAMPLER_DYNESTY],
+            'sampler_nestle_form': forms[SAMPLER_NESTLE],
+            'sampler_emcee_form': forms[SAMPLER_EMCEE],
 
             # job so far...
             'drafted_job': tupak_job,

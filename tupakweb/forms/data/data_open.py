@@ -2,7 +2,7 @@ import ast
 
 from collections import OrderedDict
 
-from tupakweb.forms.dynamic import field
+from ..dynamic import field
 from ...models import DataParameter, Data
 from ..dynamic.form import DynamicForm
 

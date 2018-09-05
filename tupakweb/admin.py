@@ -8,18 +8,11 @@ from .models import (
     SignalParameter,
     Prior,
     Sampler,
-    SamplerDynesty,
-    SamplerEmcee,
-    SamplerNestle,
+    SamplerParameter,
 )
 
+
 # Register your models here.
-admin.site.register(Sampler)
-admin.site.register(SamplerDynesty)
-admin.site.register(SamplerEmcee)
-admin.site.register(SamplerNestle)
-
-
 @admin.register(Job)
 class Job(admin.ModelAdmin):
     list_display = ('name', 'description', 'status', 'user',)
@@ -76,8 +69,8 @@ class SignalParameter(admin.ModelAdmin):
 
 @admin.register(Prior)
 class Prior(admin.ModelAdmin):
-    list_display = ('get_job', 'get_signal', 'get_signal_parameter_name', 'prior_choice', 'fixed_value', 'uniform_min_value',
-                    'uniform_max_value')
+    list_display = ('get_job', 'get_signal', 'get_signal_parameter_name', 'prior_choice', 'fixed_value',
+                    'uniform_min_value', 'uniform_max_value')
     search_fields = ['get_signal', 'get_job']
 
     def get_job(self, obj):
@@ -97,3 +90,27 @@ class Prior(admin.ModelAdmin):
 
     get_signal_parameter_name.admin_order_field = 'signal_parameter__name'  # Allows column order sorting
     get_signal_parameter_name.short_description = 'Signal parameter name'  # Renames column head
+
+
+@admin.register(Sampler)
+class Sampler(admin.ModelAdmin):
+    list_display = ('job', 'sampler_choice',)
+    search_fields = ['job__name', 'sampler_choice', ]
+
+
+@admin.register(SamplerParameter)
+class SamplerParameter(admin.ModelAdmin):
+    list_display = ('get_job', 'get_sampler', 'name', 'value')
+    search_fields = ['name', 'value']
+
+    def get_job(self, obj):
+        return obj.sampler.job.name
+
+    get_job.admin_order_field = 'sampler__job'  # Allows column order sorting
+    get_job.short_description = 'Job'  # Renames column head
+
+    def get_sampler(self, obj):
+        return obj.sampler.sampler_choice
+
+    get_sampler.admin_order_field = 'sampler'  # Allows column order sorting
+    get_sampler.short_description = 'sampler'  # Renames column head

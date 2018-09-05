@@ -28,8 +28,8 @@
                     <td>{{ job.creation_time }}</td>
                     <td>{{ job.last_updated }}</td>
                     <td>{{ job.status }}</td>
-                    <td>{% if job.status == 'Draft' %}Delete{% else %}&nbsp;{% endif %} <a
-                            href="{% url 'edit_job' job.id %}">Edit</a></td>
+                    <td>{% if job.status == 'Draft' %}Delete{% endif %}
+                        <a href="{% url 'edit_job' job.id %}">Edit</a></td>
                 </tr>
             {% endfor %}
             </tbody>

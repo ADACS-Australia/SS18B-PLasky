@@ -4,10 +4,10 @@ from ..dynamic import field
 from ...models import SamplerParameter, Sampler
 from ..dynamic.form import DynamicForm
 
-EMCEE_FIELDS_PROPERTIES = OrderedDict([
-    ('number_of_steps', {
+NESTLE_FIELDS_PROPERTIES = OrderedDict([
+    ('number_of_live_points', {
         'type': field.POSITIVE_INTEGER,
-        'label': 'Number of Steps',
+        'label': 'Number of Live Points',
         'placeholder': '1000',
         'initial': None,
         'required': True,
@@ -15,14 +15,14 @@ EMCEE_FIELDS_PROPERTIES = OrderedDict([
 ])
 
 
-class SamplerEmceeParameterForm(DynamicForm):
+class SamplerNestleParameterForm(DynamicForm):
 
     def __init__(self, *args, **kwargs):
         kwargs['name'] = 'data-parameter'
-        kwargs['fields_properties'] = EMCEE_FIELDS_PROPERTIES
+        kwargs['fields_properties'] = NESTLE_FIELDS_PROPERTIES
         self.job = kwargs.pop('job', None)
 
-        super(SamplerEmceeParameterForm, self).__init__(*args, **kwargs)
+        super(SamplerNestleParameterForm, self).__init__(*args, **kwargs)
 
     def save(self):
         # find the sampler first
@@ -42,12 +42,12 @@ class SamplerEmceeParameterForm(DynamicForm):
         else:
             try:
                 sampler = Sampler.objects.get(job=job)
-                if sampler.sampler_choice != Sampler.EMCEE:
+                if sampler.sampler_choice != Sampler.NESTLE:
                     return
             except Sampler.DoesNotExist:
                 return
 
-        for name in EMCEE_FIELDS_PROPERTIES.keys():
+        for name in NESTLE_FIELDS_PROPERTIES.keys():
             try:
                 value = SamplerParameter.objects.get(sampler=sampler, name=name).value
                 self.fields[name].initial = value

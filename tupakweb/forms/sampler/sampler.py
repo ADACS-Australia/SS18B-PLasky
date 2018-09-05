@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from ...models import Job, Sampler
+from ...models import Sampler
 
 FIELDS = [
     'sampler_choice',
@@ -33,7 +33,13 @@ class SamplerForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        result = Sampler.objects.create(
+        # deleting sampler object will make sure that there exists no parameter
+        # this avoids duplicating parameters
+        Sampler.objects.filter(job=self.job).delete()
+
+        Sampler.objects.update_or_create(
             job=self.job,
-            sampler_choice=data.get('sampler_choice'),
+            defaults={
+                'sampler_choice': data.get('sampler_choice'),
+            },
         )

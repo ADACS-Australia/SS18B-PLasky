@@ -2,7 +2,7 @@ from ..models import (
     Job,
     Data,
     Signal,
-    Sampler, SamplerDynesty, SamplerEmcee
+    Sampler,
 )
 
 from ..forms.job import StartJobForm
@@ -13,8 +13,9 @@ from ..forms.signal.signal import SignalForm
 from ..forms.signal.signal_parameter import SignalParameterBbhForm
 from ..forms.prior.prior import PriorForm
 from ..forms.sampler.sampler import SamplerForm
-from ..forms.sampler.sampler_dynesty import SamplerDynestyForm
-from ..forms.sampler.sampler_emcee import SamplerEmceeForm
+from ..forms.sampler.sampler_dynesty import SamplerDynestyParameterForm
+from ..forms.sampler.sampler_nestle import SamplerNestleParameterForm
+from ..forms.sampler.sampler_emcee import SamplerEmceeParameterForm
 
 
 def set_dict_indices(my_array):
@@ -73,6 +74,7 @@ TAB_FORMS = {
     DATA: [DATA, DATA_SIMULATED, DATA_OPEN, ],
     SIGNAL: [SIGNAL, SIGNAL_PARAMETER_BBH, ],
     PRIOR: [PRIOR, ],
+    SAMPLER: [SAMPLER, SAMPLER_DYNESTY, SAMPLER_NESTLE, SAMPLER_EMCEE, ],
 }
 
 FORMS_NEW = {
@@ -84,8 +86,9 @@ FORMS_NEW = {
     SIGNAL_PARAMETER_BBH: SignalParameterBbhForm,
     PRIOR: PriorForm,
     SAMPLER: SamplerForm,
-    SAMPLER_DYNESTY: SamplerDynestyForm,
-    SAMPLER_EMCEE: SamplerEmceeForm,
+    SAMPLER_DYNESTY: SamplerDynestyParameterForm,
+    SAMPLER_NESTLE: SamplerNestleParameterForm,
+    SAMPLER_EMCEE: SamplerEmceeParameterForm,
 }
 
 MODELS = {
@@ -93,6 +96,4 @@ MODELS = {
     DATA: Data,
     SIGNAL: Signal,
     SAMPLER: Sampler,
-    SAMPLER_DYNESTY: SamplerDynesty,
-    SAMPLER_EMCEE: SamplerEmcee,
 }
