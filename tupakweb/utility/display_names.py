@@ -1,4 +1,5 @@
-# Content of this file must be unique
+# VARIABLES of this file must be unique
+DISPLAY_NAME_MAP = dict()
 
 # Job Status
 DRAFT = 'draft'
@@ -27,6 +28,12 @@ SIMULATED_DATA = 'simulated'
 SIMULATED_DATA_DISPLAY = 'Simulated'
 OPEN_DATA = 'open'
 OPEN_DATA_DISPLAY = 'Open'
+
+DISPLAY_NAME_MAP.update({
+    DATA_CHOICE: DATA_CHOICE_DISPLAY,
+    SIMULATED_DATA: SIMULATED_DATA_DISPLAY,
+    OPEN_DATA: OPEN_DATA_DISPLAY,
+})
 
 # Signal Choice
 SIGNAL_CHOICE = 'signal_choice'
