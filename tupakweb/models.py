@@ -19,6 +19,7 @@ class Job(models.Model):
         (SAVED, SAVED_DISPLAY),
         (WALL_TIME_EXCEEDED, WALL_TIME_EXCEEDED_DISPLAY),
         (DELETED, DELETED_DISPLAY),
+        (PUBLIC, PUBLIC_DISPLAY),
     ]
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, blank=False, default=DRAFT)
     creation_time = models.DateTimeField(auto_now_add=True)

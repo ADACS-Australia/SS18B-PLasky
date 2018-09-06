@@ -1,5 +1,6 @@
 import logging
 from collections import OrderedDict
+from django.utils import timezone
 
 from .dynamic.form import DynamicForm
 from .dynamic import field
@@ -33,6 +34,7 @@ class SubmitJobForm(DynamicForm):
 
         self.job.json_representation = data.get('json_representation')
         self.job.status = SUBMITTED
+        self.job.submission_time = timezone.now()
         self.job.save()
 
         self.request.session['draft_job'] = None
