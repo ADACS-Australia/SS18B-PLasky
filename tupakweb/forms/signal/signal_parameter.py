@@ -6,7 +6,7 @@ from collections import OrderedDict
 
 from ..dynamic.form import DynamicForm
 from ..dynamic import field
-from ...models import SignalParameter, Signal
+from ...models import SignalParameter, Signal, Prior
 from ...utility.display_names import (
     MASS1,
     MASS1_DISPLAY,
@@ -109,11 +109,18 @@ class SignalParameterBbhForm(DynamicForm):
         # find the signal first
         signal = Signal.objects.get(job=self.job)
         for name, value in self.cleaned_data.items():
-            SignalParameter.objects.update_or_create(
+            signal_parameter, created = SignalParameter.objects.update_or_create(
                 signal=signal,
                 name=name,
                 defaults={
                     'value': value,
+                }
+            )
+
+            Prior.objects.update_or_create(
+                signal_parameter=signal_parameter,
+                defaults={
+                    'fixed_value': value,
                 }
             )
 
