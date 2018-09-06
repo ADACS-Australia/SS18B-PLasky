@@ -1,3 +1,4 @@
+{% load template_filters %}
 {% if drafted_job %}
     <div id="accordion">
         <div class="card">
@@ -33,12 +34,12 @@
                 </div>
                 <div id="collapseData" class="collapse" aria-labelledby="headingData" data-parent="#accordion">
                     <div class="card-body">
-                        <div class="info-job info-heading">Type</div>
-                        <div class="info-job info-content text-justify">{{ drafted_job.data.data_choice }}</div>
+                        <div class="info-job info-heading">Data Type</div>
+                        <div class="info-job info-content text-justify">{{ drafted_job.data.data_choice | display_name }}</div>
                         {% if drafted_job.data_parameters %}
                             {% for data_parameter in drafted_job.data_parameters %}
-                                <div class="info-job info-heading">{{ data_parameter.name }}</div>
-                                <div class="info-job info-content text-justify">{{ data_parameter.value }}</div>
+                                <div class="info-job info-heading">{{ data_parameter.name | display_name }}</div>
+                                <div class="info-job info-content text-justify">{{ data_parameter.value | display_name }}</div>
                             {% endfor %}
                         {% endif %}
                     </div>
@@ -57,12 +58,12 @@
                 </div>
                 <div id="collapseSignal" class="collapse" aria-labelledby="headingSignal" data-parent="#accordion">
                     <div class="card-body">
-                        <div class="info-job info-heading">Type</div>
-                        <div class="info-job info-content text-justify">{{ drafted_job.signal.signal_choice }}</div>
+                        <div class="info-job info-heading">Signal Type</div>
+                        <div class="info-job info-content text-justify">{{ drafted_job.signal.signal_choice | display_name }}</div>
                         {% if drafted_job.signal_parameters %}
                             {% for signal_parameter in drafted_job.signal_parameters %}
-                                <div class="info-job info-heading">{{ signal_parameter.name }}</div>
-                                <div class="info-job info-content text-justify">{{ signal_parameter.value }}</div>
+                                <div class="info-job info-heading">{{ signal_parameter.name | display_name }}</div>
+                                <div class="info-job info-content text-justify">{{ signal_parameter.value | display_name }}</div>
                             {% endfor %}
                         {% endif %}
                     </div>
@@ -82,9 +83,9 @@
                 <div id="collapsePrior" class="collapse" aria-labelledby="headingPrior" data-parent="#accordion">
                     <div class="card-body">
                         {% for prior in drafted_job.priors %}
-                            <div class="info-job info-heading">{{ prior.signal_parameter.name }}</div>
+                            <div class="info-job info-heading">{{ prior.signal_parameter.name | display_name }}</div>
                             <div class="info-job info-content text-justify">
-                            {{ prior.prior_choice }}: {{ prior.get_display_value }}
+                            {{ prior.prior_choice | display_name }}: {{ prior.get_display_value }}
                             </div>
                         {% endfor %}
                     </div>
@@ -103,12 +104,12 @@
                 </div>
                 <div id="collapseSampler" class="collapse" aria-labelledby="headingSampler" data-parent="#accordion">
                     <div class="card-body">
-                        <div class="info-job info-heading">Type</div>
-                        <div class="info-job info-content text-justify">{{ drafted_job.sampler.sampler_choice }}</div>
+                        <div class="info-job info-heading">Sampler Type</div>
+                        <div class="info-job info-content text-justify">{{ drafted_job.sampler.sampler_choice | display_name }}</div>
                         {% if drafted_job.sampler_parameters %}
                             {% for sampler_parameter in drafted_job.sampler_parameters %}
-                                <div class="info-job info-heading">{{ sampler_parameter.name }}</div>
-                                <div class="info-job info-content text-justify">{{ sampler_parameter.value }}</div>
+                                <div class="info-job info-heading">{{ sampler_parameter.name | display_name }}</div>
+                                <div class="info-job info-content text-justify">{{ sampler_parameter.value | display_name }}</div>
                             {% endfor %}
                         {% endif %}
                     </div>

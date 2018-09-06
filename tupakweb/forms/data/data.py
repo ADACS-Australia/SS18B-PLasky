@@ -1,8 +1,10 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from ...models import Data
 
-FIELDS = ['data_choice', ]
+from ...models import Data
+from ...utility.display_names import DATA_CHOICE_DISPLAY, DATA_CHOICE
+
+FIELDS = [DATA_CHOICE, ]
 
 WIDGETS = {
     'data_choice': forms.Select(
@@ -11,7 +13,7 @@ WIDGETS = {
 }
 
 LABELS = {
-    'data_choice': _('Type of data'),
+    DATA_CHOICE: _(DATA_CHOICE_DISPLAY),
 }
 
 
@@ -38,6 +40,6 @@ class DataForm(forms.ModelForm):
         Data.objects.update_or_create(
             job=self.job,
             defaults={
-                'data_choice': data.get('data_choice'),
+                DATA_CHOICE: data.get(DATA_CHOICE),
             }
         )

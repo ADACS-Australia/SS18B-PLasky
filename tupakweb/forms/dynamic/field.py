@@ -171,7 +171,7 @@ class CustomIntegerField(forms.IntegerField):
 def get_positive_integer_input(label, required, placeholder=None, initial=None, validators=()):
     default_validators = [validate_positive_integer, ]
 
-    return CustomFloatField(
+    return CustomIntegerField(
         label=label,
         required=required,
         initial=initial,

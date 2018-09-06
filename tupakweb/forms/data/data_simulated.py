@@ -7,46 +7,55 @@ from ...utility.display_names import SIMULATED_DATA
 from ..dynamic import field
 from ...models import DataParameter, Data
 from ..dynamic.form import DynamicForm
-
-
-HANFORD = 'hanford'
-LIVINGSTON = 'livingston'
-VIRGO = 'virgo'
+from ...utility.display_names import (
+    DETECTOR_CHOICE,
+    DETECTOR_CHOICE_DISPLAY,
+    SIGNAL_DURATION,
+    SIGNAL_DURATION_DISPLAY,
+    SAMPLING_FREQUENCY,
+    SAMPLING_FREQUENCY_DISPLAY,
+    START_TIME,
+    START_TIME_DISPLAY,
+    HANFORD,
+    HANFORD_DISPLAY,
+    LIVINGSTON,
+    LIVINGSTON_DISPLAY,
+    VIRGO,
+    VIRGO_DISPLAY,
+)
 
 DETECTOR_CHOICES = [
-    (HANFORD, 'Hanford'),
-    (LIVINGSTON, 'Livingston'),
-    (VIRGO, 'Virgo'),
+    (HANFORD, HANFORD_DISPLAY),
+    (LIVINGSTON, LIVINGSTON_DISPLAY),
+    (VIRGO, VIRGO_DISPLAY),
 ]
-
-detectors = forms.MultipleChoiceField(choices=DETECTOR_CHOICES)
 
 
 DATA_FIELDS_PROPERTIES = OrderedDict([
-    ('detector_choice', {
+    (DETECTOR_CHOICE, {
         'type': field.MULTIPLE_CHOICES,
-        'label': 'Detector choice',
+        'label': DETECTOR_CHOICE_DISPLAY,
         'initial': None,
         'required': True,
         'choices': DETECTOR_CHOICES,
     }),
-    ('signal_duration', {
+    (SIGNAL_DURATION, {
         'type': field.POSITIVE_INTEGER,
-        'label': 'Signal duration (s)',
+        'label': SIGNAL_DURATION_DISPLAY,
         'placeholder': '2',
         'initial': None,
         'required': True,
     }),
-    ('sampling_frequency', {
+    (SAMPLING_FREQUENCY, {
         'type': field.POSITIVE_INTEGER,
-        'label': 'Sampling frequency (Hz)',
+        'label': SAMPLING_FREQUENCY_DISPLAY,
         'placeholder': '2',
         'initial': None,
         'required': True,
     }),
-    ('start_time', {
+    (START_TIME, {
         'type': field.POSITIVE_FLOAT,
-        'label': 'Start time',
+        'label': START_TIME_DISPLAY,
         'placeholder': '2.1',
         'initial': None,
         'required': True,
