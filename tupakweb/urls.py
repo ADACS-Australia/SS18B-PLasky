@@ -10,4 +10,5 @@ urlpatterns = [
     path('new_job/', login_required(job.new_job), name='new_job'),
     path('edit_job/<job_id>/', login_required(jobs.edit_job), name='edit_job'),
     path('jobs/', jobs.jobs, name='jobs'),
+    path('drafts/', jobs.drafts, name='drafts'),
 ]
