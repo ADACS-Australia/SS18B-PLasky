@@ -4,11 +4,15 @@ from ...utility.display_names import NESTLE
 from ..dynamic import field
 from ...models import SamplerParameter, Sampler
 from ..dynamic.form import DynamicForm
+from ...utility.display_names import (
+    NUMBER_OF_LIVE_POINTS,
+    NUMBER_OF_LIVE_POINTS_DISPLAY,
+)
 
 NESTLE_FIELDS_PROPERTIES = OrderedDict([
-    ('number_of_live_points', {
+    (NUMBER_OF_LIVE_POINTS, {
         'type': field.POSITIVE_INTEGER,
-        'label': 'Number of Live Points',
+        'label': NUMBER_OF_LIVE_POINTS_DISPLAY,
         'placeholder': '1000',
         'initial': None,
         'required': True,
@@ -53,4 +57,4 @@ class SamplerNestleParameterForm(DynamicForm):
                 value = SamplerParameter.objects.get(sampler=sampler, name=name).value
                 self.fields[name].initial = value
             except SamplerParameter.DoesNotExist:
-                continue
+                pass

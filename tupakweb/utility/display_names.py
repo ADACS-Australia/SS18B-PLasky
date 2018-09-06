@@ -106,9 +106,9 @@ PHASE_DISPLAY = 'Phase'
 MERGER_TIME = 'merger_time'
 MERGER_TIME_DISPLAY = 'Merger Time (GPS Time)'
 RA = 'ra'
-RA_DISPLAY = 'Right Ascension'
+RA_DISPLAY = 'Right Ascension (Radians)'
 DEC = 'dec'
-DEC_DISPLAY = 'Declination'
+DEC_DISPLAY = 'Declination (Degrees)'
 
 DISPLAY_NAME_MAP.update({
     MASS1: MASS1_DISPLAY,

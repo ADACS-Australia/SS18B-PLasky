@@ -1,7 +1,6 @@
 from collections import OrderedDict
 
 from django import forms
-from django.utils.translation import ugettext_lazy as _
 
 from ...utility.display_names import UNIFORM, FIXED
 from ..dynamic.form import DynamicForm
@@ -14,20 +13,6 @@ from .utility import (
     get_field_properties_by_signal_choice,
     classify_fields,
 )
-
-FIELDS = [
-    'prior_choice',
-]
-
-WIDGETS = {
-    'prior_choice': forms.Select(
-        attrs={'class': 'form-control'},
-    ),
-}
-
-LABELS = {
-    'prior_choice': _('Prior'),
-}
 
 
 class PriorForm(DynamicForm):
@@ -74,12 +59,6 @@ class PriorForm(DynamicForm):
                         self.add_error(field_classifications.get('max_field'), error_msg)
                 except TypeError:
                     pass
-
-    class Meta:
-        model = Prior
-        fields = FIELDS
-        widgets = WIDGETS
-        labels = LABELS
 
     def save(self):
         self.full_clean()

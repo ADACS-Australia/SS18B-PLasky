@@ -1,5 +1,6 @@
 {% extends 'base/base.html' %}
 {% load static %}
+{% load template_filters %}
 
 {% block page_header %}
     Jobs
@@ -27,8 +28,8 @@
                     <th scope="col">{{ job.name }}</th>
                     <td>{{ job.creation_time }}</td>
                     <td>{{ job.last_updated }}</td>
-                    <td>{{ job.status }}</td>
-                    <td>{% if job.status == 'Draft' %}Delete{% endif %}
+                    <td>{{ job.status | display_name }}</td>
+                    <td>{% if job.status == 'draft' %}Delete{% endif %}
                         <a href="{% url 'edit_job' job.id %}">Edit</a></td>
                 </tr>
             {% endfor %}

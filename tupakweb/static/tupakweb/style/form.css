@@ -21,6 +21,10 @@
     margin-top: 20px;
 }
 
+.job-json {
+    display: none;
+}
+
 .job-json textarea, .job-json textarea:focus {
     padding: 10px;
     width:100%;

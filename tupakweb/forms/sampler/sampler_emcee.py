@@ -4,11 +4,15 @@ from ...utility.display_names import EMCEE
 from ..dynamic import field
 from ...models import SamplerParameter, Sampler
 from ..dynamic.form import DynamicForm
+from ...utility.display_names import (
+    NUMBER_OF_STEPS,
+    NUMBER_OF_STEPS_DISPLAY,
+)
 
 EMCEE_FIELDS_PROPERTIES = OrderedDict([
-    ('number_of_steps', {
+    (NUMBER_OF_STEPS, {
         'type': field.POSITIVE_INTEGER,
-        'label': 'Number of Steps',
+        'label': NUMBER_OF_STEPS_DISPLAY,
         'placeholder': '1000',
         'initial': None,
         'required': True,
@@ -53,4 +57,4 @@ class SamplerEmceeParameterForm(DynamicForm):
                 value = SamplerParameter.objects.get(sampler=sampler, name=name).value
                 self.fields[name].initial = value
             except SamplerParameter.DoesNotExist:
-                continue
+                pass
