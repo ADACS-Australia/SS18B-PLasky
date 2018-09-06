@@ -1,27 +1,21 @@
-{% if job_json %}
-    <div class="job-summary">
-        <div class="job-json">
-            <label for="job_json">Job Summary (JSON)</label>
-            <textarea rows="15" id="job_json" readonly>{{ job_json }}</textarea>
+<div class="job-summary">
+    <div>
+        <div class="download-options">
+            Job Summary Download Options
         </div>
-        <div>
-            <div class="download-options">
-                Job Summary Download Options
-            </div>
-            <div class="download-json text-center">
-                <a id="download_json"
-                   download="{{ drafted_job.job.name | slugify }}_{{ drafted_job.job.user.username | slugify }}.json">
-                    <div><i class="fas fa-download"></i></div>
-                    <div>JSON</div>
-                </a>
-            </div>
+        <div class="download-json text-center">
+            <a id="download_json"
+               download="{{ drafted_job.job.name | slugify }}_{{ drafted_job.job.user.username | slugify }}.json">
+                <div><i class="fas fa-download"></i></div>
+                <div>JSON</div>
+            </a>
         </div>
     </div>
-{% endif %}
+</div>
 
 <script>
   $("a#download_json").click(function () {
-    var content = $("#job_json").text().toString()
+    var content = $("#id_launch-json_representation").text().toString()
     this.href = "data:text/plain;charset=UTF-8," + encodeURIComponent(content)
   })
 </script>

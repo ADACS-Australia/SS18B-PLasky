@@ -5,7 +5,8 @@ from ..models import (
     Sampler,
 )
 
-from ..forms.job import StartJobForm
+from ..forms.start import StartJobForm
+from ..forms.submit import SubmitJobForm
 from ..forms.data.data import DataForm
 from ..forms.data.data_simulated import SimulatedDataParameterForm
 from ..forms.data.data_open import OpenDataParameterForm
@@ -75,6 +76,7 @@ TAB_FORMS = {
     SIGNAL: [SIGNAL, SIGNAL_PARAMETER_BBH, ],
     PRIOR: [PRIOR, ],
     SAMPLER: [SAMPLER, SAMPLER_DYNESTY, SAMPLER_NESTLE, SAMPLER_EMCEE, ],
+    LAUNCH: [LAUNCH, ]
 }
 
 FORMS_NEW = {
@@ -89,6 +91,7 @@ FORMS_NEW = {
     SAMPLER_DYNESTY: SamplerDynestyParameterForm,
     SAMPLER_NESTLE: SamplerNestleParameterForm,
     SAMPLER_EMCEE: SamplerEmceeParameterForm,
+    LAUNCH: SubmitJobForm,
 }
 
 MODELS = {

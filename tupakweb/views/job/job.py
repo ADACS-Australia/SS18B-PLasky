@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 
@@ -21,6 +21,7 @@ from ...utility.constants import (
     SAMPLER_DYNESTY,
     SAMPLER_NESTLE,
     SAMPLER_EMCEE,
+    LAUNCH,
     MODELS,
     FORMS_NEW,
     TAB_FORMS,
@@ -30,7 +31,7 @@ from ...utility.constants import (
 
 
 def get_to_be_active_tab(active_tab, previous=False, job=None):
-    error = False  # keep track of out of index tab, might be beneficial to detect the last page
+    no_more_tabs = False  # keep track of out of index tab, might be beneficial to detect the last page
 
     active_tab_index = TABS_INDEXES.get(active_tab)
 
@@ -60,9 +61,9 @@ def get_to_be_active_tab(active_tab, previous=False, job=None):
     try:
         active_tab = TABS[active_tab_index]
     except IndexError:
-        error = True
+        no_more_tabs = True
 
-    return active_tab, error
+    return active_tab, no_more_tabs
 
 
 def generate_forms(job=None, request=None, forms=None):
@@ -79,13 +80,14 @@ def generate_forms(job=None, request=None, forms=None):
             SAMPLER_DYNESTY: None,
             SAMPLER_NESTLE: None,
             SAMPLER_EMCEE: None,
+            LAUNCH: None,
         }
 
     if job:
         for model in MODELS:
             try:
                 # START Form is the Job instance, for other forms it is referenced
-                instance = job if model == START else MODELS[model].objects.get(job=job)
+                instance = job if model in [START, ] else MODELS[model].objects.get(job=job)
 
                 if not forms.get(model, None):
                     forms.update({
@@ -109,6 +111,7 @@ def generate_forms(job=None, request=None, forms=None):
         forms[SAMPLER_DYNESTY].update_from_database(job=job)
         forms[SAMPLER_NESTLE].update_from_database(job=job)
         forms[SAMPLER_EMCEE].update_from_database(job=job)
+        forms[LAUNCH].update_from_database(job=job)
 
         # because of too much dynamic nature, fields are by default set as non-required
         # once everything is processed with the form, all the fields are marked as required
@@ -156,6 +159,7 @@ def filter_as_per_input(forms_to_save, request):
 
 
 def save_tab(request, active_tab):
+    submitted = False
     try:
         job = Job.objects.get(id=request.session['draft_job'].get('id', None))
     except (KeyError, AttributeError, Job.DoesNotExist):
@@ -191,22 +195,26 @@ def save_tab(request, active_tab):
             job.save()
 
         # get the active tab
-        active_tab, error = get_to_be_active_tab(
+        active_tab, submitted = get_to_be_active_tab(
             active_tab,
             previous=request.POST.get('previous', False),
             job=job,
         )
 
-    forms = generate_forms(job, request=request, forms=forms)
+    # don't process further for submitted jobs
+    if not submitted:
+        forms = generate_forms(job, request=request, forms=forms)
 
-    return active_tab, forms
+    return active_tab, forms, submitted
 
 
 @login_required
 def new_job(request):
     if request.method == 'POST':
         active_tab = request.POST.get('form-tab', START)
-        active_tab, forms = save_tab(request, active_tab)
+        active_tab, forms, submitted = save_tab(request, active_tab)
+        if submitted:
+            return redirect('jobs')
     else:
         active_tab = START
 
@@ -248,11 +256,11 @@ def new_job(request):
             'sampler_dynesty_form': forms[SAMPLER_DYNESTY],
             'sampler_nestle_form': forms[SAMPLER_NESTLE],
             'sampler_emcee_form': forms[SAMPLER_EMCEE],
+            'submit_form': forms[LAUNCH],
 
             # job so far...
             'drafted_job': tupak_job,
-            'job_json': tupak_job.as_json() if tupak_job else None,
-
+            # 'job_json': tupak_job.as_json() if tupak_job else None,
         }
     )
 
