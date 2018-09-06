@@ -9,8 +9,8 @@ from ...models import Job
 
 @login_required
 def jobs(request):
-    my_jobs = Job.objects.filter(Q(user=request.user), ~Q(status__in=[DELETED, DRAFT, ])).order_by('-submission_time',
-                                                                                                   '-creation_time')
+    my_jobs = Job.objects.filter(Q(user=request.user), ~Q(status__in=[DELETED, DRAFT, ])).order_by('-last_updated',
+                                                                                                   '-submission_time')
     paginator = Paginator(my_jobs, 5)
 
     page = request.GET.get('page')
@@ -27,7 +27,7 @@ def jobs(request):
 
 @login_required
 def drafts(request):
-    my_jobs = Job.objects.filter(Q(user=request.user), Q(status__in=[DRAFT, ])).order_by('-submission_time',
+    my_jobs = Job.objects.filter(Q(user=request.user), Q(status__in=[DRAFT, ])).order_by('-last_updated',
                                                                                          '-creation_time')
     paginator = Paginator(my_jobs, 5)
 
