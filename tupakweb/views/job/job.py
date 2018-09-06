@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 
 from ...utility.display_names import SKIP
+from ...utility.utils import get_enabled_tabs
 from ...models import (
     Signal,
     Job,
@@ -237,11 +238,14 @@ def new_job(request):
     except (KeyError, AttributeError):
         tupak_job = None
 
+    enabled_tabs = get_enabled_tabs(tupak_job, active_tab)
+
     return render(
         request,
         "tupakweb/job/edit-job.html",
         {
             'active_tab': active_tab,
+            'enabled_tabs': enabled_tabs,
             'disable_other_tabs': False,
             'new_job': False,
 
@@ -260,7 +264,6 @@ def new_job(request):
 
             # job so far...
             'drafted_job': tupak_job,
-            # 'job_json': tupak_job.as_json() if tupak_job else None,
         }
     )
 
