@@ -33,11 +33,12 @@
                         <td>
                             Delete <i class="fas fa-trash-alt"></i>
                             <a href="{% url 'edit_job' job.id %}">Edit <i class="fas fa-edit"></i></a>
+                            <a href="{% url 'copy_job' job.id %}">Copy <i class="fas fa-clone"></i></a>
                         </td>
                     {% else %}
                         <td>
                             Delete <i class="fas fa-trash-alt"></i>
-                            <a href="{% url 'edit_job' job.id %}">Copy <i class="fas fa-clone"></i></a>
+                            <a href="{% url 'copy_job' job.id %}">Copy <i class="fas fa-clone"></i></a>
                         </td>
                     {% endif %}
                 </tr>

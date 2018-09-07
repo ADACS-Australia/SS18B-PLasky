@@ -4,9 +4,7 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
-django-jsonforms==1.1.0
 django==2.0.7
-jsonschema==2.6.0         # via django-jsonforms
 mysqlclient==1.3.13
 pytz==2018.5              # via django
 six==1.11.0

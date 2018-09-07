@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'tupakweb',
-    'django_jsonforms',
 ]
 
 MIDDLEWARE = [
