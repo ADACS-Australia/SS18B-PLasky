@@ -8,6 +8,7 @@ from .field import (
     get_positive_integer_input,
     get_multiple_choices_input,
     get_positive_float_input,
+    get_zero_to_hundred_input,
     get_zero_to_pi_input,
     get_zero_to_2pi_input,
     get_float_input,
@@ -15,6 +16,7 @@ from .field import (
     FLOAT,
     POSITIVE_FLOAT,
     MULTIPLE_CHOICES,
+    ZERO_TO_HUNDRED,
     ZERO_TO_PI,
     ZERO_TO_2PI,
     TEXT,
@@ -57,6 +59,15 @@ class DynamicForm(forms.Form):
 
             elif properties.get('type') == POSITIVE_FLOAT:
                 self.fields[name] = get_positive_float_input(
+                    label=properties.get('label', name),
+                    placeholder=properties.get('placeholder', None),
+                    initial=properties.get('initial', None),
+                    required=properties.get('required', False),
+                    validators=properties.get('validators', ()),
+                )
+
+            elif properties.get('type') == ZERO_TO_HUNDRED:
+                self.fields[name] = get_zero_to_hundred_input(
                     label=properties.get('label', name),
                     placeholder=properties.get('placeholder', None),
                     initial=properties.get('initial', None),

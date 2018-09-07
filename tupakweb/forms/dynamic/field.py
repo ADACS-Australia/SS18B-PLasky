@@ -6,6 +6,7 @@ from ...utility.validators import (
     validate_positive_float,
     validate_less_than_pi,
     validate_less_than_2pi,
+    validate_less_than_equal_hundred,
 )
 
 # field types
@@ -14,6 +15,7 @@ TEXT = 'text'
 FLOAT = 'float'
 MULTIPLE_CHOICES = 'multiple-choices'
 POSITIVE_FLOAT = 'positive-float'
+ZERO_TO_HUNDRED = 'zero-to-hundred'
 ZERO_TO_PI = 'zero-to-pi'
 ZERO_TO_2PI = 'zero-to-2pi'
 TEXT_AREA = 'text-area'
@@ -80,6 +82,18 @@ def get_float_input(label, required, placeholder=None, initial=None, validators=
 
 def get_positive_float_input(label, required, placeholder=None, initial=None, validators=()):
     default_validators = [validate_positive_float, ]
+
+    return CustomFloatField(
+        label=label,
+        required=required,
+        initial=initial,
+        placeholder=placeholder,
+        validators=list(itertools.chain(default_validators, validators)),
+    )
+
+
+def get_zero_to_hundred_input(label, required, placeholder=None, initial=None, validators=()):
+    default_validators = [validate_positive_float, validate_less_than_equal_hundred, ]
 
     return CustomFloatField(
         label=label,

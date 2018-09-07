@@ -30,14 +30,14 @@ from ...utility.display_names import (
 
 BBH_FIELDS_PROPERTIES = OrderedDict([
     (MASS1, {
-        'type': field.POSITIVE_FLOAT,
+        'type': field.ZERO_TO_HUNDRED,
         'label': MASS1_DISPLAY,
         'placeholder': '2.0',
         'initial': None,
         'required': True,
     }),
     (MASS2, {
-        'type': field.POSITIVE_FLOAT,
+        'type': field.ZERO_TO_HUNDRED,
         'label': MASS2_DISPLAY,
         'placeholder': '1.0',
         'initial': None,
@@ -79,7 +79,7 @@ BBH_FIELDS_PROPERTIES = OrderedDict([
         'required': True,
     }),
     (RA, {
-        'type': field.POSITIVE_FLOAT,
+        'type': field.ZERO_TO_2PI,
         'label': RA_DISPLAY,
         'placeholder': '1.375',
         'initial': None,
@@ -133,4 +133,4 @@ class SignalParameterBbhForm(DynamicForm):
                 value = SignalParameter.objects.get(signal__job=job, name=name).value
                 self.fields[name].initial = value
             except SignalParameter.DoesNotExist:
-                continue
+                pass
