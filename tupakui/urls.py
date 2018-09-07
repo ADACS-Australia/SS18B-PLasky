@@ -23,3 +23,5 @@ urlpatterns = [
                   path('accounts/', include('accounts.urls')),
                   path('', include('tupakweb.urls')),
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+handler404 = 'tupakweb.views.common.error_404_view'
