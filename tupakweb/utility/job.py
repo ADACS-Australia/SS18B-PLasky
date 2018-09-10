@@ -1,4 +1,5 @@
 import json
+import uuid
 
 from ..utility.display_names import (
     OPEN_DATA,
@@ -29,6 +30,19 @@ from ..forms.sampler.sampler_nestle import NESTLE_FIELDS_PROPERTIES
 from ..forms.sampler.sampler_emcee import EMCEE_FIELDS_PROPERTIES
 
 
+def clone_job_data(from_job, to_job):
+    try:
+        from_data = Data.objects.get(job=from_job)
+        data_created = Data.objects.create(
+            job=to_job,
+            data_choice=from_data.data_choice,
+        )
+    except Data.DoesNotExist:
+        pass
+    else:
+        pass
+
+
 class TupakJob(object):
 
     job = None
@@ -39,6 +53,28 @@ class TupakJob(object):
     priors = None
     sampler = None
     sampler_parameters = None
+
+    def clone_as_draft(self, user):
+        if not self.job:
+            return
+
+        name = self.job.name
+        while Job.objects.filter(user=user, name=name).exists():
+            name = (self.job.name + '_' + uuid.uuid4().hex)[:255]
+
+            if name == self.job.name:
+                # cannot generate a new name, returning none
+                return None
+
+        cloned = Job.objects.create(
+            name=name,
+            user=user,
+            description=self.job.description,
+        )
+
+        clone_job_data(self.job, cloned)
+
+        return cloned
 
     def __init__(self, job_id):
         # populating data tab information
