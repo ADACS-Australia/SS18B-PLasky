@@ -31,6 +31,7 @@ from ..forms.sampler.sampler_emcee import EMCEE_FIELDS_PROPERTIES
 
 
 def clone_job_data(from_job, to_job):
+    # cloning data and data parameters
     try:
         from_data = Data.objects.get(job=from_job)
         data_created = Data.objects.create(
@@ -40,11 +41,69 @@ def clone_job_data(from_job, to_job):
     except Data.DoesNotExist:
         pass
     else:
+        # creating the data parameters
+        data_parameters = DataParameter.objects.filter(data=from_data)
+
+        for data_parameter in data_parameters:
+            DataParameter.objects.create(
+                data=data_created,
+                name=data_parameter.name,
+                value=data_parameter.value,
+            )
+
+    # cloning signal and signal parameters
+    try:
+        from_signal = Signal.objects.get(job=from_job)
+        signal_created = Signal.objects.create(
+            job=to_job,
+            signal_choice=from_signal.signal_choice,
+        )
+    except Signal.DoesNotExist:
         pass
+    else:
+        # creating the signal parameters
+        signal_parameters = SignalParameter.objects.filter(signal=from_signal)
+
+        for signal_parameter in signal_parameters:
+            signal_parameter_created = SignalParameter.objects.create(
+                signal=signal_created,
+                name=signal_parameter.name,
+                value=signal_parameter.value,
+            )
+
+            # populating prior
+            priors = Prior.objects.filter(signal_parameter=signal_parameter)
+            for prior in priors:
+                Prior.objects.create(
+                    signal_parameter=signal_parameter_created,
+                    prior_choice=prior.prior_choice,
+                    fixed_value=prior.fixed_value,
+                    uniform_min_value=prior.uniform_min_value,
+                    uniform_max_value=prior.uniform_max_value,
+                )
+
+    # cloning sampler and sampler parameters
+    try:
+        from_sampler = Sampler.objects.get(job=from_job)
+        sampler_created = Sampler.objects.create(
+            job=to_job,
+            sampler_choice=from_sampler.sampler_choice,
+        )
+    except Sampler.DoesNotExist:
+        pass
+    else:
+        # creating the sampler parameters
+        sampler_parameters = SamplerParameter.objects.filter(sampler=from_sampler)
+
+        for sampler_parameter in sampler_parameters:
+            SamplerParameter.objects.create(
+                sampler=sampler_created,
+                name=sampler_parameter.name,
+                value=sampler_parameter.value,
+            )
 
 
 class TupakJob(object):
-
     job = None
     data = None
     data_parameters = None
