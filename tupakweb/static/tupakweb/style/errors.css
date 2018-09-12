@@ -1,0 +1,13 @@
+.error-message {
+    font-size: 3em;
+    padding: 50px 0;
+}
+
+.error-code {
+    color: salmon;
+    font-size: 8em;
+}
+
+.error-details {
+    padding: 50px;
+}

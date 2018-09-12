@@ -32,6 +32,9 @@ class StartJobForm(forms.ModelForm):
 
     def clean_name(self):
         name = self.cleaned_data['name']
+        if self.job and self.job.name == name:
+            return name
+
         if Job.objects.filter(
                 user=self.request.user,
                 name=self.cleaned_data.get('name')
@@ -57,21 +60,3 @@ class StartJobForm(forms.ModelForm):
 
         self.request.session['draft_job'] = job_created.as_json()
 
-
-class EditJobForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
-        self.job_id = kwargs.pop('job_id', None)
-        if self.job_id:
-            try:
-                self.request.session['draft_job'] = Job.objects.get(id=self.job_id).as_json()
-            except:
-                pass
-        super(EditJobForm, self).__init__(*args, **kwargs)
-        self.fields['name'].widget.attrs.update({'class': 'form-control'})
-        self.fields['description'].widget.attrs.update({'class': 'form-control'})
-
-    class Meta:
-        model = Job
-        fields = FIELDS
-        labels = LABELS

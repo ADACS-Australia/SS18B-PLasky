@@ -12,8 +12,12 @@
                     <a class="nav-link" href="{% url 'new_job' %}">New Job</a>
                 </li>
                 {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'jobs' %}">My Job</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownJobsLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My Jobs</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownJobsLink">
+                            <a class="dropdown-item" href="{% url 'jobs' %}">Submitted Jobs</a>
+                            <a class="dropdown-item" href="{% url 'drafts' %}">Drafts</a>
+                        </div>
                     </li>
                 {% endif %}
             </ul>

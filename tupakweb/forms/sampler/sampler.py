@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from ...models import Job, Sampler
+from ...models import Sampler
 
 FIELDS = [
     'sampler_choice',
@@ -20,42 +20,26 @@ LABELS = {
 class SamplerForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
-        self.id = kwargs.pop('id', None)
+        self.job = kwargs.pop('job', None)
         super(SamplerForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Sampler
+        fields = FIELDS
+        widgets = WIDGETS
+        labels = LABELS
 
     def save(self, **kwargs):
         self.full_clean()
         data = self.cleaned_data
 
-        job = Job.objects.get(id=self.id)
+        # deleting sampler object will make sure that there exists no parameter
+        # this avoids duplicating parameters
+        Sampler.objects.filter(job=self.job).delete()
 
-        result = Sampler.objects.create(
-            job=job,
-            sampler_choice=data.get('sampler_choice'),
+        Sampler.objects.update_or_create(
+            job=self.job,
+            defaults={
+                'sampler_choice': data.get('sampler_choice'),
+            },
         )
-
-        self.request.session['sampler'] = self.as_array(data)
-
-    class Meta:
-        model = Sampler
-        fields = FIELDS
-        widgets = WIDGETS
-        labels = LABELS
-
-
-class EditSamplerForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
-        self.job_id = kwargs.pop('job_id', None)
-        if self.job_id:
-            try:
-                self.request.session['sampler'] = Sampler.objects.get(job_id=self.job_id).as_json()
-            except:
-                pass
-        super(EditSamplerForm, self).__init__(*args, **kwargs)
-
-    class Meta:
-        model = Sampler
-        fields = FIELDS
-        widgets = WIDGETS
-        labels = LABELS

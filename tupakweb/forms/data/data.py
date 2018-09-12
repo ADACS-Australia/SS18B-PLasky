@@ -1,8 +1,10 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from ...models import Job, Data
 
-FIELDS = ['data_choice', ]
+from ...models import Data
+from ...utility.display_names import DATA_CHOICE_DISPLAY, DATA_CHOICE
+
+FIELDS = [DATA_CHOICE, ]
 
 WIDGETS = {
     'data_choice': forms.Select(
@@ -11,7 +13,7 @@ WIDGETS = {
 }
 
 LABELS = {
-    'data_choice': _('Type of data'),
+    DATA_CHOICE: _(DATA_CHOICE_DISPLAY),
 }
 
 
@@ -31,29 +33,13 @@ class DataForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
+        # deleting data object will make sure that there exists no parameter
+        # this avoids duplicating parameters
+        Data.objects.filter(job=self.job).delete()
+
         Data.objects.update_or_create(
             job=self.job,
             defaults={
-                'data_choice': data.get('data_choice'),
+                DATA_CHOICE: data.get(DATA_CHOICE),
             }
         )
-
-        # self.request.session['data'] = self.as_array(data)
-
-
-class EditDataForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
-        self.job_id = kwargs.pop('job_id', None)
-        if self.job_id:
-            try:
-                self.request.session['data'] = Data.objects.get(job_id=self.job_id).as_json()
-            except:
-                pass
-        super(EditDataForm, self).__init__(*args, **kwargs)
-
-    class Meta:
-        model = Data
-        fields = FIELDS
-        widgets = WIDGETS
-        labels = LABELS

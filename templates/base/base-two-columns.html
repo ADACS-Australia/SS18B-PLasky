@@ -3,17 +3,20 @@
 {% block main_content %}
     <div class="container">
         <div class="row">
-            <div class="col col-md-10 main-content">
-
+            <div class="col col-md-12">
                 <div class="page-header">
                     {% block page_header %}
                         TUPAK
                     {% endblock page_header %}
                 </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-md-8">
                 {% block content %}
                 {% endblock content %}
             </div>
-            <div class="col col-md-2 align-self-center info-bar">
+            <div class="col col-md-4 info-bar">
                 {% block info-bar %}
                 {% endblock info-bar %}
             </div>

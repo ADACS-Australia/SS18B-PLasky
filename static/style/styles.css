@@ -73,6 +73,17 @@ Welcome page
 }
 
 .field.error ul {
+    margin-bottom: 0;
+    list-style: none;
+    color: darkred;
+    padding: 5px 5px 0 10px;
+    border: 1px solid darkred;
+    border-radius: 4px 4px 0 0;
+}
+
+/* not applicable to ul inputs to avoid the checkboxes */
+.field.error ul.errorlist {
+    margin-bottom: 0;
     list-style: none;
     color: darkred;
     padding: 5px 5px 5px 10px;
@@ -109,6 +120,10 @@ ul.messages {
     padding-bottom: 10px;
 }
 
+.div-mode-params {
+    margin-bottom: 2px;
+}
+
 /********************************************/
 /*                                          */
 /*                 form-group               */
@@ -136,56 +151,6 @@ ul.messages {
 /********************************************/
 .errorlist {
   list-style-type: none;
-}
-
-/********************************************/
-/*                                          */
-/*                 Forms                    */
-/*                                          */
-/********************************************/
-.field {
-    padding-bottom: 10px;
-}
-.field.error label {
-    color: darkred;
-}
-
-.field.error input {
-    border-color: darkred;
-    border-radius: 4px 4px 0 0;
-}
-
-.field.error ul {
-    list-style: none;
-    color: darkred;
-    padding: 5px 5px 5px 10px;
-    border: 1px solid darkred;
-    border-top-width: 0;
-    border-radius: 0 0 4px 4px;
-    background-color: darksalmon;
-}
-
-/* non field errors */
-
-.non-field-error div {
-    margin-top: -20px;
-    border-top: 1px solid darkred;
-    padding: 0 80px 10px;
-}
-
-.non-field-error ul {
-    list-style: none;
-    color: darkred;
-    padding: 5px 5px 5px 10px;
-    border: 1px solid darkred;
-    border-top-width: 0;
-    border-radius: 0 0 4px 4px;
-    background-color: darksalmon;
-}
-
-
-.div-mode-params {
-    margin-bottom: 2px;
 }
 
 

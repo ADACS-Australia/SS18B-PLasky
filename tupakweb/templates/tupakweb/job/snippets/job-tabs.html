@@ -8,7 +8,7 @@
                 </a>
             </li>
             <li id="li_data"
-                class="nav-item {% if disable_other_tabs == True %} disabled {% endif %}"
+                class="nav-item {% if 'data' not in enabled_tabs %} disabled {% endif %}"
                 data-content="Define Data" data-placement="top" data-container="body"
             >
                 <a class="nav-link {% if active_tab == 'data' %}active{% endif %}" data-toggle="tab" href="#data">
@@ -17,7 +17,7 @@
                 </a>
             </li>
             <li id="li_signal"
-                class="nav-item {% if disable_other_tabs == True %} disabled {% endif %}"
+                class="nav-item {% if 'signal' not in enabled_tabs %} disabled {% endif %}"
                 data-content="Define Data" data-placement="top" data-container="body"
             >
                 <a class="nav-link {% if active_tab == 'signal' %}active{% endif %}" data-toggle="tab" href="#signal">
@@ -26,7 +26,7 @@
                 </a>
             </li>
             <li id="li_prior"
-                class="nav-item {% if disable_other_tabs == True %} disabled {% endif %}"
+                class="nav-item {% if 'prior' not in enabled_tabs %} disabled {% endif %}"
                 data-content="Define Data" data-placement="top" data-container="body"
             >
                 <a class="nav-link {% if active_tab == 'prior' %}active{% endif %}" data-toggle="tab" href="#prior">
@@ -35,7 +35,7 @@
                 </a>
             </li>
             <li id="li_sampler"
-                class="nav-item {% if disable_other_tabs == True %} disabled {% endif %}"
+                class="nav-item {% if 'sampler' not in enabled_tabs %} disabled {% endif %}"
                 data-content="Define Data" data-placement="top" data-container="body"
             >
                 <a class="nav-link {% if active_tab == 'sampler' %}active{% endif %}" data-toggle="tab" href="#sampler">
@@ -44,7 +44,7 @@
                 </a>
             </li>
             <li id="li_launch"
-                class="nav-item {% if disable_other_tabs == True %} disabled {% endif %}"
+                class="nav-item {% if 'launch' not in enabled_tabs %} disabled {% endif %}"
                 data-content="Define Data" data-placement="top" data-container="body"
             >
                 <a class="nav-link {% if active_tab == 'launch' %}active{% endif %}" data-toggle="tab" href="#launch">

@@ -1,77 +1,101 @@
-from django import forms
-from django.utils.translation import ugettext_lazy as _
-from ...models import Job, DataOpen
+import ast
 
-FIELDS = ['detector_choice',
-          'signal_duration',
-          'sample_frequency',
-          'start_time', ]
+from collections import OrderedDict
 
-WIDGETS = {
-    'detector_choice': forms.Select(
-        attrs={'class': 'form-control'},
-    ),
-    'signal_duration': forms.TextInput(
-        attrs={'class': 'form-control'},
-    ),
-    'sample_frequency': forms.TextInput(
-        attrs={'class': 'form-control'},
-    ),
-    'start_time': forms.TextInput(
-        attrs={'class': 'form-control'},
-    ),
-}
+from ...utility.display_names import OPEN_DATA
+from ..dynamic import field
+from ...models import DataParameter, Data
+from ..dynamic.form import DynamicForm
+from ...utility.display_names import (
+    DETECTOR_CHOICE,
+    DETECTOR_CHOICE_DISPLAY,
+    SIGNAL_DURATION,
+    SIGNAL_DURATION_DISPLAY,
+    SAMPLING_FREQUENCY,
+    SAMPLING_FREQUENCY_DISPLAY,
+    START_TIME,
+    START_TIME_DISPLAY,
+    HANFORD,
+    HANFORD_DISPLAY,
+    LIVINGSTON,
+    LIVINGSTON_DISPLAY,
+    VIRGO,
+    VIRGO_DISPLAY,
+)
 
-LABELS = {
-    'detector_choice': _('Detector choice'),
-    'signal_duration': _('Signal duration (s)'),
-    'sample_frequency': _('Signal frequency (Hz)'),
-    'start_time': _('Start time'),
-}
+DETECTOR_CHOICES = [
+    (HANFORD, HANFORD_DISPLAY),
+    (LIVINGSTON, LIVINGSTON_DISPLAY),
+    (VIRGO, VIRGO_DISPLAY),
+]
+
+DATA_FIELDS_PROPERTIES = OrderedDict([
+    (DETECTOR_CHOICE, {
+        'type': field.MULTIPLE_CHOICES,
+        'label': DETECTOR_CHOICE_DISPLAY,
+        'initial': None,
+        'required': True,
+        'choices': DETECTOR_CHOICES,
+    }),
+    (SIGNAL_DURATION, {
+        'type': field.POSITIVE_INTEGER,
+        'label': SIGNAL_DURATION_DISPLAY,
+        'placeholder': '2',
+        'initial': None,
+        'required': True,
+    }),
+    (SAMPLING_FREQUENCY, {
+        'type': field.POSITIVE_INTEGER,
+        'label': SAMPLING_FREQUENCY_DISPLAY,
+        'placeholder': '2',
+        'initial': None,
+        'required': True,
+    }),
+    (START_TIME, {
+        'type': field.POSITIVE_FLOAT,
+        'label': START_TIME_DISPLAY,
+        'placeholder': '2.1',
+        'initial': None,
+        'required': True,
+    }),
+])
 
 
-class DataOpenForm(forms.ModelForm):
+class OpenDataParameterForm(DynamicForm):
+
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
+        kwargs['name'] = 'data-parameter'
+        kwargs['fields_properties'] = DATA_FIELDS_PROPERTIES
         self.job = kwargs.pop('job', None)
-        super(DataOpenForm, self).__init__(*args, **kwargs)
 
-    class Meta:
-        model = DataOpen
-        fields = FIELDS
-        widgets = WIDGETS
-        labels = LABELS
+        super(OpenDataParameterForm, self).__init__(*args, **kwargs)
 
-    def save(self, **kwargs):
-        self.full_clean()
-        data = self.cleaned_data
+    def save(self):
+        # find the data first
+        data = Data.objects.get(job=self.job)
+        for name, value in self.cleaned_data.items():
+            DataParameter.objects.update_or_create(
+                data=data,
+                name=name,
+                defaults={
+                    'value': value,
+                }
+            )
 
-        DataOpen.objects.update_or_create(
-            job=self.job,
-            defaults={
-                'detector_choice': data.get('detector_choice'),
-                'signal_duration': data.get('signal_duration'),
-                'sample_frequency': data.get('sample_frequency'),
-                'start_time': data.get('start_time'),
-            }
-        )
-
-        # self.request.session['data_open'] = self.as_array(data)
-
-
-class EditDataOpenForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
-        self.job_id = kwargs.pop('job_id', None)
-        if self.job_id:
+    def update_from_database(self, job):
+        if not job:
+            return
+        else:
             try:
-                self.request.session['data_open'] = DataOpen.objects.get(job_id=self.job_id).as_json()
-            except:
-                pass
-        super(EditDataOpenForm, self).__init__(*args, **kwargs)
+                data = Data.objects.get(job=job)
+                if data.data_choice != OPEN_DATA:
+                    return
+            except Data.DoesNotExist:
+                return
 
-    class Meta:
-        model = DataOpen
-        fields = FIELDS
-        widgets = WIDGETS
-        labels = LABELS
+        for name in DATA_FIELDS_PROPERTIES.keys():
+            try:
+                value = DataParameter.objects.get(data=data, name=name).value
+                self.fields[name].initial = ast.literal_eval(value) if name == DETECTOR_CHOICE else value
+            except DataParameter.DoesNotExist:
+                continue

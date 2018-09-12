@@ -1,11 +1,21 @@
-{% extends 'base/base.html' %}
-
-{% block info-bar %}
-{% endblock info-bar %}
+{% extends 'base/base-two-columns.html' %}
+{% load static %}
 
 {% block page_header %}
     New Job
 {% endblock page_header %}
+
+{% block additional_styles %}
+    <link rel="stylesheet" href="{% static 'tupakweb/style/info_bar.css' %}"/>
+    <link rel="stylesheet" href="{% static 'tupakweb/style/form.css' %}"/>
+{% endblock additional_styles %}
+
+{% block additional_javascript %}
+    <script src="{% static 'tupakweb/js/data.js' %}"></script>
+    <script src="{% static 'tupakweb/js/signal.js' %}"></script>
+    <script src="{% static 'tupakweb/js/prior.js' %}"></script>
+    <script src="{% static 'tupakweb/js/sampler.js' %}"></script>
+{% endblock additional_javascript %}
 
 {% block content %}
     {% include 'tupakweb/job/snippets/job-tabs.html' %}
@@ -42,4 +52,11 @@
         </div>
 
     </div>
+
+    <div id="form_store" style="display: none"></div>
 {% endblock content %}
+
+
+{% block info-bar %}
+    {% include 'tupakweb/job/summary_job.html' %}
+{% endblock info-bar %}

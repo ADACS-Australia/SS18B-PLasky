@@ -1,23 +1,20 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from ...models import Job, Signal
+
+from ...utility.display_names import OPEN_DATA, SKIP
+from ...models import Signal, Data
 
 FIELDS = [
-    'inject_or_not',
     'signal_choice',
 ]
 
 WIDGETS = {
-    'inject_or_not': forms.Select(
-        attrs={'class': 'form-control'},
-    ),
     'signal_choice': forms.Select(
         attrs={'class': 'form-control'},
     ),
 }
 
 LABELS = {
-    'inject_or_not': _('Inject a signal?'),
     'signal_choice': _('Signal type'),
 }
 
@@ -25,8 +22,25 @@ LABELS = {
 class SignalForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
-        self.id = kwargs.pop('id', None)
+        self.job = kwargs.pop('job', None)
         super(SignalForm, self).__init__(*args, **kwargs)
+
+        # checking the data_choice to decide whether skip should be there
+        show_skip = True
+        if self.job:
+            try:
+                data = Data.objects.get(job=self.job)
+                if data.data_choice != OPEN_DATA:
+                    show_skip = False
+            except Data.DoesNotExist:
+                pass
+
+        self.fields['signal_choice'] = forms.ChoiceField(
+            choices=Signal.SIGNAL_CHOICES[1:] if not show_skip else Signal.SIGNAL_CHOICES,
+            widget=forms.Select(
+                attrs={'class': 'form-control'},
+            )
+        )
 
     class Meta:
         model = Signal
@@ -38,29 +52,17 @@ class SignalForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        job = Job.objects.get(id=self.id)
+        signal_choice = data.get('signal_choice')
 
-        result = Signal.objects.create(
-            job=job,
-            data_choice=data.get('signal_choice'),
-        )
-
-        self.request.session['signal'] = self.as_array(data)
-
-
-class EditSignalForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
-        self.job_id = kwargs.pop('job_id', None)
-        if self.job_id:
-            try:
-                self.request.session['signal'] = Signal.objects.get(job_id=self.job_id).as_json()
-            except:
-                pass
-        super(EditSignalForm, self).__init__(*args, **kwargs)
-
-    class Meta:
-        model = Signal
-        fields = FIELDS
-        widgets = WIDGETS
-        labels = LABELS
+        if signal_choice == SKIP:
+            # signal should be deleted if there is a change of choice
+            # currently as there is only one available, it does not
+            # have any adverse effect.
+            Signal.objects.filter(job=self.job).delete()
+        else:
+            Signal.objects.update_or_create(
+                job=self.job,
+                defaults={
+                    'signal_choice': data.get('signal_choice'),
+                }
+            )

@@ -9,18 +9,15 @@ def index(request):
 
 
 def about(request):
-
-    from ..forms.job import StartJobForm
-
-    start_form = StartJobForm()
-
-    if request.method == 'POST':
-        start_form = StartJobForm(request.POST, request=request)
-
     return render(
         request,
         'tupakweb/about.html',
         {
-            'start_form': start_form,
+            'start_form': None,
         }
     )
+
+
+def error_404_view(request, exception):
+    data = {"name": "ThePythonDjango.com"}
+    return render(request, 'tupakweb/error_404.html', data)

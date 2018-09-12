@@ -1,6 +1,8 @@
 <form action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
+    <input type="hidden" name="form-tab" value="sampler"/>
+
     {% include 'tupakweb/job/snippets/errors.html' %}
 
     {% for field in sampler_form %}
@@ -10,12 +12,12 @@
                     div-{{ field.name }}">
 
             <!-- Label -->
-            <label class="col-md-4 control-label" for="{{ field.auto_id }}">
+            <label class="col col-md-4 control-label" for="{{ field.auto_id }}">
                 {{ field.label }}
             </label>
 
             <!-- Field -->
-            <div class="col-md-8">
+            <div class="col col-md-8">
                 {{ field }}
                 {{ field.errors }}
             </div>
@@ -23,6 +25,71 @@
         </div>
     {% endfor %}
 
-{#    <input class="btn btn-primary" type="submit" value="Save and next" />#}
-    {% include 'tupakweb/job/snippets/pager.html' %}
+    <div id="div_sampler_dynesty">
+        {% for field in sampler_dynesty_form %}
+            <div class="row field
+                        {% if field.field.required %}required{% endif %}
+                        {% if field.errors %}error{% endif %}">
+
+                <!-- Label -->
+                <label class="col col-md-4 control-label" for="{{ field.auto_id }}">
+                    {{ field.label }}
+                </label>
+
+                <!-- Field -->
+                <div class="col col-md-8">
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
+
+    <div id="div_sampler_nestle">
+        {% for field in sampler_nestle_form %}
+            <div class="row field
+                        {% if field.field.required %}required{% endif %}
+                        {% if field.errors %}error{% endif %}">
+
+                <!-- Label -->
+                <label class="col col-md-4 control-label" for="{{ field.auto_id }}">
+                    {{ field.label }}
+                </label>
+
+                <!-- Field -->
+                <div class="col col-md-8">
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
+
+    <div id="div_sampler_emcee">
+        {% for field in sampler_emcee_form %}
+            <div class="row field
+                        {% if field.field.required %}required{% endif %}
+                        {% if field.errors %}error{% endif %}">
+
+                <!-- Label -->
+                <label class="col col-md-4 control-label" for="{{ field.auto_id }}">
+                    {{ field.label }}
+                </label>
+
+                <!-- Field -->
+                <div class="col col-md-8">
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
+
+    <div id="sampler-tab-navigation">
+        {% include 'tupakweb/job/snippets/pager.html' %}
+    </div>
+
 </form>

@@ -1,62 +1,60 @@
-from django import forms
-from django.utils.translation import ugettext_lazy as _
-from ...models import Job, SamplerDynesty
+from collections import OrderedDict
 
-FIELDS = [
-    'n_livepoints',
-]
+from ...utility.display_names import DYNESTY
+from ..dynamic import field
+from ...models import SamplerParameter, Sampler
+from ..dynamic.form import DynamicForm
+from ...utility.display_names import (
+    NUMBER_OF_LIVE_POINTS,
+    NUMBER_OF_LIVE_POINTS_DISPLAY,
+)
 
-WIDGETS = {
-    'n_livepoints': forms.TextInput(
-        attrs={'class': 'form-control'},
-    ),
-}
+DYNESTY_FIELDS_PROPERTIES = OrderedDict([
+    (NUMBER_OF_LIVE_POINTS, {
+        'type': field.POSITIVE_INTEGER,
+        'label': NUMBER_OF_LIVE_POINTS_DISPLAY,
+        'placeholder': '1000',
+        'initial': None,
+        'required': True,
+    }),
+])
 
-LABELS = {
-    'n_livepoints': _('Number of live points'),
-}
 
-
-class SamplerDynestyForm(forms.ModelForm):
+class SamplerDynestyParameterForm(DynamicForm):
 
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
-        self.id = kwargs.pop('id', None)
-        super(SamplerDynestyForm, self).__init__(*args, **kwargs)
+        kwargs['name'] = 'data-parameter'
+        kwargs['fields_properties'] = DYNESTY_FIELDS_PROPERTIES
+        self.job = kwargs.pop('job', None)
 
-    class Meta:
-        model = SamplerDynesty
-        fields = FIELDS
-        widgets = WIDGETS
-        labels = LABELS
+        super(SamplerDynestyParameterForm, self).__init__(*args, **kwargs)
 
-    def save(self, **kwargs):
-        self.full_clean()
-        data = self.cleaned_data
+    def save(self):
+        # find the sampler first
+        sampler = Sampler.objects.get(job=self.job)
+        for name, value in self.cleaned_data.items():
+            SamplerParameter.objects.update_or_create(
+                sampler=sampler,
+                name=name,
+                defaults={
+                    'value': value,
+                }
+            )
 
-        job = Job.objects.get(id=self.id)
-
-        result = SamplerDynesty.objects.create(
-            sampler=job.sampler,
-            n_livepoints=data.get('n_livepoints'),
-        )
-
-        self.request.session['sampler_dynesty'] = self.as_array(data)
-
-
-class EditSamplerDynestyForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
-        self.job_id = kwargs.pop('job_id', None)
-        if self.job_id:
+    def update_from_database(self, job):
+        if not job:
+            return
+        else:
             try:
-                self.request.session['sampler_dynesty'] = SamplerDynesty.objects.get(job_id=self.job_id).as_json()
-            except:
-                pass
-        super(EditSamplerDynestyForm, self).__init__(*args, **kwargs)
+                sampler = Sampler.objects.get(job=job)
+                if sampler.sampler_choice != DYNESTY:
+                    return
+            except Sampler.DoesNotExist:
+                return
 
-    class Meta:
-        model = SamplerDynesty
-        fields = FIELDS
-        widgets = WIDGETS
-        labels = LABELS
+        for name in DYNESTY_FIELDS_PROPERTIES.keys():
+            try:
+                value = SamplerParameter.objects.get(sampler=sampler, name=name).value
+                self.fields[name].initial = value
+            except SamplerParameter.DoesNotExist:
+                pass

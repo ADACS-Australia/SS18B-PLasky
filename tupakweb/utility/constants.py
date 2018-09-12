@@ -1,22 +1,22 @@
 from ..models import (
     Job,
-    Data, DataOpen, DataSimulated,
-    Signal, SignalBbhParameter,
-    Prior, PriorFixed, PriorUniform,
-    Sampler, SamplerDynesty, SamplerEmcee, SamplerNestle
+    Data,
+    Signal,
+    Sampler,
 )
 
-from ..forms.job import StartJobForm, EditJobForm
-from ..forms.data.data import DataForm, EditDataForm
-from ..forms.data.data_simulated import DataSimulatedForm, EditDataSimulatedForm
-from ..forms.data.data_open import DataOpenForm, EditDataOpenForm
-from ..forms.signal.signal import SignalForm, EditSignalForm
-from ..forms.prior.prior import PriorForm, EditPriorForm
-from ..forms.prior.prior_uniform import PriorUniformForm, EditPriorUniformForm
-from ..forms.prior.prior_fixed import PriorFixedForm, EditPriorFixedForm
-from ..forms.sampler.sampler import SamplerForm, EditSamplerForm
-from ..forms.sampler.sampler_dynesty import SamplerDynestyForm, EditSamplerDynestyForm
-from ..forms.sampler.sampler_emcee import SamplerEmceeForm, EditSamplerEmceeForm
+from ..forms.start import StartJobForm
+from ..forms.submit import SubmitJobForm
+from ..forms.data.data import DataForm
+from ..forms.data.data_simulated import SimulatedDataParameterForm
+from ..forms.data.data_open import OpenDataParameterForm
+from ..forms.signal.signal import SignalForm
+from ..forms.signal.signal_parameter import SignalParameterBbhForm
+from ..forms.prior.prior import PriorForm
+from ..forms.sampler.sampler import SamplerForm
+from ..forms.sampler.sampler_dynesty import SamplerDynestyParameterForm
+from ..forms.sampler.sampler_nestle import SamplerNestleParameterForm
+from ..forms.sampler.sampler_emcee import SamplerEmceeParameterForm
 
 
 def set_dict_indices(my_array):
@@ -47,15 +47,18 @@ DATA = 'data'
 DATA_OPEN = 'data-open'
 DATA_SIMULATED = 'data-simulated'
 SIGNAL = 'signal'
-SIGNAL_BBH_PARAMETERS = 'signal-bbh-parameter'
+SIGNAL_PARAMETER_BBH = 'signal-parameter-bbh'
 PRIOR = 'prior'
-PRIOR_FIXED = 'prior-fixed'
-PRIOR_UNIFORM = 'prior-uniform'
 SAMPLER = 'sampler'
 SAMPLER_DYNESTY = 'sampler-dynesty'
 SAMPLER_EMCEE = 'sampler-emcee'
 SAMPLER_NESTLE = 'sampler-nestle'
 LAUNCH = 'launch'
+
+SKIP_FORWARD = 'SKIP >'
+SKIP_BACKWARD = '< SKIP'
+REMOVE_FORWARD = 'REMOVE >'
+REMOVE_BACKWARD = '< REMOVE'
 
 TABS = [
     START,
@@ -70,103 +73,30 @@ TABS_INDEXES = set_dict_indices(TABS)
 TAB_FORMS = {
     START: [START],
     DATA: [DATA, DATA_SIMULATED, DATA_OPEN, ],
+    SIGNAL: [SIGNAL, SIGNAL_PARAMETER_BBH, ],
+    PRIOR: [PRIOR, ],
+    SAMPLER: [SAMPLER, SAMPLER_DYNESTY, SAMPLER_NESTLE, SAMPLER_EMCEE, ],
+    LAUNCH: [LAUNCH, ]
 }
-
-BLOCKS = [
-    START,
-    DATA,
-    DATA_SIMULATED,
-    DATA_OPEN,
-    SIGNAL,
-    SIGNAL_BBH_PARAMETERS,
-    PRIOR,
-    PRIOR_FIXED,
-    PRIOR_UNIFORM,
-    SAMPLER,
-    SAMPLER_DYNESTY,
-    SAMPLER_EMCEE,
-    LAUNCH,
-]
-BLOCKS_INDEXES = set_dict_indices(BLOCKS)
 
 FORMS_NEW = {
     START: StartJobForm,
     DATA: DataForm,
-    DATA_SIMULATED: DataSimulatedForm,
-    DATA_OPEN: DataOpenForm,
+    DATA_SIMULATED: SimulatedDataParameterForm,
+    DATA_OPEN: OpenDataParameterForm,
     SIGNAL: SignalForm,
-    SIGNAL_BBH_PARAMETERS: None,  # Need to figure this one out!
+    SIGNAL_PARAMETER_BBH: SignalParameterBbhForm,
     PRIOR: PriorForm,
-    PRIOR_FIXED: PriorFixedForm,
-    PRIOR_UNIFORM: PriorUniformForm,
     SAMPLER: SamplerForm,
-    SAMPLER_DYNESTY: SamplerDynestyForm,
-    SAMPLER_EMCEE: SamplerEmceeForm,
-}
-
-FORMS_EDIT = {
-    START: EditJobForm,
-    DATA: EditDataForm,
-    DATA_SIMULATED: EditDataSimulatedForm,
-    DATA_OPEN: EditDataOpenForm,
-    SIGNAL: EditSignalForm,
-    SIGNAL_BBH_PARAMETERS: None,  # Need to figure this one out!
-    PRIOR: EditPriorForm,
-    PRIOR_FIXED: EditPriorFixedForm,
-    PRIOR_UNIFORM: EditPriorUniformForm,
-    SAMPLER: EditSamplerForm,
-    SAMPLER_DYNESTY: EditSamplerDynestyForm,
-    SAMPLER_EMCEE: EditSamplerEmceeForm,
+    SAMPLER_DYNESTY: SamplerDynestyParameterForm,
+    SAMPLER_NESTLE: SamplerNestleParameterForm,
+    SAMPLER_EMCEE: SamplerEmceeParameterForm,
+    LAUNCH: SubmitJobForm,
 }
 
 MODELS = {
     START: Job,
     DATA: Data,
-    DATA_SIMULATED: DataSimulated,
-    DATA_OPEN: DataOpen,
     SIGNAL: Signal,
-    SIGNAL_BBH_PARAMETERS: SignalBbhParameter,
-    PRIOR: Prior,
-    PRIOR_FIXED: PriorFixed,
-    PRIOR_UNIFORM: PriorUniform,
     SAMPLER: Sampler,
-    SAMPLER_DYNESTY: SamplerDynesty,
-    SAMPLER_EMCEE: SamplerEmcee,
-}
-
-data, data_form = None, None
-data_simulated, data_simulated_form = None, None
-data_open, data_open_form = None, None
-signal, signal_form = None, None
-prior, prior_form = None, None
-prior_fixed, prior_fixed_form = None, None
-prior_uniform, prior_uniform_form = None, None
-sampler, sampler_form = None, None
-sampler_dynesty, sampler_dynesty_form = None, None
-sampler_emcee, sampler_emcee_form = None, None
-
-variables = {
-    DATA: data,
-    DATA_SIMULATED: data_simulated,
-    DATA_OPEN: data_open,
-    SIGNAL: signal,
-    PRIOR: prior,
-    PRIOR_FIXED: prior_fixed,
-    PRIOR_UNIFORM: prior_uniform,
-    SAMPLER: sampler,
-    SAMPLER_DYNESTY: sampler_dynesty,
-    SAMPLER_EMCEE: sampler_emcee,
-}
-
-form_variables = {
-    DATA: data_form,
-    DATA_SIMULATED: data_simulated_form,
-    DATA_OPEN: data_open_form,
-    SIGNAL: signal_form,
-    PRIOR: prior_form,
-    PRIOR_FIXED: prior_fixed_form,
-    PRIOR_UNIFORM: prior_uniform_form,
-    SAMPLER: sampler_form,
-    SAMPLER_DYNESTY: sampler_dynesty_form,
-    SAMPLER_EMCEE: sampler_emcee_form,
 }
