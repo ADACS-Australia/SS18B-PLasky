@@ -4,6 +4,7 @@ from .field import (
     get_text_input,
     get_text_area_input,
     get_select_input,
+    get_checkbox_input,
     get_radio_input,
     get_positive_integer_input,
     get_multiple_choices_input,
@@ -23,6 +24,7 @@ from .field import (
     TEXT_AREA,
     SELECT,
     RADIO,
+    CHECKBOX,
 )
 
 
@@ -119,6 +121,15 @@ class DynamicForm(forms.Form):
                     # validators=properties.get('validators', ()),
                     choices=properties.get('choices'),
                     extra_class=properties.get('extra_class', None),
+                )
+
+            elif properties.get('type') == CHECKBOX:
+                self.fields[name] = get_checkbox_input(
+                    label=properties.get('label', name),
+                    initial=properties.get('initial', None),
+                    # required=properties.get('required', False),
+                    # validators=properties.get('validators', ()),
+                    # choices=properties.get('choices'),
                 )
 
             elif properties.get('type') == MULTIPLE_CHOICES:

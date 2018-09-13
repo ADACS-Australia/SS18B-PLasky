@@ -100,6 +100,7 @@ class Signal(models.Model):
     ]
 
     signal_choice = models.CharField(max_length=50, choices=SIGNAL_CHOICES, default=SKIP)
+    # signal_model = models.CharField(max_length=50, choices=SIGNAL_CHOICES)
 
     def __str__(self):
         return '{} - ({}[{}])'.format(self.signal_choice, self.job.name, self.job.user.username)

@@ -21,6 +21,7 @@ ZERO_TO_2PI = 'zero-to-2pi'
 TEXT_AREA = 'text-area'
 SELECT = 'select'
 RADIO = 'radio'
+CHECKBOX = 'checkbox'
 
 
 class CustomCharField(forms.CharField):
@@ -205,6 +206,18 @@ def get_select_input(label, choices=None, initial=None, extra_class=None):
         choices=choices,
         initial=initial,
 
+    )
+
+
+def get_checkbox_input(label, initial=None, extra_class=None):
+    return forms.BooleanField(
+        label=label,
+        widget=forms.CheckboxInput(
+            attrs={
+                'class': extra_class if extra_class else '',
+            }
+        ),
+        initial=initial,
     )
 
 
