@@ -46,7 +46,7 @@
                 </div>
             </div>
         {% endif %}
-        {% if drafted_job.signal %}
+        {% if drafted_job.signal and drafted_job.signal.signal_choice != 'skip' %}
             <div class="card">
                 <div class="card-header" id="headingSignal">
                     <h5 class="mb-0">

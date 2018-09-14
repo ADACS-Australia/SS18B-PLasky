@@ -31,33 +31,15 @@ from ...utility.constants import (
 )
 
 
-def get_to_be_active_tab(active_tab, previous=False, job=None):
+def get_to_be_active_tab(active_tab, previous=False):
     no_more_tabs = False  # keep track of out of index tab, might be beneficial to detect the last page
 
     active_tab_index = TABS_INDEXES.get(active_tab)
 
-    skip = 0
-
-    # skip priors from signal tab if no signal entered.
-    # checks:
-    # 1. active_tab is 'SIGNAL'
-    # 2. not going previous, and
-    # 3. no signal information
-    if active_tab == SIGNAL and job and not Signal.objects.filter(job=job).exists() and not previous:
-        skip = 1
-
-    # skip priors from sampler tab if no signal entered.
-    # checks:
-    # 1. active_tab is 'SAMPLER'
-    # 2. going previous, and
-    # 3. no signal information
-    if active_tab == SAMPLER and job and not Signal.objects.filter(job=job).exists() and previous:
-        skip = 1
-
     if previous:
-        active_tab_index -= (1 + skip)
+        active_tab_index -= 1
     else:
-        active_tab_index += (1 + skip)
+        active_tab_index += 1
 
     try:
         active_tab = TABS[active_tab_index]
@@ -197,11 +179,7 @@ def save_tab(request, active_tab):
             job.save()
 
         # get the active tab
-        active_tab, submitted = get_to_be_active_tab(
-            active_tab,
-            previous=request.POST.get('previous', False),
-            job=job,
-        )
+        active_tab, submitted = get_to_be_active_tab(active_tab, previous=request.POST.get('previous', False))
 
     # don't process further for submitted jobs
     if not submitted:
