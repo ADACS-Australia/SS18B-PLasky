@@ -170,7 +170,13 @@ class TupakJob(object):
                     self.signal_parameters.append(all_signal_parameters.get(name=name))
 
         # populating prior
-        self.priors = Prior.objects.filter(job=self.job)
+        # self.priors = Prior.objects.filter(job=self.job)
+        # would be suffice if ordering is not required
+        # however for displaying the fields in order the following have been added
+        all_priors = Prior.objects.filter(job=self.job)
+        if self.signal.signal_model == BINARY_BLACK_HOLE:
+            for name in BBH_FIELDS_PROPERTIES.keys():
+                self.priors.append(all_priors.get(name=name))
 
         # populating sampler tab information
         try:
