@@ -127,7 +127,7 @@ class DynamicForm(forms.Form):
                 self.fields[name] = get_checkbox_input(
                     label=properties.get('label', name),
                     initial=properties.get('initial', None),
-                    # required=properties.get('required', False),
+                    required=properties.get('required', False),
                     # validators=properties.get('validators', ()),
                     # choices=properties.get('choices'),
                 )

@@ -4,6 +4,7 @@ import uuid
 from ..utility.display_names import (
     OPEN_DATA,
     SIMULATED_DATA,
+    BINARY_BLACK_HOLE,
     DYNESTY,
     NESTLE,
     EMCEE,
@@ -163,8 +164,9 @@ class TupakJob(object):
             self.priors = []
             # finding the correct signal parameters for the signal type
             all_signal_parameters = SignalParameter.objects.filter(signal=self.signal)
-            for name in BBH_FIELDS_PROPERTIES.keys():
-                self.signal_parameters.append(all_signal_parameters.get(name=name))
+            if self.signal.signal_choice == BINARY_BLACK_HOLE:
+                for name in BBH_FIELDS_PROPERTIES.keys():
+                    self.signal_parameters.append(all_signal_parameters.get(name=name))
 
             # populating prior
             for signal_parameter in all_signal_parameters:

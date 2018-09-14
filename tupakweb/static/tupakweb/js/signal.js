@@ -7,6 +7,8 @@ $(document).ready(function () {
   var $selected = $('#id_signal-signal_choice')
   var $signal_parameter_bbh = $('#div_signal_parameter_bbh')
   var $same_model = $('.div-same_model')
+  var $signal_model = $('.div-signal_model')
+  var $same_model_input = $('#id_signal-same_model')
 
   if ($selected.val() === 'skip') {
     divs.push($signal_parameter_bbh)
@@ -17,6 +19,7 @@ $(document).ready(function () {
   }
 
   hide_forms(divs)
+  show_hide_signal_model()
 
   $selected.change(function () {
     divs = []
@@ -32,6 +35,16 @@ $(document).ready(function () {
       detached_div = $('#form_store > .div-same_model').detach()
       detached_div.appendTo('#signal-parameters')
     }
+    show_hide_signal_model()
+  })
+
+  $same_model_input.change(function(){
+    if ($(this).prop("checked")) {
+			$(this).prop("checked", true);
+		} else {
+      $(this).prop("checked", false);
+    }
+    show_hide_signal_model()
   })
 
   function hide_forms(divs) {
@@ -39,5 +52,17 @@ $(document).ready(function () {
       var detached_div = $(this).detach()
       detached_div.appendTo('#form_store')
     })
+  }
+
+  function show_hide_signal_model() {
+    if ($same_model_input.prop('checked')) {
+      if ($selected.val() === 'skip') {
+        $signal_model.css('display', 'flex')
+      } else {
+        $signal_model.css('display', 'none')
+      }
+    } else {
+      $signal_model.css('display', 'flex')
+    }
   }
 })

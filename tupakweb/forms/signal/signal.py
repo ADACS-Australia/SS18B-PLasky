@@ -24,6 +24,7 @@ SIGNAL_FIELDS_PROPERTIES = OrderedDict([
         'label': 'Same for Signal Model?',
         # 'placeholder': '1.0',
         'initial': True,
+        'required': False,
     }),
     (SIGNAL_MODEL, {
         'type': field.SELECT,
@@ -68,10 +69,11 @@ class SignalForm(DynamicForm):
             # currently as there is only one available, it does not
             # have any adverse effect.
             Signal.objects.filter(job=self.job).delete()
-        else:
-            Signal.objects.update_or_create(
-                job=self.job,
-                defaults={
-                    'signal_choice': data.get('signal_choice'),
-                }
-            )
+
+        Signal.objects.update_or_create(
+            job=self.job,
+            defaults={
+                'signal_choice': data.get('signal_choice'),
+                'signal_model': data.get('signal_model'),
+            }
+        )

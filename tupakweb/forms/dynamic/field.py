@@ -209,7 +209,7 @@ def get_select_input(label, choices=None, initial=None, extra_class=None):
     )
 
 
-def get_checkbox_input(label, initial=None, extra_class=None):
+def get_checkbox_input(label, required=False, initial=None, extra_class=None):
     return forms.BooleanField(
         label=label,
         widget=forms.CheckboxInput(
@@ -217,6 +217,7 @@ def get_checkbox_input(label, initial=None, extra_class=None):
                 'class': extra_class if extra_class else '',
             }
         ),
+        required=required,
         initial=initial,
     )
 

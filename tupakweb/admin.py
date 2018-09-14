@@ -45,8 +45,8 @@ class DataParameter(admin.ModelAdmin):
 
 @admin.register(Signal)
 class Signal(admin.ModelAdmin):
-    list_display = ('job', 'signal_choice',)
-    search_fields = ['job__name', 'signal_choice', ]
+    list_display = ('job', 'signal_choice', 'signal_model')
+    search_fields = ['job__name', 'signal_choice', 'signal_model', ]
 
 
 @admin.register(SignalParameter)

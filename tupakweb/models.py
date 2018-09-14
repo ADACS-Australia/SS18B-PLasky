@@ -97,10 +97,11 @@ class Signal(models.Model):
     SIGNAL_CHOICES = [
         (SKIP, SKIP_DISPLAY),
         (BINARY_BLACK_HOLE, BINARY_BLACK_HOLE_DISPLAY),
+        # (BINARY_BLACK_HOLE + '_test', BINARY_BLACK_HOLE_DISPLAY + ' TEST'),
     ]
 
     signal_choice = models.CharField(max_length=50, choices=SIGNAL_CHOICES, default=SKIP)
-    # signal_model = models.CharField(max_length=50, choices=SIGNAL_CHOICES)
+    signal_model = models.CharField(max_length=50, choices=SIGNAL_CHOICES[1:])
 
     def __str__(self):
         return '{} - ({}[{}])'.format(self.signal_choice, self.job.name, self.job.user.username)
