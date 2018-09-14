@@ -147,6 +147,11 @@ class Prior(models.Model):
         elif self.prior_choice == UNIFORM:
             return '[{}, {}]'.format(self.uniform_min_value, self.uniform_max_value)
 
+    class Meta:
+        unique_together = (
+            ('job', 'name'),
+        )
+
 
 class Sampler(models.Model):
     job = models.OneToOneField(Job, related_name='job_sampler', on_delete=models.CASCADE)

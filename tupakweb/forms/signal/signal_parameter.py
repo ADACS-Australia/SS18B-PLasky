@@ -3,6 +3,7 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 """
 
 from collections import OrderedDict
+from django.db import IntegrityError
 
 from ..dynamic.form import DynamicForm
 from ..dynamic import field
@@ -118,13 +119,15 @@ class SignalParameterBbhForm(DynamicForm):
             )
 
             if signal.signal_model == signal.signal_choice:
-                Prior.objects.update_or_create(
-                    job=signal.job,
-                    name=signal_parameter.name,
-                    defaults={
-                        'fixed_value': value,
-                    }
-                )
+                try:
+                    Prior.objects.create(
+                        job=signal.job,
+                        name=signal_parameter.name,
+                        fixed_value=value,
+                    )
+                except IntegrityError:
+                    # Do not update existing value
+                    pass
 
     def update_from_database(self, job):
         if not job:
