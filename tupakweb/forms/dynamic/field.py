@@ -156,15 +156,6 @@ def get_text_area_input(label, required, placeholder=None, initial=None):
     )
 
 
-def get_radio_input(label, choices=None, initial=None):
-    return forms.ChoiceField(
-        label=label,
-        widget=forms.RadioSelect,
-        choices=choices,
-        initial=initial,
-    )
-
-
 class CustomIntegerField(forms.IntegerField):
 
     description = "A custom integer field"

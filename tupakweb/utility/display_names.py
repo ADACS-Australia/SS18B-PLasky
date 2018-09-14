@@ -76,6 +76,10 @@ DISPLAY_NAME_MAP.update({
     VIRGO: VIRGO_DISPLAY,
 })
 
+# Signal Extra Fields
+SAME_MODEL = 'same_model'
+SAME_MODEL_DISPLAY = 'Same Signal for Model?'
+
 # Signal Choice
 SIGNAL_CHOICE = 'signal_choice'
 SIGNAL_CHOICE_DISPLAY = 'Signal Inject'

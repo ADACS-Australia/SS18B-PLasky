@@ -69,27 +69,8 @@ class SignalParameter(admin.ModelAdmin):
 
 @admin.register(Prior)
 class Prior(admin.ModelAdmin):
-    list_display = ('get_job', 'get_signal', 'get_signal_parameter_name', 'prior_choice', 'fixed_value',
-                    'uniform_min_value', 'uniform_max_value')
-    search_fields = ['get_signal', 'get_job']
-
-    def get_job(self, obj):
-        return obj.signal_parameter.signal.job.name
-
-    get_job.admin_order_field = 'signal__job'  # Allows column order sorting
-    get_job.short_description = 'Job'  # Renames column head
-
-    def get_signal(self, obj):
-        return obj.signal_parameter.signal.signal_choice
-
-    get_signal.admin_order_field = 'signal'  # Allows column order sorting
-    get_signal.short_description = 'Signal'  # Renames column head
-
-    def get_signal_parameter_name(self, obj):
-        return obj.signal_parameter.name
-
-    get_signal_parameter_name.admin_order_field = 'signal_parameter__name'  # Allows column order sorting
-    get_signal_parameter_name.short_description = 'Signal parameter name'  # Renames column head
+    list_display = ('job', 'name', 'prior_choice', 'fixed_value', 'uniform_min_value', 'uniform_max_value')
+    search_fields = ['job', 'name', 'prior_choice', ]
 
 
 @admin.register(Sampler)

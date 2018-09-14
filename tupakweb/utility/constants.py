@@ -1,7 +1,6 @@
 from ..models import (
     Job,
     Data,
-    Signal,
     Sampler,
 )
 
@@ -97,6 +96,5 @@ FORMS_NEW = {
 MODELS = {
     START: Job,
     DATA: Data,
-    SIGNAL: Signal,
     SAMPLER: Sampler,
 }

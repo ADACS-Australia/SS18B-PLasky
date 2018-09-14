@@ -10,6 +10,7 @@ from ..utility.display_names import (
     EMCEE,
     FIXED,
     UNIFORM,
+    SKIP,
 )
 
 from ..models import (
@@ -168,15 +169,8 @@ class TupakJob(object):
                 for name in BBH_FIELDS_PROPERTIES.keys():
                     self.signal_parameters.append(all_signal_parameters.get(name=name))
 
-            # populating prior
-            for signal_parameter in all_signal_parameters:
-                try:
-                    prior = Prior.objects.get(signal_parameter=signal_parameter)
-                    self.priors.append(prior)
-                except Prior.DoesNotExist:
-                    # this can happen when user just filled up the signal parameters
-                    # yet to fill up the prior form
-                    pass
+        # populating prior
+        self.priors = Prior.objects.filter(job=self.job)
 
         # populating sampler tab information
         try:
@@ -222,7 +216,7 @@ class TupakJob(object):
 
         # signal_dict
         signal_dict = dict()
-        if self.signal:
+        if self.signal and self.signal.signal_choice != SKIP:
             signal_dict.update({
                 'type': self.signal.signal_choice,
             })
@@ -249,7 +243,7 @@ class TupakJob(object):
                         'max': prior.uniform_max_value,
                     })
                 priors_dict.update({
-                    prior.signal_parameter.name: prior_dict,
+                    prior.name: prior_dict,
                 })
 
         # sampler_dict

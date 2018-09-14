@@ -130,8 +130,8 @@ class SignalParameter(models.Model):
 
 
 class Prior(models.Model):
-    signal_parameter = models.ForeignKey(SignalParameter, on_delete=models.CASCADE,
-                                         related_name='signal_parameter_prior')
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='job_prior')
+    name = models.CharField(max_length=50, blank=False, null=False)
     CHOICES = [
         (FIXED, FIXED_DISPLAY),
         (UNIFORM, UNIFORM_DISPLAY),

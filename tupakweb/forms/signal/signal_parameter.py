@@ -117,12 +117,14 @@ class SignalParameterBbhForm(DynamicForm):
                 }
             )
 
-            Prior.objects.update_or_create(
-                signal_parameter=signal_parameter,
-                defaults={
-                    'fixed_value': value,
-                }
-            )
+            if signal.signal_model == signal.signal_choice:
+                Prior.objects.update_or_create(
+                    job=signal.job,
+                    name=signal_parameter.name,
+                    defaults={
+                        'fixed_value': value,
+                    }
+                )
 
     def update_from_database(self, job):
         if not job:

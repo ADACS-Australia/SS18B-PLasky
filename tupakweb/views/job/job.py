@@ -108,6 +108,7 @@ def generate_forms(job=None, request=None, forms=None):
         forms[DATA_OPEN].update_from_database(job=job)
         forms[DATA_SIMULATED].update_from_database(job=job)
         forms[SIGNAL_PARAMETER_BBH].update_from_database(job=job)
+        forms[SIGNAL].update_from_database(job=job)
         forms[PRIOR].update_from_database(job=job)
         forms[SAMPLER_DYNESTY].update_from_database(job=job)
         forms[SAMPLER_NESTLE].update_from_database(job=job)

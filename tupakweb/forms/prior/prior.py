@@ -7,7 +7,6 @@ from ..dynamic.form import DynamicForm
 from ...models import (
     Prior,
     Signal,
-    SignalParameter,
 )
 from .utility import (
     get_field_properties_by_signal_choice,
@@ -70,16 +69,11 @@ class PriorForm(DynamicForm):
         for fieldset_fields in self.fieldsets.values():
             field_classifications = classify_fields(fieldset_fields)
 
-            # get signal parameter
-            signal_parameter = SignalParameter.objects.get(
-                signal__job=self.job,
-                name=field_classifications.get('signal_parameter_name')
-            )
-
             prior_choice = data.get(field_classifications.get('type_field'))
 
             Prior.objects.update_or_create(
-                signal_parameter=signal_parameter,
+                job=self.job,
+                name=field_classifications.get('signal_parameter_name'),
                 defaults={
                     'prior_choice': prior_choice,
                     'fixed_value': data.get(
@@ -101,10 +95,8 @@ class PriorForm(DynamicForm):
             # get prior
             try:
                 prior = Prior.objects.get(
-                    signal_parameter=SignalParameter.objects.get(
-                        signal__job=self.job,
-                        name=field_classifications.get('signal_parameter_name')
-                    ),
+                    job=self.job,
+                    name=field_classifications.get('signal_parameter_name'),
                 )
 
                 self.fields[field_classifications.get('type_field')].initial = prior.prior_choice

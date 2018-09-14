@@ -9,8 +9,14 @@ from ...utility.display_names import (
     SIGNAL_MODEL,
     SIGNAL_MODEL_DISPLAY,
     SKIP,
+    SAME_MODEL,
+    SAME_MODEL_DISPLAY,
 )
-from ...models import Signal, Data
+from ...models import (
+    Signal,
+    Data,
+    SignalParameter,
+)
 
 SIGNAL_FIELDS_PROPERTIES = OrderedDict([
     (SIGNAL_CHOICE, {
@@ -19,10 +25,9 @@ SIGNAL_FIELDS_PROPERTIES = OrderedDict([
         'choices': Signal.SIGNAL_CHOICES,
         'required': True,
     }),
-    ('same_model', {
+    (SAME_MODEL, {
         'type': field.CHECKBOX,
-        'label': 'Same for Signal Model?',
-        # 'placeholder': '1.0',
+        'label': SAME_MODEL_DISPLAY,
         'initial': True,
         'required': False,
     }),
@@ -77,3 +82,17 @@ class SignalForm(DynamicForm):
                 'signal_model': data.get('signal_model'),
             }
         )
+
+    def update_from_database(self, job):
+        if not job:
+            return
+        else:
+            try:
+                signal = Signal.objects.get(job=job)
+                self.fields[SIGNAL_CHOICE].initial = signal.signal_choice
+                self.fields[SAME_MODEL].initial = signal.signal_choice == signal.signal_model \
+                    if SignalParameter.objects.filter(signal=signal).exists() \
+                    else True
+                self.fields[SIGNAL_MODEL].initial = signal.signal_model
+            except Signal.DoesNotExist:
+                return

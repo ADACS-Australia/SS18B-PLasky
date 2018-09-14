@@ -58,7 +58,7 @@
                 </div>
                 <div id="collapseSignal" class="collapse" aria-labelledby="headingSignal" data-parent="#accordion">
                     <div class="card-body">
-                        <div class="info-job info-heading">Signal Type</div>
+                        <div class="info-job info-heading">Signal Injection</div>
                         <div class="info-job info-content text-justify">{{ drafted_job.signal.signal_choice | display_name }}</div>
                         {% if drafted_job.signal_parameters %}
                             {% for signal_parameter in drafted_job.signal_parameters %}
@@ -83,7 +83,7 @@
                 <div id="collapsePrior" class="collapse" aria-labelledby="headingPrior" data-parent="#accordion">
                     <div class="card-body">
                         {% for prior in drafted_job.priors %}
-                            <div class="info-job info-heading">{{ prior.signal_parameter.name | display_name }}</div>
+                            <div class="info-job info-heading">{{ prior.name | display_name }}</div>
                             <div class="info-job info-content text-justify">
                             {{ prior.prior_choice | display_name }}: {{ prior.get_display_value }}
                             </div>
