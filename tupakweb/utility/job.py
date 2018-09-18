@@ -59,6 +59,7 @@ def clone_job_data(from_job, to_job):
         signal_created = Signal.objects.create(
             job=to_job,
             signal_choice=from_signal.signal_choice,
+            signal_model=from_signal.signal_model,
         )
     except Signal.DoesNotExist:
         pass
@@ -67,22 +68,23 @@ def clone_job_data(from_job, to_job):
         signal_parameters = SignalParameter.objects.filter(signal=from_signal)
 
         for signal_parameter in signal_parameters:
-            signal_parameter_created = SignalParameter.objects.create(
+            SignalParameter.objects.create(
                 signal=signal_created,
                 name=signal_parameter.name,
                 value=signal_parameter.value,
             )
 
-            # populating prior
-            priors = Prior.objects.filter(signal_parameter=signal_parameter)
-            for prior in priors:
-                Prior.objects.create(
-                    signal_parameter=signal_parameter_created,
-                    prior_choice=prior.prior_choice,
-                    fixed_value=prior.fixed_value,
-                    uniform_min_value=prior.uniform_min_value,
-                    uniform_max_value=prior.uniform_max_value,
-                )
+    # populating prior
+    priors = Prior.objects.filter(job=from_job)
+    for prior in priors:
+        Prior.objects.create(
+            job=to_job,
+            name=prior.name,
+            prior_choice=prior.prior_choice,
+            fixed_value=prior.fixed_value,
+            uniform_min_value=prior.uniform_min_value,
+            uniform_max_value=prior.uniform_max_value,
+        )
 
     # cloning sampler and sampler parameters
     try:
@@ -174,9 +176,10 @@ class TupakJob(object):
         # would be suffice if ordering is not required
         # however for displaying the fields in order the following have been added
         all_priors = Prior.objects.filter(job=self.job)
-        if self.signal.signal_model == BINARY_BLACK_HOLE:
-            for name in BBH_FIELDS_PROPERTIES.keys():
-                self.priors.append(all_priors.get(name=name))
+        if all_priors.exists():
+            if self.signal and self.signal.signal_model == BINARY_BLACK_HOLE:
+                for name in BBH_FIELDS_PROPERTIES.keys():
+                    self.priors.append(all_priors.get(name=name))
 
         # populating sampler tab information
         try:
