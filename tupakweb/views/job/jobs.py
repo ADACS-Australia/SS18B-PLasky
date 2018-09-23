@@ -47,6 +47,40 @@ def drafts(request):
 
 
 @login_required
+def view_job(request, job_id):
+    # checking:
+    # 1. Job ID and job exists
+
+    job = None
+    if job_id:
+        try:
+            job = Job.objects.get(id=job_id)
+            if not (job.status == PUBLIC or request.user == job.user or request.user.is_admin()):
+                job = None
+            else:
+                # create a tupak_job instance of the job
+                tupak_job = TupakJob(job_id=job.id)
+                return render(
+                    request,
+                    "tupakweb/job/view_job.html",
+                    {
+                        'drafted_job': tupak_job,
+                    }
+                )
+        except Job.DoesNotExist:
+            pass
+
+    # this should be the last line before redirect
+    if not job:
+        # should return to a page notifying that no permission to view the job or no job or job not in draft
+        raise Http404
+    else:
+        request.session['to_load'] = job.as_json()
+
+    return redirect('new_job')
+
+
+@login_required
 def copy_job(request, job_id):
     # checking:
     # 1. Job ID and job exists
@@ -108,6 +142,9 @@ def delete_job(request, job_id):
     # 1. Job ID and job exists
 
     should_redirect = False
+    # to decide which page to forward if not coming from any http referrer.
+    # this happens when you type in the url.
+    to_page = 'draft'
     if job_id:
         try:
             job = Job.objects.get(id=job_id)
@@ -120,6 +157,7 @@ def delete_job(request, job_id):
                 else:
                     job.status = DELETED
                     job.save()
+                    to_page = 'jobs'
                 should_redirect = True
         except Job.DoesNotExist:
             pass
@@ -131,13 +169,17 @@ def delete_job(request, job_id):
 
     # returning to the right page with pagination on
     page = 1
-    full_path = request.META.get('HTTP_REFERER')
-    if '?' in full_path:
-        query_string = full_path.split('?')[1].split('&')
-        for q in query_string:
-            if q.startswith('page='):
-                page = q.split('=')[1]
+    full_path = request.META.get('HTTP_REFERER', None)
+    if full_path:
+        if '?' in full_path:
+            query_string = full_path.split('?')[1].split('&')
+            for q in query_string:
+                if q.startswith('page='):
+                    page = q.split('=')[1]
 
-    response = redirect('drafts') if '/drafts/' in full_path else redirect('jobs')
-    response['Location'] += '?page={0}'.format(page)
+        response = redirect('drafts') if '/drafts/' in full_path else redirect('jobs')
+        response['Location'] += '?page={0}'.format(page)
+    else:
+        response = redirect(to_page)
+
     return response
