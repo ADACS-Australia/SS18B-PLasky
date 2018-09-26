@@ -43,6 +43,7 @@
     padding: .3rem 12px;
     border-top: none;
     border-bottom: 1px solid rgba(233,150,122,0.5);
+    font-size: small;
 }
 
 #accordion .card-body table th{

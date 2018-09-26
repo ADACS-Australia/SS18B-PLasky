@@ -86,7 +86,7 @@
                                     {% if drafted_job.job.description %}
                                         <tr>
                                             <th scope="row">Description</th>
-                                            <td>{{ drafted_job.job.description }}</td>
+                                            <td>{{ drafted_job.job.description | linebreaks }}</td>
                                         </tr>
                                     {% endif %}
                                     </tbody>
