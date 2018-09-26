@@ -1,0 +1,43 @@
+.job-status .badge {
+    font-size: 40%;
+    vertical-align: top;
+}
+
+.job-view-section .heading {
+    margin-top: 20px;
+    font-style: italic;
+    font-weight: 500;
+    font-size: medium;
+    color: darkslategray;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+    border-bottom: 1px dotted rosybrown;
+}
+
+#accordion .card {
+    border: none;
+}
+
+#accordion .card-header {
+    background-color: rgba(233,150,122,0.2);
+    border-radius: 0;
+    padding: 0;
+}
+
+#accordion .card-header button,
+#accordion .card-header button:hover,
+#accordion .card-header button:active {
+    width: 100%;
+    color: darkslategray;
+    font-weight: 500;
+    text-decoration: none;
+    text-align: left;
+}
+
+#accordion .card-body {
+    padding: 0;
+}
+
+#accordion .card-body table th{
+    width: 35%;
+}

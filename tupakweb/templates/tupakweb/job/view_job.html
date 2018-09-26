@@ -1,153 +1,257 @@
 {% extends 'base/base.html' %}
 {% load template_filters %}
+{% load static %}
+
+{% block additional_styles %}
+    <link rel="stylesheet" href="{% static 'tupakweb/style/job-view.css' %}"/>
+{% endblock additional_styles %}
 
 {% block page_header %}
-    View Job :: {{ drafted_job.job.name }}
+    <span>Job :: {{ drafted_job.job.name }}</span>
+    <span class="job-status">
+        {% with drafted_job.job.status as status %}
+            {% if status == 'draft' %}
+                <span class="badge badge-secondary">DRAFT</span>
+            {% elif status == 'submitted' %}
+                <span class="badge badge-primary">SUBMITTED</span>
+            {% elif status == 'queued' %}
+                <span class="badge badge-primary">QUEUED</span>
+            {% elif status == 'in-progress' %}
+                <span class="badge badge-primary">IN-PROGRESS</span>
+            {% elif status == 'completed' %}
+                <span class="badge badge-success">COMPLETED</span>
+            {% elif status == 'error' %}
+                <span class="badge badge-danger">ERROR</span>
+            {% elif status == 'saved' %}
+                <span class="badge badge-dark">SAVED</span>
+            {% elif status == 'wall_time_exceeded' %}
+                <span class="badge badge-warning">WALL TIME EXCEEDED</span>
+            {% elif status == 'deleted' %}
+                <span class="badge badge-light">DELETED</span>
+            {% elif status == 'public' %}
+                <span class="badge badge-info">PUBLIC</span>
+            {% endif %}
+        {% endwith %}
+    </span>
 {% endblock page_header %}
 
 {% block content %}
-    {% if drafted_job %}
-        <div id="accordion">
+    <div class="job-view-section">
+        <div class="row">
+            <div class="col col-md-12">
+                <div class="heading">Outputs &#38; Download Options</div>
+            </div>
+        </div>
+        <div class="body">
             <div class="card">
-                <div class="card-header" id="headingJob">
-                    <h5 class="mb-0">
-                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseJob"
-                                aria-expanded="true"
-                                aria-controls="collapseOne">
-                            Job
-                        </button>
-                    </h5>
-                </div>
-
-                <div id="collapseJob" class="collapse show" aria-labelledby="headingJob" data-parent="#accordion">
-                    <div class="card-body">
-                        <div class="info-job info-heading">Name</div>
-                        <div class="info-job info-content text-justify">{{ drafted_job.job.name }}</div>
-                        {% if drafted_job.job.description %}
-                            <div class="info-job info-heading">Description</div>
-                            <div class="info-job info-content text-justify">{{ drafted_job.job.description }}</div>
-                        {% endif %}
-                    </div>
+                <img class="card-img-top" src="" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Simulation Image #1</h5>
+                    <p class="card-text">Output Image generated for the job.</p>
+                    <a href="#" class="btn btn-primary">Download Preview</a>
+                    <a href="#" class="btn btn-primary">Download Original</a>
                 </div>
             </div>
-            {% if drafted_job.data %}
-                <div class="card">
-                    <div class="card-header" id="headingData">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseData"
-                                    aria-expanded="true" aria-controls="collapseTwo">
-                                Data
-                            </button>
-                        </h5>
-                    </div>
-                    <div id="collapseData" class="collapse" aria-labelledby="headingData" data-parent="#accordion">
-                        <div class="card-body">
-                            <div class="info-job info-heading">Data Type</div>
-                            <div class="info-job info-content text-justify">{{ drafted_job.data.data_choice | display_name }}</div>
-                            {% if drafted_job.data_parameters %}
-                                {% for data_parameter in drafted_job.data_parameters %}
-                                    <div class="info-job info-heading">{{ data_parameter.name | display_name }}</div>
-                                    <div class="info-job info-content text-justify">{{ data_parameter.value | display_name }}</div>
-                                {% endfor %}
-                            {% endif %}
+        </div>
+    </div>
+    <div class="job-view-section">
+        <div class="row">
+            <div class="col col-md-12">
+                <div class="heading">Input Parameters</div>
+            </div>
+        </div>
+        <div class="body">
+            {% if drafted_job %}
+                <div id="accordion">
+                    <div class="card">
+                        <div class="card-header" id="headingJob">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseJob"
+                                        aria-expanded="true"
+                                        aria-controls="collapseOne">
+                                    Job
+                                </button>
+                            </h5>
+                        </div>
+
+                        <div id="collapseJob" class="collapse show" aria-labelledby="headingJob"
+                             data-parent="#accordion">
+                            <div class="card-body">
+                                <table class="table table-striped">
+                                    <tbody>
+                                    <tr>
+                                        <th scope="row">Name</th>
+                                        <td>{{ drafted_job.job.name }}</td>
+                                    </tr>
+                                    {% if drafted_job.job.description %}
+                                        <tr>
+                                            <th scope="row">Description</th>
+                                            <td>{{ drafted_job.job.description }}</td>
+                                        </tr>
+                                    {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
-            {% endif %}
-            {% if drafted_job.signal and drafted_job.signal.signal_choice != 'skip' %}
-                <div class="card">
-                    <div class="card-header" id="headingSignal">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseSignal"
-                                    aria-expanded="true" aria-controls="collapseTwo">
-                                Signal
-                            </button>
-                        </h5>
-                    </div>
-                    <div id="collapseSignal" class="collapse" aria-labelledby="headingSignal" data-parent="#accordion">
-                        <div class="card-body">
-                            <div class="info-job info-heading">Signal Injection</div>
-                            <div class="info-job info-content text-justify">{{ drafted_job.signal.signal_choice | display_name }}</div>
-                            {% if drafted_job.signal_parameters %}
-                                {% for signal_parameter in drafted_job.signal_parameters %}
-                                    <div class="info-job info-heading">{{ signal_parameter.name | display_name }}</div>
-                                    <div class="info-job info-content text-justify">{{ signal_parameter.value | display_name }}</div>
-                                {% endfor %}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-            {% if drafted_job.priors %}
-                <div class="card">
-                    <div class="card-header" id="headingPrior">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapsePrior"
-                                    aria-expanded="true" aria-controls="collapseTwo">
-                                Priors
-                            </button>
-                        </h5>
-                    </div>
-                    <div id="collapsePrior" class="collapse" aria-labelledby="headingPrior" data-parent="#accordion">
-                        <div class="card-body">
-                            {% for prior in drafted_job.priors %}
-                                <div class="info-job info-heading">{{ prior.name | display_name }}</div>
-                                <div class="info-job info-content text-justify">
-                                    {{ prior.prior_choice | display_name }}: {{ prior.get_display_value }}
+                    {% if drafted_job.data %}
+                        <div class="card">
+                            <div class="card-header" id="headingData">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed" data-toggle="collapse"
+                                            data-target="#collapseData"
+                                            aria-expanded="true" aria-controls="collapseTwo">
+                                        Data
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseData" class="collapse" aria-labelledby="headingData"
+                                 data-parent="#accordion">
+                                <div class="card-body">
+                                    <table class="table table-striped">
+                                        <tbody>
+                                        <tr>
+                                            <th scope="row">Data Type</th>
+                                            <td>{{ drafted_job.data.data_choice | display_name }}</td>
+                                        </tr>
+                                        {% if drafted_job.data_parameters %}
+                                            {% for data_parameter in drafted_job.data_parameters %}
+                                                <tr>
+                                                    <th scope="row">{{ data_parameter.name | display_name }}</th>
+                                                    <td>{{ data_parameter.value | display_name }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endif %}
+                                        </tbody>
+                                    </table>
                                 </div>
-                            {% endfor %}
+                            </div>
                         </div>
-                    </div>
-                </div>
-            {% endif %}
-            {% if drafted_job.sampler %}
-                <div class="card">
-                    <div class="card-header" id="headingSampler">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseSampler"
-                                    aria-expanded="true" aria-controls="collapseTwo">
-                                Sampler
-                            </button>
-                        </h5>
-                    </div>
-                    <div id="collapseSampler" class="collapse" aria-labelledby="headingSampler"
-                         data-parent="#accordion">
-                        <div class="card-body">
-                            <div class="info-job info-heading">Sampler Type</div>
-                            <div class="info-job info-content text-justify">{{ drafted_job.sampler.sampler_choice | display_name }}</div>
-                            {% if drafted_job.sampler_parameters %}
-                                {% for sampler_parameter in drafted_job.sampler_parameters %}
-                                    <div class="info-job info-heading">{{ sampler_parameter.name | display_name }}</div>
-                                    <div class="info-job info-content text-justify">{{ sampler_parameter.value | display_name }}</div>
-                                {% endfor %}
-                            {% endif %}
+                    {% endif %}
+                    {% if drafted_job.signal and drafted_job.signal.signal_choice != 'skip' %}
+                        <div class="card">
+                            <div class="card-header" id="headingSignal">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed" data-toggle="collapse"
+                                            data-target="#collapseSignal"
+                                            aria-expanded="true" aria-controls="collapseTwo">
+                                        Signal
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseSignal" class="collapse" aria-labelledby="headingSignal"
+                                 data-parent="#accordion">
+                                <div class="card-body">
+                                    <table class="table table-striped">
+                                        <tbody>
+                                        <tr>
+                                            <th scope="row">Signal Injection</th>
+                                            <td>{{ drafted_job.signal.signal_choice | display_name }}</td>
+                                        </tr>
+                                        {% if drafted_job.signal_parameters %}
+                                            {% for signal_parameters in drafted_job.signal_parameters %}
+                                                <tr>
+                                                    <th scope="row">{{ signal_parameters.name | display_name }}</th>
+                                                    <td>{{ signal_parameters.value | display_name }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
+                    {% if drafted_job.priors %}
+                        <div class="card">
+                            <div class="card-header" id="headingPrior">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed" data-toggle="collapse"
+                                            data-target="#collapsePrior"
+                                            aria-expanded="true" aria-controls="collapseTwo">
+                                        Priors
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapsePrior" class="collapse" aria-labelledby="headingPrior"
+                                 data-parent="#accordion">
+                                <div class="card-body">
+                                    <table class="table table-striped">
+                                        <tbody>
+                                        {% for prior in drafted_job.priors %}
+                                            <tr>
+                                                <th scope="row">{{ prior.name | display_name }}</th>
+                                                <td>{{ prior.prior_choice | display_name }}: {{ prior.get_display_value }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if drafted_job.sampler %}
+                        <div class="card">
+                            <div class="card-header" id="headingSampler">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed" data-toggle="collapse"
+                                            data-target="#collapseSampler"
+                                            aria-expanded="true" aria-controls="collapseTwo">
+                                        Sampler
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseSampler" class="collapse" aria-labelledby="headingSampler"
+                                 data-parent="#accordion">
+                                <div class="card-body">
+                                    <table class="table table-striped">
+                                        <tbody>
+                                        <tr>
+                                            <th scope="row">Sampler Type</th>
+                                            <td>{{ drafted_job.sampler.sampler_choice | display_name }}</td>
+                                        </tr>
+                                        {% if drafted_job.sampler_parameters %}
+                                            {% for sampler_parameters in drafted_job.sampler_parameters %}
+                                                <tr>
+                                                    <th scope="row">{{ sampler_parameters.name | display_name }}</th>
+                                                    <td>{{ sampler_parameters.value | display_name }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
-            {% endif %}
-        </div>
-    {% else %}
-        <div id="accordion">
-            <div class="card">
-                <div class="card-header" id="headingJob">
-                    <h5 class="mb-0">
-                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseJob"
-                                aria-expanded="true"
-                                aria-controls="collapseOne">
-                            Nothing Saved Yet
-                        </button>
-                    </h5>
-                </div>
+            {% else %}
+                <div id="accordion">
+                    <div class="card">
+                        <div class="card-header" id="headingJob">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseJob"
+                                        aria-expanded="true"
+                                        aria-controls="collapseOne">
+                                    Nothing Saved Yet
+                                </button>
+                            </h5>
+                        </div>
 
-                <div id="collapseJob" class="collapse show" aria-labelledby="headingJob" data-parent="#accordion">
-                    <div class="card-body">
-                        <div class="info-job info-heading">Nothing has been saved yet for this job.</div>
-                        <div class="info-job info-content text-justify">Please use the save buttons to create the
-                            draft.
+                        <div id="collapseJob" class="collapse show" aria-labelledby="headingJob"
+                             data-parent="#accordion">
+                            <div class="card-body">
+                                <div class="info-job info-heading">Nothing has been saved yet for this job.</div>
+                                <div class="info-job info-content text-justify">Please use the save buttons to create
+                                    the
+                                    draft.
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            {% endif %}
         </div>
-    {% endif %}
+    </div>
+
 {% endblock content %}
