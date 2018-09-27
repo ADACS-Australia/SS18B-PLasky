@@ -1,6 +1,7 @@
 .job-status .badge {
     font-size: 40%;
     vertical-align: top;
+    margin-right: 5px;
 }
 
 .job-view-section .heading {

@@ -5,7 +5,15 @@ from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 
 from ...utility.job import TupakJob
-from ...utility.display_names import DELETED, DRAFT, PUBLIC, SUBMITTED, QUEUED, IN_PROGRESS
+from ...utility.display_names import (
+    DELETED,
+    DRAFT,
+    PUBLIC,
+    SUBMITTED,
+    QUEUED,
+    IN_PROGRESS,
+    COMPLETED,
+)
 from ...models import Job
 
 
@@ -184,3 +192,65 @@ def delete_job(request, job_id):
         response = redirect(to_page)
 
     return response
+
+
+@login_required
+def make_job_private(request, job_id):
+    full_path = request.META.get('HTTP_REFERER', None)
+    if not full_path:
+        raise Http404
+
+    # checking:
+    # 1. Job ID and job exists
+
+    should_redirect = False
+    if job_id:
+        try:
+            job = Job.objects.get(id=job_id)
+            if job.status == PUBLIC and (request.user == job.user or request.user.is_admin()):
+                job.status = COMPLETED
+                job.save()
+                should_redirect = True
+        except Job.DoesNotExist:
+            pass
+
+    # this should be the last line before redirect
+    if not should_redirect:
+        # should return to a page notifying that
+        # 1. no permission to view the job or
+        # 2. no job or
+        # 3. job does not have correct status
+        raise Http404
+
+    return redirect(full_path)
+
+
+@login_required
+def make_job_public(request, job_id):
+    full_path = request.META.get('HTTP_REFERER', None)
+    if not full_path:
+        raise Http404
+
+    # checking:
+    # 1. Job ID and job exists
+
+    should_redirect = False
+    if job_id:
+        try:
+            job = Job.objects.get(id=job_id)
+            if job.status == COMPLETED and (request.user == job.user or request.user.is_admin()):
+                job.status = PUBLIC
+                job.save()
+                should_redirect = True
+        except Job.DoesNotExist:
+            pass
+
+    # this should be the last line before redirect
+    if not should_redirect:
+        # should return to a page notifying that
+        # 1. no permission to view the job or
+        # 2. no job or
+        # 3. job does not have correct status
+        raise Http404
+
+    return redirect(full_path)

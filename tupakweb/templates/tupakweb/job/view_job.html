@@ -19,7 +19,7 @@
             {% elif status == 'in-progress' %}
                 <span class="badge badge-primary">IN-PROGRESS</span>
             {% elif status == 'completed' %}
-                <span class="badge badge-success">COMPLETED</span>
+                <span class="badge badge-success">COMPLETED</span><span class="badge badge-info">PRIVATE</span>
             {% elif status == 'error' %}
                 <span class="badge badge-danger">ERROR</span>
             {% elif status == 'saved' %}
@@ -29,7 +29,7 @@
             {% elif status == 'deleted' %}
                 <span class="badge badge-light">DELETED</span>
             {% elif status == 'public' %}
-                <span class="badge badge-info">PUBLIC</span>
+                <span class="badge badge-success">COMPLETED</span><span class="badge badge-info">PUBLIC</span>
             {% endif %}
         {% endwith %}
     </span>
@@ -62,7 +62,7 @@
                                 class="fas fa-globe-asia"></i></a></li>
                     {% endif %}
                     {% if 'make_it_private' in tupak_job.job_actions %}
-                        <li class="list-inline-item"><a class="btn btn-warning" data-toggle="modal"
+                        <li class="list-inline-item"><a class="btn btn-info" data-toggle="modal"
                                                         data-target="#makeItPrivate">MAKE IT PRIVATE <i
                                 class="fas fa-user"></i></a></li>
                     {% endif %}
@@ -82,13 +82,13 @@
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="makeItPublicLongTitle">Make Public</h5>
+                            <h5 class="modal-title" id="makeItPublicLongTitle">Make Job Public</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            <p>You are about to make the job public. This means that, any user can download view, clone
+                            <p>You are about to make the job public. This means that, any user can view, clone
                                 the job and will be able to download the output files.</p>
                             <p>However, they will NOT be able to delete the job information, as it will be read-only to
                                 them.</p>
@@ -96,7 +96,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-warning" data-dismiss="modal">Not Now</button>
-                            <a class="btn btn-success">Make it Public</a>
+                            <a class="btn btn-success" href="{% url 'make_job_public' tupak_job.job.id %}">Make it Public</a>
                         </div>
                     </div>
                 </div>
@@ -110,21 +110,21 @@
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="makeItPrivateLongTitle">Make Private</h5>
+                            <h5 class="modal-title" id="makeItPrivateLongTitle">Make Job Private</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
                             <p>You are about to make the job private. This means that, no user other than you will be
-                                able to download, view, clone the job and will be able to download the output files.</p>
+                                able to view, clone the job and will be able to download the output files.</p>
                             <p>However, if the job has been copied already, the copied job will still be available to
                                 the respective user.</p>
                             <p>Are you sure, you want to proceed?</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-warning" data-dismiss="modal">Not Now</button>
-                            <a class="btn btn-success">Make it Private</a>
+                            <a class="btn btn-info" href="{% url 'make_job_private' tupak_job.job.id %}">Make it Private</a>
                         </div>
                     </div>
                 </div>
