@@ -53,3 +53,20 @@
 #accordion .card-body table.table-striped tbody tr:nth-of-type(odd) {
     background-color: rgba(233,150,122,0.1);
 }
+
+.job-view-section .body.actions ul li a,
+.job-view-section .body.actions ul li a:visited,
+.job-view-section .body.actions ul li a:hover,
+.job-view-section .body.actions ul li a:focus {
+    color: white;
+    font-size: small;
+    font-weight: 600;
+}
+
+.job-view-section .body.actions ul li {
+    padding-bottom: 5px;
+}
+
+#deleteJob .modal-header .modal-title {
+    color: #dc3545;
+}

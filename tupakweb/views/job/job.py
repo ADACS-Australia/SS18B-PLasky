@@ -5,7 +5,6 @@ from django.utils import timezone
 from ...utility.display_names import SKIP
 from ...utility.utils import get_enabled_tabs
 from ...models import (
-    Signal,
     Job,
 )
 

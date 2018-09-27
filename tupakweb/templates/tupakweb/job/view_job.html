@@ -7,9 +7,9 @@
 {% endblock additional_styles %}
 
 {% block page_header %}
-    <span>Job :: {{ drafted_job.job.name }}</span>
+    <span>Job :: {{ tupak_job.job.name }}</span>
     <span class="job-status">
-        {% with drafted_job.job.status as status %}
+        {% with tupak_job.job.status as status %}
             {% if status == 'draft' %}
                 <span class="badge badge-secondary">DRAFT</span>
             {% elif status == 'submitted' %}
@@ -36,6 +36,129 @@
 {% endblock page_header %}
 
 {% block content %}
+
+    {% if tupak_job.job_actions %}
+        <div class="job-view-section">
+            <div class="row">
+                <div class="col col-md-12">
+                    <div class="heading">Actions</div>
+                </div>
+            </div>
+            <div class="body actions">
+                <ul class="list-inline">
+                    {% if 'copy' in tupak_job.job_actions %}
+                        <li class="list-inline-item"><a class="btn btn-primary"
+                                                        href="{% url 'copy_job' tupak_job.job.id %}">COPY <i
+                                class="fas fa-clone"></i></a></li>
+                    {% endif %}
+                    {% if 'edit' in tupak_job.job_actions %}
+                        <li class="list-inline-item"><a class="btn btn-primary"
+                                                        href="{% url 'edit_job' tupak_job.job.id %}">EDIT <i
+                                class="fas fa-edit"></i></a></li>
+                    {% endif %}
+                    {% if 'make_it_public' in tupak_job.job_actions %}
+                        <li class="list-inline-item"><a class="btn btn-success" data-toggle="modal"
+                                                        data-target="#makeItPublic">MAKE IT PUBLIC <i
+                                class="fas fa-globe-asia"></i></a></li>
+                    {% endif %}
+                    {% if 'make_it_private' in tupak_job.job_actions %}
+                        <li class="list-inline-item"><a class="btn btn-warning" data-toggle="modal"
+                                                        data-target="#makeItPrivate">MAKE IT PRIVATE <i
+                                class="fas fa-user"></i></a></li>
+                    {% endif %}
+                    {% if 'delete' in tupak_job.job_actions %}
+                        <li class="list-inline-item"><a class="btn btn-danger" data-toggle="modal"
+                                                        data-target="#deleteJob">DELETE <i class="fas fa-trash-alt"></i></a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+
+        {% if 'make_it_public' in tupak_job.job_actions %}
+            <!-- Modal Make it public-->
+            <div class="modal fade" id="makeItPublic" tabindex="-1" role="dialog"
+                 aria-labelledby="makeItPublicTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="makeItPublicLongTitle">Make Public</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>You are about to make the job public. This means that, any user can download view, clone
+                                the job and will be able to download the output files.</p>
+                            <p>However, they will NOT be able to delete the job information, as it will be read-only to
+                                them.</p>
+                            <p>Are you sure, you want to proceed?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-warning" data-dismiss="modal">Not Now</button>
+                            <a class="btn btn-success">Make it Public</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if 'make_it_private' in tupak_job.job_actions %}
+            <!-- Modal Make it public-->
+            <div class="modal fade" id="makeItPrivate" tabindex="-1" role="dialog"
+                 aria-labelledby="makeItPrivateTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="makeItPrivateLongTitle">Make Private</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>You are about to make the job private. This means that, no user other than you will be
+                                able to download, view, clone the job and will be able to download the output files.</p>
+                            <p>However, if the job has been copied already, the copied job will still be available to
+                                the respective user.</p>
+                            <p>Are you sure, you want to proceed?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-warning" data-dismiss="modal">Not Now</button>
+                            <a class="btn btn-success">Make it Private</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if 'delete' in tupak_job.job_actions %}
+            <!-- Modal delete job -->
+            <div class="modal fade" id="deleteJob" tabindex="-1" role="dialog"
+                 aria-labelledby="deleteJobTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteJobLongTitle">Delete Job</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>You are about to delete the job. This means that, everything related to the job and its
+                                data will be deleted, and you will not be able to revert this process later. </p>
+                            <p>Are you sure, you want to proceed?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-warning" data-dismiss="modal">Not Now</button>
+                            <a class="btn btn-danger" href="{% url 'delete_job' tupak_job.job.id %}">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+    {% endif %}
+
     <div class="job-view-section">
         <div class="row">
             <div class="col col-md-12">
@@ -61,7 +184,7 @@
             </div>
         </div>
         <div class="body">
-            {% if drafted_job %}
+            {% if tupak_job %}
                 <div id="accordion">
                     <div class="card">
                         <div class="card-header" id="headingJob">
@@ -81,12 +204,12 @@
                                     <tbody>
                                     <tr>
                                         <th scope="row">Name</th>
-                                        <td>{{ drafted_job.job.name }}</td>
+                                        <td>{{ tupak_job.job.name }}</td>
                                     </tr>
-                                    {% if drafted_job.job.description %}
+                                    {% if tupak_job.job.description %}
                                         <tr>
                                             <th scope="row">Description</th>
-                                            <td>{{ drafted_job.job.description | linebreaks }}</td>
+                                            <td>{{ tupak_job.job.description | linebreaks }}</td>
                                         </tr>
                                     {% endif %}
                                     </tbody>
@@ -94,7 +217,7 @@
                             </div>
                         </div>
                     </div>
-                    {% if drafted_job.data %}
+                    {% if tupak_job.data %}
                         <div class="card">
                             <div class="card-header" id="headingData">
                                 <h5 class="mb-0">
@@ -112,10 +235,10 @@
                                         <tbody>
                                         <tr>
                                             <th scope="row">Data Type</th>
-                                            <td>{{ drafted_job.data.data_choice | display_name }}</td>
+                                            <td>{{ tupak_job.data.data_choice | display_name }}</td>
                                         </tr>
-                                        {% if drafted_job.data_parameters %}
-                                            {% for data_parameter in drafted_job.data_parameters %}
+                                        {% if tupak_job.data_parameters %}
+                                            {% for data_parameter in tupak_job.data_parameters %}
                                                 <tr>
                                                     <th scope="row">{{ data_parameter.name | display_name }}</th>
                                                     <td>{{ data_parameter.value | display_name }}</td>
@@ -128,7 +251,7 @@
                             </div>
                         </div>
                     {% endif %}
-                    {% if drafted_job.signal and drafted_job.signal.signal_choice != 'skip' %}
+                    {% if tupak_job.signal and tupak_job.signal.signal_choice != 'skip' %}
                         <div class="card">
                             <div class="card-header" id="headingSignal">
                                 <h5 class="mb-0">
@@ -146,10 +269,10 @@
                                         <tbody>
                                         <tr>
                                             <th scope="row">Signal Injection</th>
-                                            <td>{{ drafted_job.signal.signal_choice | display_name }}</td>
+                                            <td>{{ tupak_job.signal.signal_choice | display_name }}</td>
                                         </tr>
-                                        {% if drafted_job.signal_parameters %}
-                                            {% for signal_parameters in drafted_job.signal_parameters %}
+                                        {% if tupak_job.signal_parameters %}
+                                            {% for signal_parameters in tupak_job.signal_parameters %}
                                                 <tr>
                                                     <th scope="row">{{ signal_parameters.name | display_name }}</th>
                                                     <td>{{ signal_parameters.value | display_name }}</td>
@@ -162,7 +285,7 @@
                             </div>
                         </div>
                     {% endif %}
-                    {% if drafted_job.priors %}
+                    {% if tupak_job.priors %}
                         <div class="card">
                             <div class="card-header" id="headingPrior">
                                 <h5 class="mb-0">
@@ -178,7 +301,7 @@
                                 <div class="card-body">
                                     <table class="table table-striped">
                                         <tbody>
-                                        {% for prior in drafted_job.priors %}
+                                        {% for prior in tupak_job.priors %}
                                             <tr>
                                                 <th scope="row">{{ prior.name | display_name }}</th>
                                                 <td>{{ prior.prior_choice | display_name }}: {{ prior.get_display_value }}</td>
@@ -190,7 +313,7 @@
                             </div>
                         </div>
                     {% endif %}
-                    {% if drafted_job.sampler %}
+                    {% if tupak_job.sampler %}
                         <div class="card">
                             <div class="card-header" id="headingSampler">
                                 <h5 class="mb-0">
@@ -208,10 +331,10 @@
                                         <tbody>
                                         <tr>
                                             <th scope="row">Sampler Type</th>
-                                            <td>{{ drafted_job.sampler.sampler_choice | display_name }}</td>
+                                            <td>{{ tupak_job.sampler.sampler_choice | display_name }}</td>
                                         </tr>
-                                        {% if drafted_job.sampler_parameters %}
-                                            {% for sampler_parameters in drafted_job.sampler_parameters %}
+                                        {% if tupak_job.sampler_parameters %}
+                                            {% for sampler_parameters in tupak_job.sampler_parameters %}
                                                 <tr>
                                                     <th scope="row">{{ sampler_parameters.name | display_name }}</th>
                                                     <td>{{ sampler_parameters.value | display_name }}</td>

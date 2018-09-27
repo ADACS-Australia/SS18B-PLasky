@@ -33,3 +33,21 @@
 .job-list {
     font-size: small;
 }
+
+.modal-body p.job-name {
+    font-weight: 600;
+    color: brown;
+}
+
+.modal-header .modal-title {
+    color: #dc3545;
+}
+
+a.delete-job,
+a.delete-job:hover,
+a.delete-job:focus,
+a.delete-job:visited {
+    color: #dc3545;
+    text-decoration: none;
+    outline: none;
+}

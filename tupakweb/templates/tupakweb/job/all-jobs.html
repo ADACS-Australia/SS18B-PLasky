@@ -10,6 +10,10 @@
     <link rel="stylesheet" href="{% static 'tupakweb/style/styles.css' %}"/>
 {% endblock additional_styles %}
 
+{% block additional_javascript %}
+    <script src="{% static 'tupakweb/js/job_view.js' %}"></script>
+{% endblock additional_javascript %}
+
 {% block content %}
     <div class="job-list table-responsive">
         <table class="table">
@@ -25,13 +29,13 @@
             <tbody>
             {% for job in jobs %}
                 <tr>
-                    <th scope="col"><a href="{% url 'job' job.id %}">{{ job.name }}</a></th>
+                    <th scope="col" class="job-name"><a href="{% url 'job' job.id %}">{{ job.name }}</a></th>
                     <td>{% if drafts %}{{ job.creation_time }}{% else %}{{ job.submission_time }}{% endif %}</td>
                     <td>{{ job.last_updated }}</td>
                     {% if not drafts %}<td>{{ job.status | display_name }}</td>{% endif %}
                     {% if drafts %}
                         <td>
-                            <a href="{% url 'delete_job' job.id %}">Delete <i class="fas fa-trash-alt"></i></a>
+                            <a class="delete-job" data-toggle="modal" data-target="#deleteJob" href="{% url 'delete_job' job.id %}">Delete <i class="fas fa-trash-alt"></i></a>
                             <a href="{% url 'edit_job' job.id %}">Edit <i class="fas fa-edit"></i></a>
                             <a href="{% url 'copy_job' job.id %}">Copy <i class="fas fa-clone"></i></a>
                         </td>
@@ -47,6 +51,32 @@
             {% endfor %}
             </tbody>
         </table>
+    </div>
+
+    <!-- Modal delete job -->
+    <div class="modal fade" id="deleteJob" tabindex="-1" role="dialog"
+         aria-labelledby="deleteJobTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteJobLongTitle">Delete Job</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>You are about to delete the job named:</p>
+                    <p class="job-name"></p>
+                    <p>This means that, everything related to the job and its data will
+                        be deleted, and you will not be able to revert this process later. </p>
+                    <p>Are you sure, you want to proceed?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">Not Now</button>
+                    <a class="btn btn-danger delete" href="">Delete</a>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="row">

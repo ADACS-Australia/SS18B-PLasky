@@ -11,6 +11,13 @@ from ..utility.display_names import (
     FIXED,
     UNIFORM,
     SKIP,
+    SUBMITTED,
+    QUEUED,
+    IN_PROGRESS,
+    PUBLIC,
+    DRAFT,
+    COMPLETED,
+    DELETED,
 )
 
 from ..models import (
@@ -117,6 +124,9 @@ class TupakJob(object):
     sampler = None
     sampler_parameters = None
 
+    # what actions a user can perform on this job
+    job_actions = None
+
     def clone_as_draft(self, user):
         if not self.job:
             return
@@ -138,6 +148,35 @@ class TupakJob(object):
         clone_job_data(self.job, cloned)
 
         return cloned
+
+    def list_actions(self, user):
+        self.job_actions = []
+        if self.job.user == user or user.is_admin():
+
+            # any job can be copied
+            self.job_actions.append('copy')
+
+            # job can only be deleted if not in the following status:
+            # 1. submitted
+            # 2. queued
+            # 3. in progress
+            if self.job.status not in [SUBMITTED, QUEUED, IN_PROGRESS, DELETED]:
+                self.job_actions.append('delete')
+
+            # edit a job if it is a draft
+            if self.job.status in [DRAFT]:
+                self.job_actions.append('edit')
+
+            # completed job can be public and vice versa
+            if self.job.status in [COMPLETED]:
+                self.job_actions.append('make_it_public')
+            elif self.job.status in [PUBLIC]:
+                self.job_actions.append('make_it_private')
+
+        else:
+            # non admin and non owner can copy a PUBLIC job
+            if self.job.status in [PUBLIC]:
+                self.job_actions.append('copy')
 
     def __init__(self, job_id):
         # populating data tab information

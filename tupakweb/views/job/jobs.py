@@ -60,11 +60,12 @@ def view_job(request, job_id):
             else:
                 # create a tupak_job instance of the job
                 tupak_job = TupakJob(job_id=job.id)
+                tupak_job.list_actions(request.user)
                 return render(
                     request,
                     "tupakweb/job/view_job.html",
                     {
-                        'drafted_job': tupak_job,
+                        'tupak_job': tupak_job,
                     }
                 )
         except Job.DoesNotExist:
@@ -144,7 +145,7 @@ def delete_job(request, job_id):
     should_redirect = False
     # to decide which page to forward if not coming from any http referrer.
     # this happens when you type in the url.
-    to_page = 'draft'
+    to_page = 'drafts'
     if job_id:
         try:
             job = Job.objects.get(id=job_id)
@@ -170,7 +171,7 @@ def delete_job(request, job_id):
     # returning to the right page with pagination on
     page = 1
     full_path = request.META.get('HTTP_REFERER', None)
-    if full_path:
+    if full_path and ('/drafts/' in full_path or '/jobs/' in full_path):
         if '?' in full_path:
             query_string = full_path.split('?')[1].split('&')
             for q in query_string:
