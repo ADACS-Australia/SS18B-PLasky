@@ -18,6 +18,24 @@ from ...models import Job
 
 
 @login_required
+def public_jobs(request):
+    my_jobs = Job.objects.filter(Q(status__in=[PUBLIC, ])).order_by('-last_updated', '-submission_time')
+    paginator = Paginator(my_jobs, 5)
+
+    page = request.GET.get('page')
+    job_list = paginator.get_page(page)
+
+    return render(
+        request,
+        "tupakweb/job/all-jobs.html",
+        {
+            'jobs': job_list,
+            'public': True,
+        }
+    )
+
+
+@login_required
 def jobs(request):
     my_jobs = Job.objects.filter(Q(user=request.user), ~Q(status__in=[DELETED, DRAFT, ])).order_by('-last_updated',
                                                                                                    '-submission_time')

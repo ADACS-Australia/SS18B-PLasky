@@ -22,7 +22,8 @@
                 <th scope="col">Name</th>
                 <th>{% if drafts %}Creation{% else %}Submission{% endif %} Time</th>
                 <th>Last Updated</th>
-                {% if not drafts %}<th>Status</th>{% endif %}
+                {% if not drafts and not public %}<th>Status</th>{% endif %}
+                {% if public %}<th>Owner</th>{% endif %}
                 <th>Action</th>
             </tr>
             </thead>
@@ -32,17 +33,22 @@
                     <th scope="col" class="job-name"><a href="{% url 'job' job.id %}">{{ job.name }}</a></th>
                     <td>{% if drafts %}{{ job.creation_time }}{% else %}{{ job.submission_time }}{% endif %}</td>
                     <td>{{ job.last_updated }}</td>
-                    {% if not drafts %}<td>{{ job.status | display_name }}</td>{% endif %}
+                    {% if not drafts and not public %}<td>{{ job.status | display_name }}</td>{% endif %}
+                    {% if public %}<td>{{ job.user.display_name }}</td>{% endif %}
                     {% if drafts %}
                         <td>
                             <a class="delete-job" data-toggle="modal" data-target="#deleteJob" href="{% url 'delete_job' job.id %}">Delete <i class="fas fa-trash-alt"></i></a>
                             <a href="{% url 'edit_job' job.id %}">Edit <i class="fas fa-edit"></i></a>
                             <a href="{% url 'copy_job' job.id %}">Copy <i class="fas fa-clone"></i></a>
                         </td>
+                    {% elif public %}
+                        <td>
+                            <a href="{% url 'copy_job' job.id %}">Copy <i class="fas fa-clone"></i></a>
+                        </td>
                     {% else %}
                         <td>
                             {% if job.status != 'submitted' and job.status != 'queued' and job.status != 'in_progress' %}
-                            <a href="{% url 'delete_job' job.id %}">Delete <i class="fas fa-trash-alt"></i></a>
+                            <a class="delete-job" data-toggle="modal" data-target="#deleteJob" href="{% url 'delete_job' job.id %}">Delete <i class="fas fa-trash-alt"></i></a>
                             {% endif %}
                             <a href="{% url 'copy_job' job.id %}">Copy <i class="fas fa-clone"></i></a>
                         </td>
