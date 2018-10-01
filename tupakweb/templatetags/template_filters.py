@@ -23,3 +23,20 @@ def display_name(value):
         pass
 
     return DISPLAY_NAME_MAP.get(value, value)
+
+
+@register.filter(name='status_color')
+def status_color(status):
+    status_color_map = {
+        'draft': 'secondary',
+        'submitted': 'primary',
+        'queued': 'primary',
+        'in-progress': 'primary',
+        'completed': 'success',
+        'error': 'danger',
+        'saved': 'dark',
+        'wall_time_exceeded': 'warning',
+        'deleted': 'light',
+        'public': 'info',
+    }
+    return status_color_map.get(status, None)

@@ -34,6 +34,15 @@
     font-size: small;
 }
 
+.job-list .table tbody a,
+.job-list .table tbody a:hover,
+.job-list .table tbody a:focus,
+.job-list .table tbody a:visited {
+    text-decoration: none;
+    outline: none;
+    color: inherit;
+}
+
 .modal-body p.job-name {
     font-weight: 600;
     color: brown;
@@ -41,13 +50,4 @@
 
 .modal-header .modal-title {
     color: #dc3545;
-}
-
-a.delete-job,
-a.delete-job:hover,
-a.delete-job:focus,
-a.delete-job:visited {
-    color: #dc3545;
-    text-decoration: none;
-    outline: none;
 }

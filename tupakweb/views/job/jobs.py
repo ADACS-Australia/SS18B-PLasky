@@ -1,4 +1,5 @@
 from django.http import Http404
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import render, redirect
@@ -179,12 +180,14 @@ def delete_job(request, job_id):
                                                                                            IN_PROGRESS, DELETED]:
                 should_redirect = False
             else:
+                message = 'Job <strong>{name}</strong> has been successfully deleted'.format(name=job.name)
                 if job.status == DRAFT:
                     job.delete()
                 else:
                     job.status = DELETED
                     job.save()
                     to_page = 'jobs'
+                messages.add_message(request, messages.SUCCESS, message, extra_tags='safe')
                 should_redirect = True
         except Job.DoesNotExist:
             pass
@@ -229,6 +232,7 @@ def make_job_private(request, job_id):
                 job.status = COMPLETED
                 job.save()
                 should_redirect = True
+                messages.success(request, 'Job has been changed to <strong>private!</strong>', extra_tags='safe')
         except Job.DoesNotExist:
             pass
 
@@ -260,6 +264,7 @@ def make_job_public(request, job_id):
                 job.status = PUBLIC
                 job.save()
                 should_redirect = True
+                messages.success(request, 'Job has been changed to <strong>public!</strong>', extra_tags='safe')
         except Job.DoesNotExist:
             pass
 
