@@ -84,3 +84,19 @@
     margin: 1px 0;
     border: 1px solid lightslategrey;
 }
+
+.meta-data table th,
+.meta-data table td {
+    padding: .3rem 12px;
+    border-top: 1px solid rgba(112, 233, 181, 0.5);
+    border-bottom: 1px solid rgba(112, 233, 181, 0.5);
+    font-size: small;
+}
+
+.meta-data table th {
+    width: 35%;
+}
+
+.meta-data table.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(112, 233, 181, 0.1);
+}
