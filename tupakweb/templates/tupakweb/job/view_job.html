@@ -39,11 +39,6 @@
     {{ block.super }}
     {% if tupak_job.job_actions %}
         <div class="job-view-section">
-            {#            <div class="row">#}
-            {#                <div class="col col-md-12">#}
-            {#                    <div class="heading">Actions</div>#}
-            {#                </div>#}
-            {#            </div>#}
             <div class="body actions">
                 <ul class="list-inline">
                     {% if 'copy' in tupak_job.job_actions %}
@@ -252,37 +247,6 @@
         </div>
         <div class="body">
             <div id="accordion">
-                {#                <div class="card">#}
-                {#                    <div class="card-header" id="headingJob">#}
-                {#                        <h5 class="mb-0">#}
-                {#                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseJob"#}
-                {#                                    aria-expanded="true"#}
-                {#                                    aria-controls="collapseOne">#}
-                {#                                Job#}
-                {#                            </button>#}
-                {#                        </h5>#}
-                {#                    </div>#}
-                {##}
-                {#                    <div id="collapseJob" class="collapse show" aria-labelledby="headingJob"#}
-                {#                         data-parent="#accordion">#}
-                {#                        <div class="card-body">#}
-                {#                            <table class="table table-striped">#}
-                {#                                <tbody>#}
-                {#                                <tr>#}
-                {#                                    <th scope="row">Name</th>#}
-                {#                                    <td>{{ tupak_job.job.name }}</td>#}
-                {#                                </tr>#}
-                {#                                {% if tupak_job.job.description %}#}
-                {#                                    <tr>#}
-                {#                                        <th scope="row">Description</th>#}
-                {#                                        <td>{{ tupak_job.job.description | linebreaks }}</td>#}
-                {#                                    </tr>#}
-                {#                                {% endif %}#}
-                {#                                </tbody>#}
-                {#                            </table>#}
-                {#                        </div>#}
-                {#                    </div>#}
-                {#                </div>#}
                 {% if tupak_job.data %}
                     <div class="card">
                         <div class="card-header" id="headingData">
