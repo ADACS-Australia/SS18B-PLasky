@@ -71,3 +71,16 @@
 #deleteJob .modal-header .modal-title {
     color: #dc3545;
 }
+
+
+.job-view-section .preview ul {
+    list-style: none;
+}
+
+.job-view-section .preview ul li {
+    width: 33%;
+    display: inline-block;
+    padding: 5px;
+    margin: 1px 0;
+    border: 1px solid lightslategrey;
+}
