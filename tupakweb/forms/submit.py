@@ -11,7 +11,7 @@ from ..utility.job import TupakJob
 
 logger = logging.getLogger(__name__)
 
-DATA_FIELDS_PROPERTIES = OrderedDict([
+FIELDS_PROPERTIES = OrderedDict([
     ('json_representation', {
         'type': field.TEXT_AREA,
         'label': 'JSON',
@@ -24,7 +24,7 @@ DATA_FIELDS_PROPERTIES = OrderedDict([
 class SubmitJobForm(DynamicForm):
     def __init__(self, *args, **kwargs):
         kwargs['name'] = 'data-parameter'
-        kwargs['fields_properties'] = DATA_FIELDS_PROPERTIES
+        kwargs['fields_properties'] = FIELDS_PROPERTIES
         self.job = kwargs.pop('job', None)
         super(SubmitJobForm, self).__init__(*args, **kwargs)
 
