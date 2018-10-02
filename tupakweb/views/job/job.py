@@ -174,7 +174,9 @@ def save_tab(request, active_tab):
         # update the job
         if job:
             job.refresh_from_db()
-            job.last_updated = timezone.now()
+            # saving the job here again will call signal to update the last updated
+            # it is left to the signal because of potential change of Job model to
+            # extend the HpcJob model.
             job.save()
 
         # get the active tab
