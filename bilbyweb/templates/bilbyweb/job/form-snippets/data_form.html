@@ -3,8 +3,6 @@
 
     <input type="hidden" name="form-tab" value="data"/>
 
-    {% include 'bilbyweb/job/snippets/errors.html' %}
-
     {% for field in data_form %}
         <div class="row field
                     {% if field.field.required %}required{% endif %}
@@ -72,4 +70,3 @@
     </div>
 
 </form>
-

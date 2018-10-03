@@ -2,8 +2,6 @@
     {% csrf_token %}
     <input type="hidden" name="form-tab" value="signal"/>
 
-    {% include 'bilbyweb/job/snippets/errors.html' %}
-
     {% with signal_form.signal_choice as field %}
         {% include 'bilbyweb/job/snippets/render_field.html' %}
     {% endwith %}

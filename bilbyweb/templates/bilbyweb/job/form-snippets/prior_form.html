@@ -3,8 +3,6 @@
 
     <input type="hidden" name="form-tab" value="prior"/>
 
-    {% include 'bilbyweb/job/snippets/errors.html' %}
-
     {% for fieldset_name, fields in prior_form.fieldsets.items %}
         <div class="fieldset-name">
             {{ fieldset_name }}

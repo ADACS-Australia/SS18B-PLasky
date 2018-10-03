@@ -2,8 +2,6 @@
     {% csrf_token %}
     <input type="hidden" name="form-tab" value="start"/>
 
-    {% include 'bilbyweb/job/snippets/errors.html' %}
-
     {% for field in start_form %}
         <div class="row field
                     {% if field.field.required %}required{% endif %}

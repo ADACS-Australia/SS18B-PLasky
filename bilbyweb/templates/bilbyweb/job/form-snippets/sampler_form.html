@@ -3,8 +3,6 @@
 
     <input type="hidden" name="form-tab" value="sampler"/>
 
-    {% include 'bilbyweb/job/snippets/errors.html' %}
-
     {% for field in sampler_form %}
         <div class="row field
                     {% if field.field.required %}required{% endif %}
