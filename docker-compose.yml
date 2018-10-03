@@ -7,11 +7,10 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./code:/code
-      - ./:/etc/nginx/conf.d
+      - ./nginx:/etc/nginx/conf.d
       - ./static:/static
-      - ./bilbyweb/static:/bilbyweb/static
-      - ./accounts/static:/accounts/static
+    depends_on:
+      - web
   db:
     image: mysql:5.7
     container_name: mysql_bilby
@@ -34,8 +33,5 @@ services:
     volumes:
       - ./:/code
       - ./static:/static
-      - ./bilbyweb/static:/bilbyweb/static
-      - ./accounts/static:/accounts/static
     depends_on:
       - db
-      - nginx
