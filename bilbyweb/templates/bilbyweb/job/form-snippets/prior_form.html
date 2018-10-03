@@ -1,0 +1,24 @@
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <input type="hidden" name="form-tab" value="prior"/>
+
+    {% for fieldset_name, fields in prior_form.fieldsets.items %}
+        <div class="fieldset-name">
+            {{ fieldset_name }}
+        </div>
+        <div class="form-row prior-fieldset">
+            <div class="col col-md-12">
+                {% for field_name in fields %}
+                    {% include 'bilbyweb/job/form-snippets/prior_type.html' %}
+                    {% include 'bilbyweb/job/form-snippets/prior_fixed.html' %}
+                    {% include 'bilbyweb/job/form-snippets/prior_uniform.html' %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+
+    <div id="prior-tab-navigation">
+        {% include 'bilbyweb/job/snippets/pager.html' %}
+    </div>
+</form>

@@ -1,0 +1,63 @@
+{% extends 'base/base-two-columns.html' %}
+{% load static %}
+
+{% block page_header %}
+    New Job
+{% endblock page_header %}
+
+{% block additional_styles %}
+    <link rel="stylesheet" href="{% static 'bilbyweb/style/info_bar.css' %}"/>
+    <link rel="stylesheet" href="{% static 'bilbyweb/style/form.css' %}"/>
+    <link rel="stylesheet" href="{% static 'bilbyweb/style/job-chevron.css' %}"/>
+{% endblock additional_styles %}
+
+{% block additional_javascript %}
+    <script src="{% static 'bilbyweb/js/data.js' %}"></script>
+    <script src="{% static 'bilbyweb/js/signal.js' %}"></script>
+    <script src="{% static 'bilbyweb/js/prior.js' %}"></script>
+    <script src="{% static 'bilbyweb/js/sampler.js' %}"></script>
+{% endblock additional_javascript %}
+
+{% block content %}
+    {% include 'bilbyweb/job/snippets/job-tabs.html' %}
+    <div class="tab-content" id="job-tabs">
+
+        <!-- START -->
+        <div id="start" class="tab-pane container {% if active_tab == 'start' %}active{% else %}fade{% endif %}">
+            {% include 'bilbyweb/job/form-snippets/start_job_form.html' %}
+        </div>
+
+        <!-- Data -->
+        <div id="data" class="tab-pane container {% if active_tab == 'data' %}active{% else %}fade{% endif %}">
+            {% include 'bilbyweb/job/form-snippets/data_form.html' %}
+        </div>
+
+        <!-- Signal -->
+        <div id="signal" class="tab-pane container {% if active_tab == 'signal' %}active{% else %}fade{% endif %}">
+            {% include 'bilbyweb/job/form-snippets/signal_form.html' %}
+        </div>
+
+        <!-- Prior -->
+        <div id="prior" class="tab-pane container {% if active_tab == 'prior' %}active{% else %}fade{% endif %}">
+            {% include 'bilbyweb/job/form-snippets/prior_form.html' %}
+        </div>
+
+        <!-- Sampler -->
+        <div id="sampler" class="tab-pane container {% if active_tab == 'sampler' %}active{% else %}fade{% endif %}">
+            {% include 'bilbyweb/job/form-snippets/sampler_form.html' %}
+        </div>
+
+        <!-- Launch -->
+        <div id="launch" class="tab-pane container {% if active_tab == 'launch' %}active{% else %}fade{% endif %}">
+            {% include 'bilbyweb/job/form-snippets/launch_form.html' %}
+        </div>
+
+    </div>
+
+    <div id="form_store" style="display: none"></div>
+{% endblock content %}
+
+
+{% block info-bar %}
+    {% include 'bilbyweb/job/summary_job.html' %}
+{% endblock info-bar %}

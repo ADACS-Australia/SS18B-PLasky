@@ -1,0 +1,45 @@
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="form-tab" value="signal"/>
+
+    {% with signal_form.signal_choice as field %}
+        {% include 'bilbyweb/job/snippets/render_field.html' %}
+    {% endwith %}
+
+    <div class="">
+        <div id="signal-parameters">
+            <div id="div_signal_parameter_bbh">
+                {% for field in signal_parameter_bbh_form %}
+                    <div class="row field
+                        {% if field.field.required %}required{% endif %}
+                        {% if field.errors %}error{% endif %}">
+
+                        <!-- Label -->
+                        <label class="col-md-4 control-label" for="{{ field.auto_id }}">
+                            {{ field.label }}
+                        </label>
+
+                        <!-- Field -->
+                        <div class="col-md-8">
+                            {{ field }}
+                            {{ field.errors }}
+                        </div>
+
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% with signal_form.same_model as field %}
+            {% include 'bilbyweb/job/snippets/render_field.html' %}
+        {% endwith %}
+    </div>
+
+    {% with signal_form.signal_model as field %}
+        {% include 'bilbyweb/job/snippets/render_field.html' %}
+    {% endwith %}
+
+    <div id="signal-tab-navigation">
+        {% include 'bilbyweb/job/snippets/pager.html' %}
+    </div>
+</form>
+

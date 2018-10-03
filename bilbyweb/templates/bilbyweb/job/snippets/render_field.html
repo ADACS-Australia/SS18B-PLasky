@@ -1,0 +1,17 @@
+<div class="row field
+    {% if field.field.required %}required{% endif %}
+    {% if field.errors %}error{% endif %}
+    div-{{ field.name }}">
+
+    <!-- Label -->
+    <label class="col-md-4 control-label" for="{{ field.auto_id }}">
+        {{ field.label }}
+    </label>
+
+    <!-- Field -->
+    <div class="col-md-8">
+        {{ field }}
+        {{ field.errors }}
+    </div>
+
+</div>
