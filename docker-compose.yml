@@ -5,15 +5,13 @@ services:
     image: nginx:latest
     container_name: ng_tupak
     ports:
-      - "8001:8000"
+      - "8000:8000"
     volumes:
       - ./code:/code
       - ./:/etc/nginx/conf.d
       - ./static:/static
       - ./tupakweb/static:/tupakweb/static
       - ./accounts/static:/accounts/static
-    depends_on:
-      - web
   db:
     image: mysql:5.7
     container_name: mysql_tupak
@@ -26,7 +24,8 @@ services:
     build: ./
     container_name: dg_tupak
     command: >
-      bash -c "python manage.py makemigrations
+      bash -c "pip install gunicorn
+      && python manage.py makemigrations
       && python manage.py migrate
       && python manage.py collectstatic --noinput
       && gunicorn tupakui.wsgi -b 0.0.0.0:8000"
@@ -39,3 +38,4 @@ services:
       - ./accounts/static:/accounts/static
     depends_on:
       - db
+      - nginx
