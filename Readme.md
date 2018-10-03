@@ -1,7 +1,7 @@
 Project Overview
 ================
 
-This project serves as a user-interface and job controller for the TUPAK. The UI is responsible for controlling
+This project serves as a user-interface and job controller for the BILBY. The UI is responsible for controlling
 and managing user input, download job information and job data, etc.
 
 Prerequisites
@@ -37,7 +37,7 @@ The required steps include the following:
 * `virtualenv venv` (create the virtual environment, e.g. with https://docs.python.org/3/library/venv.html or https://github.com/pyenv/pyenv)
 * `git pull` (clone the code)
 * `source venv/bin/activate` (activate the virtual environment)
-* `cd ADACS-SS18B-PLasky/tupakui/settings` (enter the settings directory)
+* `cd ADACS-SS18B-PLasky/bilbyui/settings` (enter the settings directory)
 * `touch local.py` (create the file for local settings - refer to the Local Settings section for setting up a local settings file)
 * `cd ../../` (enter the root directory of the project)
 * `pip3 install -r requirements.txt` (install required python packages)
@@ -90,7 +90,7 @@ EMAIL_USE_SSL = False
 DATABASES = {
 'default': {
     'ENGINE': 'django.db.backends.mysql',
-    'NAME': 'tupak',
+    'NAME': 'bilby',
     'USER': 'django',
     'PASSWORD': 'test-password#1',
     'HOST': 'db',

@@ -1,0 +1,119 @@
+{% load template_filters %}
+{% if field_name == 'mass_1_min' %}
+    <div class="row {{ field_name | uniform }}">
+        <div class="col col-md-6 col-sm-12 col-12">
+            {% with prior_form.mass_1_min as field %}
+                {% include 'bilbyweb/job/form-snippets/prior_min_render.html' %}
+            {% endwith %}
+        </div>
+        <div class="col col-md-6 col-sm-12 col-12">
+            {% with prior_form.mass_1_max as field %}
+                {% include 'bilbyweb/job/form-snippets/prior_min_render.html' %}
+            {% endwith %}
+        </div>
+    </div>
+{% elif field_name == 'mass_2_min' %}
+    <div class="row {{ field_name | uniform }}">
+        <div class="col col-md-6 col-sm-12 col-12">
+            {% with prior_form.mass_2_min as field %}
+                {% include 'bilbyweb/job/form-snippets/prior_min_render.html' %}
+            {% endwith %}
+        </div>
+        <div class="col col-md-6 col-sm-12 col-12">
+            {% with prior_form.mass_2_max as field %}
+                {% include 'bilbyweb/job/form-snippets/prior_min_render.html' %}
+            {% endwith %}
+        </div>
+    </div>
+{% elif field_name == 'luminosity_distance_min' %}
+    <div class="row {{ field_name | uniform }}">
+        <div class="col col-md-6 col-sm-12 col-12">
+            {% with prior_form.luminosity_distance_min as field %}
+                {% include 'bilbyweb/job/form-snippets/prior_min_render.html' %}
+            {% endwith %}
+        </div>
+        <div class="col col-md-6 col-sm-12 col-12">
+            {% with prior_form.luminosity_distance_max as field %}
+                {% include 'bilbyweb/job/form-snippets/prior_min_render.html' %}
+            {% endwith %}
+        </div>
+    </div>
+{% elif field_name == 'iota_min' %}
+    <div class="row {{ field_name | uniform }}">
+        <div class="col col-md-6 col-sm-12 col-12">
+            {% with prior_form.iota_min as field %}
+                {% include 'bilbyweb/job/form-snippets/prior_min_render.html' %}
+            {% endwith %}
+        </div>
+        <div class="col col-md-6 col-sm-12 col-12">
+            {% with prior_form.iota_max as field %}
+                {% include 'bilbyweb/job/form-snippets/prior_min_render.html' %}
+            {% endwith %}
+        </div>
+    </div>
+{% elif field_name == 'psi_min' %}
+    <div class="row {{ field_name | uniform }}">
+        <div class="col col-md-6 col-sm-12 col-12">
+            {% with prior_form.psi_min as field %}
+                {% include 'bilbyweb/job/form-snippets/prior_min_render.html' %}
+            {% endwith %}
+        </div>
+        <div class="col col-md-6 col-sm-12 col-12">
+            {% with prior_form.psi_max as field %}
+                {% include 'bilbyweb/job/form-snippets/prior_min_render.html' %}
+            {% endwith %}
+        </div>
+    </div>
+{% elif field_name == 'phase_min' %}
+    <div class="row {{ field_name | uniform }}">
+        <div class="col col-md-6 col-sm-12 col-12">
+            {% with prior_form.phase_min as field %}
+                {% include 'bilbyweb/job/form-snippets/prior_min_render.html' %}
+            {% endwith %}
+        </div>
+        <div class="col col-md-6 col-sm-12 col-12">
+            {% with prior_form.phase_max as field %}
+                {% include 'bilbyweb/job/form-snippets/prior_min_render.html' %}
+            {% endwith %}
+        </div>
+    </div>
+{% elif field_name == 'merger_time_min' %}
+    <div class="row {{ field_name | uniform }}">
+        <div class="col col-md-6 col-sm-12 col-12">
+            {% with prior_form.merger_time_min as field %}
+                {% include 'bilbyweb/job/form-snippets/prior_min_render.html' %}
+            {% endwith %}
+        </div>
+        <div class="col col-md-6 col-sm-12 col-12">
+            {% with prior_form.merger_time_max as field %}
+                {% include 'bilbyweb/job/form-snippets/prior_min_render.html' %}
+            {% endwith %}
+        </div>
+    </div>
+{% elif field_name == 'ra_min' %}
+    <div class="row {{ field_name | uniform }}">
+        <div class="col col-md-6 col-sm-12 col-12">
+            {% with prior_form.ra_min as field %}
+                {% include 'bilbyweb/job/form-snippets/prior_min_render.html' %}
+            {% endwith %}
+        </div>
+        <div class="col col-md-6 col-sm-12 col-12">
+            {% with prior_form.ra_max as field %}
+                {% include 'bilbyweb/job/form-snippets/prior_min_render.html' %}
+            {% endwith %}
+        </div>
+    </div>
+{% elif field_name == 'dec_min' %}
+    <div class="row {{ field_name | uniform }}">
+        <div class="col col-md-6 col-sm-12 col-12">
+            {% with prior_form.dec_min as field %}
+                {% include 'bilbyweb/job/form-snippets/prior_min_render.html' %}
+            {% endwith %}
+        </div>
+        <div class="col col-md-6 col-sm-12 col-12">
+            {% with prior_form.dec_max as field %}
+                {% include 'bilbyweb/job/form-snippets/prior_min_render.html' %}
+            {% endwith %}
+        </div>
+    </div>
+{% endif %}

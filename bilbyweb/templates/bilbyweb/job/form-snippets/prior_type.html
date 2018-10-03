@@ -1,0 +1,37 @@
+{% if field_name == 'mass_1_type' %}
+    {% with prior_form.mass_1_type as field %}
+        {% include 'bilbyweb/job/form-snippets/prior_type_render.html' %}
+    {% endwith %}
+{% elif field_name == 'mass_2_type' %}
+    {% with prior_form.mass_2_type as field %}
+        {% include 'bilbyweb/job/form-snippets/prior_type_render.html' %}
+    {% endwith %}
+{% elif field_name == 'luminosity_distance_type' %}
+    {% with prior_form.luminosity_distance_type as field %}
+        {% include 'bilbyweb/job/form-snippets/prior_type_render.html' %}
+    {% endwith %}
+{% elif field_name == 'iota_type' %}
+    {% with prior_form.iota_type as field %}
+        {% include 'bilbyweb/job/form-snippets/prior_type_render.html' %}
+    {% endwith %}
+{% elif field_name == 'psi_type' %}
+    {% with prior_form.psi_type as field %}
+        {% include 'bilbyweb/job/form-snippets/prior_type_render.html' %}
+    {% endwith %}
+{% elif field_name == 'phase_type' %}
+    {% with prior_form.phase_type as field %}
+        {% include 'bilbyweb/job/form-snippets/prior_type_render.html' %}
+    {% endwith %}
+{% elif field_name == 'merger_time_type' %}
+    {% with prior_form.merger_time_type as field %}
+        {% include 'bilbyweb/job/form-snippets/prior_type_render.html' %}
+    {% endwith %}
+{% elif field_name == 'ra_type' %}
+    {% with prior_form.ra_type as field %}
+        {% include 'bilbyweb/job/form-snippets/prior_type_render.html' %}
+    {% endwith %}
+{% elif field_name == 'dec_type' %}
+    {% with prior_form.dec_type as field %}
+        {% include 'bilbyweb/job/form-snippets/prior_type_render.html' %}
+    {% endwith %}
+{% endif %}

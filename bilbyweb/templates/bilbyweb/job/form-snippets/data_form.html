@@ -1,0 +1,75 @@
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <input type="hidden" name="form-tab" value="data"/>
+
+    {% include 'bilbyweb/job/snippets/errors.html' %}
+
+    {% for field in data_form %}
+        <div class="row field
+                    {% if field.field.required %}required{% endif %}
+                    {% if field.errors %}error{% endif %}
+                    div-{{ field.name }}">
+
+            <!-- Label -->
+            <label class="col col-md-4 control-label" for="{{ field.auto_id }}">
+                {{ field.label }}
+            </label>
+
+            <!-- Field -->
+            <div class="col col-md-8">
+                {{ field }}
+                {{ field.errors }}
+            </div>
+
+        </div>
+    {% endfor %}
+
+    <div id="div_data_simulated">
+        {% for field in data_simulated_form %}
+            <div class="row field
+                        {% if field.field.required %}required{% endif %}
+                        {% if field.errors %}error{% endif %}">
+
+                <!-- Label -->
+                <label class="col col-md-4 control-label" for="{{ field.auto_id }}">
+                    {{ field.label }}
+                </label>
+
+                <!-- Field -->
+                <div class="col col-md-8">
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
+
+    <div id="div_data_open">
+        {% for field in data_open_form %}
+            <div class="row field
+                        {% if field.field.required %}required{% endif %}
+                        {% if field.errors %}error{% endif %}">
+
+                <!-- Label -->
+                <label class="col col-md-4 control-label" for="{{ field.auto_id }}">
+                    {{ field.label }}
+                </label>
+
+                <!-- Field -->
+                <div class="col col-md-8">
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
+
+    <div id="data-tab-navigation">
+        {% include 'bilbyweb/job/snippets/pager.html' %}
+    </div>
+
+</form>
+
