@@ -34,6 +34,9 @@ class User(AbstractUser):
     def is_admin(self):
         return self.role == self.IS_ADMIN
 
+    def display_name(self):
+        return '{first_name} {last_name}'.format(first_name=self.first_name, last_name=self.last_name)
+
     def __str__(self):
         return u'%s %s (%s)' % (self.first_name, self.last_name, self.username)
 

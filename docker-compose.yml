@@ -3,38 +3,38 @@ version: '3'
 services:
   nginx:
     image: nginx:latest
-    container_name: ng_tupak
+    container_name: ng_bilby
     ports:
       - "8000:8000"
     volumes:
       - ./code:/code
       - ./:/etc/nginx/conf.d
       - ./static:/static
-      - ./tupakweb/static:/tupakweb/static
+      - ./bilbyweb/static:/bilbyweb/static
       - ./accounts/static:/accounts/static
   db:
     image: mysql:5.7
-    container_name: mysql_tupak
+    container_name: mysql_bilby
     environment:
       MYSQL_ROOT_PASSWORD: example
-      MYSQL_DATABASE: tupak
+      MYSQL_DATABASE: bilby
       MYSQL_USER: django
       MYSQL_PASSWORD: test-docker_#1
   web:
     build: ./
-    container_name: dg_tupak
+    container_name: dg_bilby
     command: >
       bash -c "pip install gunicorn
       && python manage.py makemigrations
       && python manage.py migrate
       && python manage.py collectstatic --noinput
-      && gunicorn tupakui.wsgi -b 0.0.0.0:8000"
+      && gunicorn bilbyui.wsgi -b 0.0.0.0:8000"
     ports:
       - "8000"
     volumes:
       - ./:/code
       - ./static:/static
-      - ./tupakweb/static:/tupakweb/static
+      - ./bilbyweb/static:/bilbyweb/static
       - ./accounts/static:/accounts/static
     depends_on:
       - db
