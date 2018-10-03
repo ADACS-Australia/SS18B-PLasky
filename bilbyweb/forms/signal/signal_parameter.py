@@ -21,8 +21,8 @@ from ...utility.display_names import (
     PSI_DISPLAY,
     PHASE,
     PHASE_DISPLAY,
-    MERGER_TIME,
-    MERGER_TIME_DISPLAY,
+    GEOCENT_TIME,
+    GEOCENT_TIME_DISPLAY,
     RA,
     RA_DISPLAY,
     DEC,
@@ -72,9 +72,9 @@ BBH_FIELDS_PROPERTIES = OrderedDict([
         'initial': None,
         'required': True,
     }),
-    (MERGER_TIME, {
+    (GEOCENT_TIME, {
         'type': field.POSITIVE_FLOAT,
-        'label': MERGER_TIME_DISPLAY,
+        'label': GEOCENT_TIME_DISPLAY,
         'placeholder': '1126259642.413',
         'initial': None,
         'required': True,

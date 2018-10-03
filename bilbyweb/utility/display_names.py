@@ -111,8 +111,8 @@ PSI = 'psi'
 PSI_DISPLAY = 'psi'
 PHASE = 'phase'
 PHASE_DISPLAY = 'Phase'
-MERGER_TIME = 'merger_time'
-MERGER_TIME_DISPLAY = 'Merger Time (GPS Time)'
+GEOCENT_TIME = 'geocent_time'
+GEOCENT_TIME_DISPLAY = 'Merger Time (GPS Time)'
 RA = 'ra'
 RA_DISPLAY = 'Right Ascension (Radians)'
 DEC = 'dec'
@@ -125,7 +125,7 @@ DISPLAY_NAME_MAP.update({
     IOTA: IOTA_DISPLAY,
     PSI: PSI_DISPLAY,
     PHASE: PHASE_DISPLAY,
-    MERGER_TIME: MERGER_TIME_DISPLAY,
+    GEOCENT_TIME: GEOCENT_TIME_DISPLAY,
     RA: RA_DISPLAY,
     DEC: DEC_DISPLAY,
 })

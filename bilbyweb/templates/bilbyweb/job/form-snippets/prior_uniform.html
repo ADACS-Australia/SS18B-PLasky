@@ -77,15 +77,15 @@
             {% endwith %}
         </div>
     </div>
-{% elif field_name == 'merger_time_min' %}
+{% elif field_name == 'geocent_time_min' %}
     <div class="row {{ field_name | uniform }}">
         <div class="col col-md-6 col-sm-12 col-12">
-            {% with prior_form.merger_time_min as field %}
+            {% with prior_form.geocent_time_min as field %}
                 {% include 'bilbyweb/job/form-snippets/prior_min_render.html' %}
             {% endwith %}
         </div>
         <div class="col col-md-6 col-sm-12 col-12">
-            {% with prior_form.merger_time_max as field %}
+            {% with prior_form.geocent_time_max as field %}
                 {% include 'bilbyweb/job/form-snippets/prior_min_render.html' %}
             {% endwith %}
         </div>

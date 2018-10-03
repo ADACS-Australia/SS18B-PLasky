@@ -117,7 +117,7 @@ class SignalParameter(models.Model):
         (IOTA, IOTA_DISPLAY),
         (PSI, PSI_DISPLAY),
         (PHASE, PHASE_DISPLAY),
-        (MERGER_TIME, MERGER_TIME_DISPLAY),
+        (GEOCENT_TIME, GEOCENT_TIME_DISPLAY),
         (RA, RA_DISPLAY),
         (DEC, DEC_DISPLAY),
     ]
