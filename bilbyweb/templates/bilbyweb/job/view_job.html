@@ -7,7 +7,7 @@
 {% endblock additional_styles %}
 
 {% block page_header %}
-    <span>Job :: {{ bilby_job.job.name }}</span>
+    <span>{{ bilby_job.job.name }}</span>
     <span class="job-status">
         {% with bilby_job.job.status as status %}
             {% if status == 'draft' %}
