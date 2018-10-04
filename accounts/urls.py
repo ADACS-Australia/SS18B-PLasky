@@ -10,7 +10,7 @@ urlpatterns = [
     path('register/', registration, name='register'),
     path('login/', auth_views.LoginView.as_view(redirect_authenticated_user=True, template_name='accounts/login.html'),
          name='login'),
-    path('logout/', auth_views.logout, {'next_page': '/'}, name='logout'),
+    path('logout/', auth_views.logout, {'next_page': settings.LOGOUT_REDIRECT_URL}, name='logout'),
     path('profile/', profile, name='profile'),
     path('password_change/',
          auth_views.PasswordChangeView.as_view(

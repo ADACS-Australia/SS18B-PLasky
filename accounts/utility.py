@@ -23,15 +23,16 @@ def get_email_verification_expiry():
 
 
 def get_absolute_site_url(request):
-    site_name = request.get_host()
-    if request.is_secure():
-        protocol = 'https'
-    else:
-        try:
-            protocol = settings.HTTP_PROTOCOL
-        except AttributeError:
-            protocol = 'http'
-    return protocol + '://' + site_name
+#    site_name = request.get_host()
+#    if request.is_secure():
+#        protocol = 'https'
+#    else:
+#        try:
+#            protocol = settings.HTTP_PROTOCOL
+#        except AttributeError:
+#            protocol = 'http'
+#    return protocol + '://' + site_name
+    return "https://supercomputing.swin.edu.au/projects/bilby/live"
 
 
 def get_token(information, validity=None):

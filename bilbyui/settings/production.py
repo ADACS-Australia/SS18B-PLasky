@@ -20,7 +20,13 @@ STATICFILES_DIRS = [
 ]
 
 ROOT_SUBDIRECTORY_PATH = 'projects/bilby/live/'
-STATIC_URL = '/projects/bilby/live/static/'
+
+LOGIN_REDIRECT_URL = '/' + ROOT_SUBDIRECTORY_PATH + 'jobs'
+LOGOUT_REDIRECT_URL = '/' + ROOT_SUBDIRECTORY_PATH
+LOGIN_URL = '/' + ROOT_SUBDIRECTORY_PATH + 'accounts/login'
+
+
+STATIC_URL = '/' + ROOT_SUBDIRECTORY_PATH + 'static/'
 
 DATABASES = {
     'default': {
