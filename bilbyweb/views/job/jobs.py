@@ -14,13 +14,13 @@ from ...utility.display_names import (
     QUEUED,
     IN_PROGRESS,
     COMPLETED,
-)
-from ...models import Job
+    NONE)
+from ...models import Job, JobStatus
 
 
 @login_required
 def public_jobs(request):
-    my_jobs = Job.objects.filter(Q(status__in=[PUBLIC, ])).order_by('-last_updated', '-submission_time')
+    my_jobs = Job.objects.filter(Q(extra_status__in=[PUBLIC, ])).order_by('-last_updated', '-submission_time')
     paginator = Paginator(my_jobs, 5)
 
     page = request.GET.get('page')
@@ -38,8 +38,9 @@ def public_jobs(request):
 
 @login_required
 def jobs(request):
-    my_jobs = Job.objects.filter(Q(user=request.user), ~Q(status__in=[DELETED, DRAFT, ])).order_by('-last_updated',
-                                                                                                   '-submission_time')
+    my_jobs = Job.objects.filter(user=request.user)\
+        .exclude(extra_status__in=[DELETED, ]).exclude(job_status__in=[JobStatus.DRAFT, ])\
+        .order_by('-last_updated', '-submission_time')
     paginator = Paginator(my_jobs, 5)
 
     page = request.GET.get('page')
@@ -56,8 +57,9 @@ def jobs(request):
 
 @login_required
 def drafts(request):
-    my_jobs = Job.objects.filter(Q(user=request.user), Q(status__in=[DRAFT, ])).order_by('-last_updated',
-                                                                                         '-creation_time')
+    my_jobs = Job.objects.filter(Q(user=request.user), Q(job_status__in=[JobStatus.DRAFT, ])) \
+        .exclude(extra_status__in=[DELETED, ]).order_by('-last_updated', '-creation_time')
+
     paginator = Paginator(my_jobs, 5)
 
     page = request.GET.get('page')
@@ -184,7 +186,7 @@ def delete_job(request, job_id):
                 if job.status == DRAFT:
                     job.delete()
                 else:
-                    job.status = DELETED
+                    job.extra_status = DELETED
                     job.save()
                     to_page = 'jobs'
                 messages.add_message(request, messages.SUCCESS, message, extra_tags='safe')
@@ -229,7 +231,7 @@ def make_job_private(request, job_id):
         try:
             job = Job.objects.get(id=job_id)
             if job.status == PUBLIC and (request.user == job.user or request.user.is_admin()):
-                job.status = COMPLETED
+                job.extra_status = NONE
                 job.save()
                 should_redirect = True
                 messages.success(request, 'Job has been changed to <strong>private!</strong>', extra_tags='safe')
@@ -261,7 +263,7 @@ def make_job_public(request, job_id):
         try:
             job = Job.objects.get(id=job_id)
             if job.status == COMPLETED and (request.user == job.user or request.user.is_admin()):
-                job.status = PUBLIC
+                job.extra_status = PUBLIC
                 job.save()
                 should_redirect = True
                 messages.success(request, 'Job has been changed to <strong>public!</strong>', extra_tags='safe')

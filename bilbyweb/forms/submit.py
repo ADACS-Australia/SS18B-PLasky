@@ -33,9 +33,9 @@ class SubmitJobForm(DynamicForm):
         data = self.cleaned_data
 
         self.job.json_representation = data.get('json_representation')
-        self.job.status = SUBMITTED
-        self.job.submission_time = timezone.now()
-        self.job.save()
+
+        # Submit the job
+        self.job.submit(self.job.json_representation)
 
         self.request.session['draft_job'] = None
 

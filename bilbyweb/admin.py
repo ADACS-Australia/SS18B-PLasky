@@ -15,7 +15,7 @@ from .models import (
 # Register your models here.
 @admin.register(Job)
 class Job(admin.ModelAdmin):
-    list_display = ('name', 'description', 'status', 'user',)
+    list_display = ('name', 'description', 'status_display', 'user',)
     search_fields = ['name', 'description', 'user__username', 'user__first_name', 'user__last_name', ]
 
 

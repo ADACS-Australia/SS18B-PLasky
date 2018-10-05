@@ -1,7 +1,6 @@
 import ast
 from django import template
-from ..utility.display_names import DISPLAY_NAME_MAP
-
+from ..utility.display_names import *
 
 register = template.Library()
 
@@ -28,15 +27,19 @@ def display_name(value):
 @register.filter(name='status_color')
 def status_color(status):
     status_color_map = {
-        'draft': 'secondary',
-        'submitted': 'primary',
-        'queued': 'primary',
-        'in-progress': 'primary',
-        'completed': 'success',
-        'error': 'danger',
-        'saved': 'dark',
-        'wall_time_exceeded': 'warning',
-        'deleted': 'light',
-        'public': 'info',
+        DRAFT: 'secondary',
+        SUBMITTING: 'primary',
+        SUBMITTED: 'primary',
+        QUEUED: 'primary',
+        IN_PROGRESS: 'primary',
+        COMPLETED: 'success',
+        CANCELLING: 'danger',
+        CANCELED: 'danger',
+        ERROR: 'danger',
+        WALL_TIME_EXCEEDED: 'warning',
+        OUT_OF_MEMORY: 'warning',
+        SAVED: 'dark',
+        DELETED: 'light',
+        PUBLIC: 'info',
     }
     return status_color_map.get(status, None)

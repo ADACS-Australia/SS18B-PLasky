@@ -1,27 +1,40 @@
 from django.conf import settings
 from django.db import models
 
+from django_hpc_job_controller.models import HpcJob
 from .utility.display_names import *
 
 
-class Job(models.Model):
+class Job(HpcJob):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_job', on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=False, null=False)
     description = models.TextField(blank=True, null=True)
 
     STATUS_CHOICES = [
-        (DRAFT, DRAFT_DISPLAY),
-        (SUBMITTED, SUBMITTED_DISPLAY),
-        (QUEUED, QUEUED_DISPLAY),
-        (IN_PROGRESS, IN_PROGRESS_DISPLAY),
-        (COMPLETED, COMPLETED_DISPLAY),
-        (ERROR, ERROR_DISPLAY),
+        (NONE, NONE_DISPLAY),
         (SAVED, SAVED_DISPLAY),
-        (WALL_TIME_EXCEEDED, WALL_TIME_EXCEEDED_DISPLAY),
         (DELETED, DELETED_DISPLAY),
         (PUBLIC, PUBLIC_DISPLAY),
     ]
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, blank=False, default=DRAFT)
+
+    extra_status = models.CharField(max_length=20, choices=STATUS_CHOICES, blank=False, default=NONE)
+
+    @property
+    def status_display(self):
+        if self.extra_status != "none":
+            return DISPLAY_NAME_MAP[self.extra_status]
+        if self.job_status in DISPLAY_NAME_MAP_HPC_JOB:
+            return DISPLAY_NAME_MAP[DISPLAY_NAME_MAP_HPC_JOB[self.job_status]]
+        return "Unknown"
+
+    @property
+    def status(self):
+        if self.extra_status != "none":
+            return self.extra_status
+        if self.job_status in DISPLAY_NAME_MAP_HPC_JOB:
+            return DISPLAY_NAME_MAP_HPC_JOB[self.job_status]
+        return "Unknown"
+
     creation_time = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now_add=True)
     submission_time = models.DateTimeField(null=True, blank=True)
