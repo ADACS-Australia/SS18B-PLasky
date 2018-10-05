@@ -3,9 +3,9 @@ body {
 }
 
 *, *:before, *:after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 .main-content {
@@ -39,25 +39,14 @@ body {
 
 /********************************************/
 /*                                          */
-/*              Welcome page                */
+/*                 Navbar                    */
 /*                                          */
 /********************************************/
-
-.jumbotron {
-    /*background-image: url("../images/GW.jpg");*/
-    background-size:cover;
-    background: no-repeat center center;
-    margin-bottom: 0;
-    /*padding-top: 15em;*/
-    /*padding-bottom: 13em;*/
+.navbar-brand .logo {
+    width: 150px;
 }
 
-#welcome-message{
-    text-align: center;
-    /*color: #000000;*/
-    /*font-optical-sizing: auto;*/
-    /*text-shadow: 1px 1px #0e2918;*/
-}
+
 
 /********************************************/
 /*                                          */
@@ -67,6 +56,7 @@ body {
 .field {
     padding-bottom: 10px;
 }
+
 .field.error label {
     color: darkred;
 }
@@ -135,17 +125,8 @@ ul.messages {
 /********************************************/
 
 .field.required .control-label:after {
-   content:"*";
-   color:red;
-}
-
-/********************************************/
-/*                                          */
-/*                 Job-Tabs                 */
-/*                                          */
-/********************************************/
-.tab-content{
-    margin-top: 20px;
+    content: "*";
+    color: red;
 }
 
 /********************************************/
@@ -154,5 +135,5 @@ ul.messages {
 /*                                          */
 /********************************************/
 .errorlist {
-  list-style-type: none;
+    list-style-type: none;
 }

@@ -181,3 +181,5 @@ LOGGING = {
         },
     },
 }
+
+ROOT_SUBDIRECTORY_PATH = ''
