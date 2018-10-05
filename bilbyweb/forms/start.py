@@ -39,7 +39,7 @@ class StartJobForm(forms.ModelForm):
                 user=self.request.user,
                 name=self.cleaned_data.get('name')
         ).exists():
-            logger.error("You already have a job with the same name")
+            logger.info("You already have a job with the same name")
             raise forms.ValidationError(
                 "You already have a job with the same name"
             )
