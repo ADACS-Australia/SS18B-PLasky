@@ -110,3 +110,4 @@ local.py
 *.pdf
 ADACS.py
 static-files/*
+django_hpc_job_controller/

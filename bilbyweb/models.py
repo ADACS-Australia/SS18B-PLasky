@@ -21,7 +21,7 @@ class Job(HpcJob):
 
     @property
     def status_display(self):
-        if self.extra_status != "none":
+        if self.extra_status != NONE:
             return DISPLAY_NAME_MAP[self.extra_status]
         if self.job_status in DISPLAY_NAME_MAP_HPC_JOB:
             return DISPLAY_NAME_MAP[DISPLAY_NAME_MAP_HPC_JOB[self.job_status]]
@@ -29,11 +29,11 @@ class Job(HpcJob):
 
     @property
     def status(self):
-        if self.extra_status != "none":
+        if self.extra_status != NONE:
             return self.extra_status
         if self.job_status in DISPLAY_NAME_MAP_HPC_JOB:
             return DISPLAY_NAME_MAP_HPC_JOB[self.job_status]
-        return "Unknown"
+        return "unknown"
 
     creation_time = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now_add=True)
