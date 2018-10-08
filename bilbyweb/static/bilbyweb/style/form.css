@@ -68,5 +68,19 @@
 }
 
 /******************/
-/* END FIELDSET */
+/* END FIELDSET   */
 /******************/
+
+/**********************/
+/*  NON FIELD ERRORS  */
+alert.non-field-error {
+    border: 1px solid red;
+}
+
+
+.non-field-error ul.errors {
+    border-top-width: 1px;
+    border-radius: 4px 4px;
+}
+
+/**********************/

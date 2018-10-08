@@ -43,10 +43,16 @@ class PriorForm(DynamicForm):
         if not self.fieldsets:
             return
         data = self.cleaned_data
+
+        # number of uniform fields
+        uniform_fields = 0
+
         for fieldset_fields in self.fieldsets.values():
             field_classifications = classify_fields(fieldset_fields)
 
             if data.get(field_classifications.get('type_field'), None) == 'uniform':
+                # increasing the number of uniform fields
+                uniform_fields += 1
                 min_data = data.get(field_classifications.get('min_field'))
                 max_data = data.get(field_classifications.get('max_field'))
 
@@ -58,6 +64,11 @@ class PriorForm(DynamicForm):
                         self.add_error(field_classifications.get('max_field'), error_msg)
                 except TypeError:
                     pass
+
+        # al least one prior should be uniform, otherwise bilby job will fail
+        # if that is not the case, adding non field errors.
+        if not uniform_fields:
+            self.add_error(forms.forms.NON_FIELD_ERRORS, 'At least one prior should be uniform.')
 
     def save(self):
         self.full_clean()

@@ -3,6 +3,16 @@
 
     <input type="hidden" name="form-tab" value="prior"/>
 
+    {% if prior_form.non_field_errors %}
+        <div class="non-field-error">
+            <ul class="errors">
+                {% for error in prior_form.non_field_errors %}
+                    <li class="error">{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
     {% for fieldset_name, fields in prior_form.fieldsets.items %}
         <div class="fieldset-name">
             {{ fieldset_name }}
