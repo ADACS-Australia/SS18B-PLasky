@@ -1,8 +1,8 @@
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 
 from ...utility.job import BilbyJob
@@ -76,6 +76,32 @@ def drafts(request):
 
 
 @login_required
+def download_asset(request, job_id, file_path):
+    """
+    Returns a file from the server for the specified job
+
+    :param request: The django request object
+    :param job_id: int: The job id
+    :param file_path: string: the path to the file to fetch
+
+    :return: A HttpStreamingResponse object representing the file
+    """
+    # Get the job
+    job = get_object_or_404(Job, id=job_id)
+
+    # Check that this user has access to this job
+    if not (job.status == PUBLIC or request.user == job.user or request.user.is_admin()):
+        # Nothing to see here
+        raise Http404
+
+    # Get the requested file from the server
+    try:
+        return job.fetch_remote_file(file_path)
+    except:
+        raise Http404
+
+
+@login_required
 def view_job(request, job_id):
     # checking:
     # 1. Job ID and job exists
@@ -90,11 +116,50 @@ def view_job(request, job_id):
                 # create a bilby_job instance of the job
                 bilby_job = BilbyJob(job_id=job.id)
                 bilby_job.list_actions(request.user)
+
+                # Empty parameter dict to pass to template
+                job_data = {
+                    'L1': None,
+                    'V1': None,
+                    'H1': None,
+                    'corner': None,
+                    'archive': None,
+                    'is_online': bilby_job.job.cluster.is_connected() is not None
+                }
+
+                # Check if the cluster is online
+                if job_data['is_online']:
+                    # Get the output file list for this job
+                    result = bilby_job.job.fetch_remote_file_list(path="/", recursive=True)
+                    # Waste the message id
+                    result.pop_uint()
+                    # Iterate over each file
+                    num_entries = result.pop_uint()
+                    for _ in range(num_entries):
+                        path = result.pop_string()
+                        # Waste the is_file bool
+                        result.pop_bool()
+                        # Waste the file size
+                        size = result.pop_ulong()
+
+                        # Check if this is a wanted file
+                        if 'output/L1_frequency_domain_data.png' in path:
+                            job_data['L1'] = {'path': path, 'size': size}
+                        if 'output/V1_frequency_domain_data.png' in path:
+                            job_data['V1'] = {'path': path, 'size': size}
+                        if 'output/H1_frequency_domain_data.png' in path:
+                            job_data['H1'] = {'path': path, 'size': size}
+                        if 'output/bilby_corner.png' in path:
+                            job_data['corner'] = {'path': path, 'size': size}
+                        if 'bilby_job_{}.tar.gz'.format(bilby_job.job.id) in path:
+                            job_data['archive'] = {'path': path, 'size': size}
+
                 return render(
                     request,
                     "bilbyweb/job/view_job.html",
                     {
                         'bilby_job': bilby_job,
+                        'job_data': job_data
                     }
                 )
         except Job.DoesNotExist:
