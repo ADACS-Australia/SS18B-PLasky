@@ -58,6 +58,7 @@ DISPLAY_NAME_MAP.update({
 
 DISPLAY_NAME_MAP_HPC_JOB.update({
     JobStatus.DRAFT: DRAFT,
+    JobStatus.PENDING: PENDING,
     JobStatus.SUBMITTING: SUBMITTING,
     JobStatus.SUBMITTED: SUBMITTED,
     JobStatus.QUEUED: QUEUED,
