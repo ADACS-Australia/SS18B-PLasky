@@ -171,12 +171,17 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['file', 'mail_admins'],
+            'handlers': ['file', 'mail_admins', 'console'],
             'level': 'INFO',
             'propagate': True,
         },
         'bilbyweb': {
-            'handlers': ['file', 'mail_admins'],
+            'handlers': ['file', 'mail_admins', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'django_hpc_job_controller': {
+            'handlers': ['file', 'mail_admins', 'console'],
             'level': 'INFO',
             'propagate': True,
         },

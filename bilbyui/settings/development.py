@@ -18,7 +18,7 @@ DATABASES = {
 }
 
 for logger in LOGGING['loggers']:
-    LOGGING['loggers'][logger]['handlers'] = ['console']
+    LOGGING['loggers'][logger]['handlers'] = ['console', 'file']
 
 try:
     from .local import *
