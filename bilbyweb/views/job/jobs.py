@@ -129,30 +129,33 @@ def view_job(request, job_id):
 
                 # Check if the cluster is online
                 if job_data['is_online']:
-                    # Get the output file list for this job
-                    result = bilby_job.job.fetch_remote_file_list(path="/", recursive=True)
-                    # Waste the message id
-                    result.pop_uint()
-                    # Iterate over each file
-                    num_entries = result.pop_uint()
-                    for _ in range(num_entries):
-                        path = result.pop_string()
-                        # Waste the is_file bool
-                        result.pop_bool()
-                        # Waste the file size
-                        size = result.pop_ulong()
+                    try:
+                        # Get the output file list for this job
+                        result = bilby_job.job.fetch_remote_file_list(path="/", recursive=True)
+                        # Waste the message id
+                        result.pop_uint()
+                        # Iterate over each file
+                        num_entries = result.pop_uint()
+                        for _ in range(num_entries):
+                            path = result.pop_string()
+                            # Waste the is_file bool
+                            result.pop_bool()
+                            # Waste the file size
+                            size = result.pop_ulong()
 
-                        # Check if this is a wanted file
-                        if 'output/L1_frequency_domain_data.png' in path:
-                            job_data['L1'] = {'path': path, 'size': size}
-                        if 'output/V1_frequency_domain_data.png' in path:
-                            job_data['V1'] = {'path': path, 'size': size}
-                        if 'output/H1_frequency_domain_data.png' in path:
-                            job_data['H1'] = {'path': path, 'size': size}
-                        if 'output/bilby_corner.png' in path:
-                            job_data['corner'] = {'path': path, 'size': size}
-                        if 'bilby_job_{}.tar.gz'.format(bilby_job.job.id) in path:
-                            job_data['archive'] = {'path': path, 'size': size}
+                            # Check if this is a wanted file
+                            if 'output/L1_frequency_domain_data.png' in path:
+                                job_data['L1'] = {'path': path, 'size': size}
+                            if 'output/V1_frequency_domain_data.png' in path:
+                                job_data['V1'] = {'path': path, 'size': size}
+                            if 'output/H1_frequency_domain_data.png' in path:
+                                job_data['H1'] = {'path': path, 'size': size}
+                            if 'output/bilby_corner.png' in path:
+                                job_data['corner'] = {'path': path, 'size': size}
+                            if 'bilby_job_{}.tar.gz'.format(bilby_job.job.id) in path:
+                                job_data['archive'] = {'path': path, 'size': size}
+                    except:
+                        job_data['is_online'] = False
 
                 return render(
                     request,
