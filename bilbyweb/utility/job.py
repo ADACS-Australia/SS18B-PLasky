@@ -18,7 +18,7 @@ from ..utility.display_names import (
     DRAFT,
     COMPLETED,
     DELETED,
-    SUBMITTING, CANCELED, CANCELLING, PENDING)
+    SUBMITTING, CANCELLED, CANCELLING, PENDING)
 
 from ..models import (
     Job,
@@ -160,7 +160,8 @@ class BilbyJob(object):
             # 1. submitted
             # 2. queued
             # 3. in progress
-            if self.job.status not in [PENDING, SUBMITTING, SUBMITTED, QUEUED, IN_PROGRESS, CANCELLING, DELETED]:
+            if self.job.status not in [PENDING, SUBMITTING, SUBMITTED, QUEUED, IN_PROGRESS, CANCELLING, CANCELLED,
+                                       DELETED]:
                 self.job_actions.append('delete')
 
             # edit a job if it is a draft

@@ -28,18 +28,19 @@ def display_name(value):
 def status_color(status):
     status_color_map = {
         DRAFT: 'secondary',
+        PENDING: 'secondary',
         SUBMITTING: 'primary',
         SUBMITTED: 'primary',
         QUEUED: 'primary',
         IN_PROGRESS: 'primary',
         COMPLETED: 'success',
-        CANCELLING: 'danger',
-        CANCELED: 'danger',
+        CANCELLING: 'dark',
+        CANCELLED: 'dark',
         ERROR: 'danger',
         WALL_TIME_EXCEEDED: 'warning',
         OUT_OF_MEMORY: 'warning',
-        SAVED: 'dark',
+        DELETING: 'light',
         DELETED: 'light',
         PUBLIC: 'info',
     }
-    return status_color_map.get(status, None)
+    return status_color_map.get(status, 'secondary')

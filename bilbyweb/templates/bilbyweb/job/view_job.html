@@ -12,6 +12,10 @@
         {% with bilby_job.job.status as status %}
             {% if status == 'draft' %}
                 <span class="badge badge-secondary">DRAFT</span>
+            {% elif status == 'pending' %}
+                <span class="badge badge-primary">PENDING</span>
+            {% elif status == 'submitting' %}
+                <span class="badge badge-primary">SUBMITTING</span>
             {% elif status == 'submitted' %}
                 <span class="badge badge-primary">SUBMITTED</span>
             {% elif status == 'queued' %}
@@ -22,10 +26,16 @@
                 <span class="badge badge-success">COMPLETED</span><span class="badge badge-info">PRIVATE</span>
             {% elif status == 'error' %}
                 <span class="badge badge-danger">ERROR</span>
-            {% elif status == 'saved' %}
-                <span class="badge badge-dark">SAVED</span>
+            {% elif status == 'cancelling' %}
+                <span class="badge badge-dark">CANCELLING</span>
+            {% elif status == 'cancelled' %}
+                <span class="badge badge-dark">CANCELLED</span>
             {% elif status == 'wall_time_exceeded' %}
                 <span class="badge badge-warning">WALL TIME EXCEEDED</span>
+            {% elif status == 'out_of_memory' %}
+                <span class="badge badge-warning">OUT OF MEMORY</span>
+            {% elif status == 'deleting' %}
+                <span class="badge badge-light">DELETING</span>
             {% elif status == 'deleted' %}
                 <span class="badge badge-light">DELETED</span>
             {% elif status == 'public' %}

@@ -167,9 +167,13 @@ def save_tab(request, active_tab):
             error_in_form = True
 
     if not error_in_form:
+        # should not submit job if previous is pressed on the submit page
+        previous = request.POST.get('previous', False)
+
         # save the forms
         for form_to_save in forms_to_save:
-            forms[form_to_save].save()
+            if not (previous and form_to_save == LAUNCH):
+                forms[form_to_save].save()
 
         # update the job
         if job:
@@ -180,7 +184,7 @@ def save_tab(request, active_tab):
             job.save()
 
         # get the active tab
-        active_tab, submitted = get_to_be_active_tab(active_tab, previous=request.POST.get('previous', False))
+        active_tab, submitted = get_to_be_active_tab(active_tab, previous=previous)
 
     # don't process further for submitted jobs
     if not submitted:

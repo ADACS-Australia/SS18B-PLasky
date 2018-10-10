@@ -12,8 +12,6 @@ class Job(HpcJob):
 
     STATUS_CHOICES = [
         (NONE, NONE_DISPLAY),
-        (SAVED, SAVED_DISPLAY),
-        (DELETED, DELETED_DISPLAY),
         (PUBLIC, PUBLIC_DISPLAY),
     ]
 
