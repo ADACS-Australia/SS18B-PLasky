@@ -209,7 +209,7 @@
                         {% if job_data.H1 %}
                             <li class="card text-center">
                                 <img class="card-img-top"
-                                     src="{% url 'download_asset' bilby_job.job.id job_data.H1.path %}"
+                                     src="{% url 'download_asset' bilby_job.job.id 0 job_data.H1.path %}"
                                      alt="Hanford Detector Frequency Domain Data">
                                 <div class="card-body">
                                     <p class="card-text">Hanford Detector Frequency Domain Data</p>
@@ -219,7 +219,7 @@
                         {% if job_data.L1 %}
                             <li class="card text-center">
                                 <img class="card-img-top"
-                                     src="{% url 'download_asset' bilby_job.job.id job_data.L1.path %}"
+                                     src="{% url 'download_asset' bilby_job.job.id 0 job_data.L1.path %}"
                                      alt="Livingston Detector Frequency Domain Data">
                                 <div class="card-body">
                                     <p class="card-text">Livingston Detector Frequency Domain Data</p>
@@ -229,7 +229,7 @@
                         {% if job_data.V1 %}
                             <li class="card text-center">
                                 <img class="card-img-top"
-                                     src="{% url 'download_asset' bilby_job.job.id job_data.V1.path %}"
+                                     src="{% url 'download_asset' bilby_job.job.id 0 job_data.V1.path %}"
                                      alt="Virgo Detector Frequency Domain Data">
                                 <div class="card-body">
                                     <p class="card-text">Virgo Detector Frequency Domain Data</p>
@@ -239,7 +239,7 @@
                         {% if job_data.corner %}
                             <li class="card text-center">
                                 <img class="card-img-top"
-                                     src="{% url 'download_asset' bilby_job.job.id job_data.corner.path %}"
+                                     src="{% url 'download_asset' bilby_job.job.id 0 job_data.corner.path %}"
                                      alt="Corner Data">
                                 <div class="card-body">
                                     <p class="card-text">Corner Data</p>
@@ -249,7 +249,7 @@
                     {% endif %}
                     {% if job_data.archive %}
                         <li class="card text-center">
-                            <a href="{% url 'download_asset' bilby_job.job.id job_data.archive.path %}">
+                            <a href="{% url 'download_asset' bilby_job.job.id 1 job_data.archive.path %}">
                                 <img class="card-img-top small" src="{% static 'bilbyweb/images/archive.png' %}"
                                      alt="Archive"/>
                                 <p class="size">Size: {% widthratio job_data.archive.size 1024 1 %} Kb</p>

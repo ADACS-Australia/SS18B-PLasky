@@ -84,7 +84,7 @@ def drafts(request):
 
 
 @login_required
-def download_asset(request, job_id, file_path):
+def download_asset(request, job_id, download, file_path):
     """
     Returns a file from the server for the specified job
 
@@ -104,7 +104,7 @@ def download_asset(request, job_id, file_path):
 
     # Get the requested file from the server
     try:
-        return job.fetch_remote_file(file_path)
+        return job.fetch_remote_file(file_path, force_download=download == 1)
     except:
         raise Http404
 
