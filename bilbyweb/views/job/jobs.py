@@ -28,7 +28,7 @@ from ...models import Job, JobStatus
 
 @login_required
 def public_jobs(request):
-    my_jobs = Job.objects.filter(Q(extra_status__in=[PUBLIC, ])).order_by('-last_updated', '-submission_time')
+    my_jobs = Job.objects.filter(Q(extra_status__in=[PUBLIC, ])).order_by('-last_updated', '-job_pending_time')
     paginator = Paginator(my_jobs, 5)
 
     page = request.GET.get('page')
@@ -48,7 +48,7 @@ def public_jobs(request):
 def jobs(request):
     my_jobs = Job.objects.filter(user=request.user) \
         .exclude(job_status__in=[JobStatus.DRAFT, JobStatus.DELETED]) \
-        .order_by('-last_updated', '-submission_time')
+        .order_by('-last_updated', '-job_pending_time')
     paginator = Paginator(my_jobs, 5)
 
     page = request.GET.get('page')

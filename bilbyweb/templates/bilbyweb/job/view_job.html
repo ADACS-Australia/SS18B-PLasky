@@ -290,10 +290,10 @@
                     <th scope="row">Creation Time</th>
                     <td>{{ bilby_job.job.creation_time }}</td>
                 </tr>
-                {% if bilby_job.job.submission_time %}
+                {% if bilby_job.job.job_pending_time %}
                     <tr>
-                        <th scope="row">Submission Time</th>
-                        <td>{{ bilby_job.job.submission_time }}</td>
+                        <th scope="row">Launch Time</th>
+                        <td>{{ bilby_job.job.job_pending_time }}</td>
                     </tr>
                 {% endif %}
                 </tbody>

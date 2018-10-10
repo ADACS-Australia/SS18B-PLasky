@@ -21,7 +21,7 @@
             <thead>
             <tr>
                 <th scope="col">Name</th>
-                <th>{% if drafts %}Creation{% else %}Submission{% endif %} Time</th>
+                <th>{% if drafts %}Creation{% else %}Launch{% endif %} Time</th>
                 <th>Last Updated</th>
                 {% if not drafts and not public %}<th>Status</th>{% endif %}
                 {% if public %}<th>Owner</th>{% endif %}
@@ -32,7 +32,7 @@
             {% for job in jobs %}
                 <tr class="text-{{ job.status | status_color }}">
                     <th scope="col" class="job-name"><a href="{% url 'job' job.id %}">{{ job.name }}</a></th>
-                    <td>{% if drafts %}{{ job.creation_time }}{% else %}{{ job.submission_time }}{% endif %}</td>
+                    <td>{% if drafts %}{{ job.creation_time }}{% else %}{{ job.job_pending_time }}{% endif %}</td>
                     <td>{{ job.last_updated }}</td>
                     {% if not drafts and not public %}<td>{{ job.status_display }}</td>{% endif %}
                     {% if public %}<td>{{ job.user.display_name }}</td>{% endif %}
