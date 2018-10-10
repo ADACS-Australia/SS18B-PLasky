@@ -61,6 +61,11 @@
                                                         href="{% url 'edit_job' bilby_job.job.id %}">EDIT <i
                                 class="fas fa-edit"></i></a></li>
                     {% endif %}
+                    {% if 'cancel' in bilby_job.job_actions %}
+                        <li class="list-inline-item"><a class="btn btn-dark" data-toggle="modal"
+                                                        data-target="#cancelJob">CANCEL <i
+                                class="far fa-stop-circle"></i></a></li>
+                    {% endif %}
                     {% if 'make_it_public' in bilby_job.job_actions %}
                         <li class="list-inline-item"><a class="btn btn-success" data-toggle="modal"
                                                         data-target="#makeItPublic">MAKE IT PUBLIC <i
@@ -158,6 +163,31 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-warning" data-dismiss="modal">Not Now</button>
                             <a class="btn btn-danger" href="{% url 'delete_job' bilby_job.job.id %}">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if 'cancel' in bilby_job.job_actions %}
+            <!-- Modal delete job -->
+            <div class="modal fade" id="cancelJob" tabindex="-1" role="dialog"
+                 aria-labelledby="cancelJobTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="cancelJobLongTitle">Delete Job</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>You are about to delete the job. This means that, the job will stop processing and no further output will be generated. </p>
+                            <p>Are you sure, you want to proceed?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-warning" data-dismiss="modal">Not Now</button>
+                            <a class="btn btn-dark" href="{% url 'cancel_job' bilby_job.job.id %}">Cancel</a>
                         </div>
                     </div>
                 </div>

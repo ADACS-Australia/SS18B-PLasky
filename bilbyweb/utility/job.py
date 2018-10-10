@@ -14,11 +14,12 @@ from ..utility.display_names import (
     SUBMITTED,
     QUEUED,
     IN_PROGRESS,
-    PUBLIC,
     DRAFT,
     COMPLETED,
-    DELETED,
-    SUBMITTING, CANCELLED, CANCELLING, PENDING)
+    SUBMITTING,
+    PENDING,
+    ERROR, CANCELLED, WALL_TIME_EXCEEDED, OUT_OF_MEMORY, PUBLIC
+)
 
 from ..models import (
     Job,
@@ -156,17 +157,22 @@ class BilbyJob(object):
             # any job can be copied
             self.job_actions.append('copy')
 
-            # job can only be deleted if not in the following status:
-            # 1. submitted
-            # 2. queued
-            # 3. in progress
-            if self.job.status not in [PENDING, SUBMITTING, SUBMITTED, QUEUED, IN_PROGRESS, CANCELLING, CANCELLED,
-                                       DELETED]:
+            # job can only be deleted if in the following status:
+            # 1. draft
+            # 2. completed
+            # 3. error (wall time and out of memory)
+            # 4. cancelled
+            # 5. public
+            if self.job.status in [DRAFT, COMPLETED, ERROR, CANCELLED, WALL_TIME_EXCEEDED, OUT_OF_MEMORY, PUBLIC]:
                 self.job_actions.append('delete')
 
             # edit a job if it is a draft
             if self.job.status in [DRAFT]:
                 self.job_actions.append('edit')
+
+            # cancel a job if it is not finished processing
+            if self.job.status in [PENDING, SUBMITTING, SUBMITTED, QUEUED, IN_PROGRESS]:
+                self.job_actions.append('cancel')
 
             # completed job can be public and vice versa
             if self.job.status in [COMPLETED]:

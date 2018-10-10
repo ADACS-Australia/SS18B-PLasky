@@ -13,8 +13,16 @@ from ...utility.display_names import (
     SUBMITTED,
     QUEUED,
     IN_PROGRESS,
+    NONE,
     COMPLETED,
-    NONE)
+    ERROR,
+    CANCELLING,
+    CANCELLED,
+    WALL_TIME_EXCEEDED,
+    OUT_OF_MEMORY,
+    PENDING,
+    SUBMITTING,
+)
 from ...models import Job, JobStatus
 
 
@@ -38,8 +46,8 @@ def public_jobs(request):
 
 @login_required
 def jobs(request):
-    my_jobs = Job.objects.filter(user=request.user)\
-        .exclude(extra_status__in=[DELETED, ]).exclude(job_status__in=[JobStatus.DRAFT, ])\
+    my_jobs = Job.objects.filter(user=request.user) \
+        .exclude(job_status__in=[JobStatus.DRAFT, JobStatus.DELETED]) \
         .order_by('-last_updated', '-submission_time')
     paginator = Paginator(my_jobs, 5)
 
@@ -58,7 +66,7 @@ def jobs(request):
 @login_required
 def drafts(request):
     my_jobs = Job.objects.filter(Q(user=request.user), Q(job_status__in=[JobStatus.DRAFT, ])) \
-        .exclude(extra_status__in=[DELETED, ]).order_by('-last_updated', '-creation_time')
+        .exclude(job_status__in=[DELETED, ]).order_by('-last_updated', '-creation_time')
 
     paginator = Paginator(my_jobs, 5)
 
@@ -235,6 +243,63 @@ def edit_job(request, job_id):
 
 
 @login_required
+def cancel_job(request, job_id):
+    # checking:
+    # 1. Job ID and job exists
+
+    job = None
+
+    should_redirect = False
+
+    # to decide which page to forward if not coming from any http referrer.
+    # this happens when you type in the url.
+    to_page = 'jobs'
+
+    if job_id:
+        try:
+            job = Job.objects.get(id=job_id)
+
+            # permission check and
+            # status check, whether cancel is allowed for the job
+            if not (request.user == job.user or request.user.is_admin()) or \
+                    job.status not in [PENDING, SUBMITTING, SUBMITTED, QUEUED, IN_PROGRESS]:
+                should_redirect = False
+            else:
+                # TODO
+                # job.status = CANCELLING
+                # job.save()
+                pass
+                should_redirect = True
+        except Job.DoesNotExist:
+            pass
+
+    # this should be the last line before redirect
+    if not should_redirect:
+        # should return to a page notifying that no permission to view the job or no job or job not in correct status
+        raise Http404
+
+    # returning to the right page with pagination on
+    page = 1
+    full_path = request.META.get('HTTP_REFERER', None)
+    if full_path:
+        if '/jobs/' in full_path:
+            if '?' in full_path:
+                query_string = full_path.split('?')[1].split('&')
+                for q in query_string:
+                    if q.startswith('page='):
+                        page = q.split('=')[1]
+
+            response = redirect('jobs')
+            response['Location'] += '?page={0}'.format(page)
+        else:
+            response = redirect(full_path)
+    else:
+        response = redirect(to_page)
+
+    return response
+
+
+@login_required
 def delete_job(request, job_id):
     # checking:
     # 1. Job ID and job exists
@@ -246,8 +311,8 @@ def delete_job(request, job_id):
     if job_id:
         try:
             job = Job.objects.get(id=job_id)
-            if not (request.user == job.user or request.user.is_admin()) or job.status in [SUBMITTED, QUEUED,
-                                                                                           IN_PROGRESS, DELETED]:
+            if not (request.user == job.user or request.user.is_admin()) or \
+                    job.status not in [DRAFT, COMPLETED, ERROR, CANCELLED, WALL_TIME_EXCEEDED, OUT_OF_MEMORY, PUBLIC]:
                 should_redirect = False
             else:
                 message = 'Job <strong>{name}</strong> has been successfully deleted'.format(name=job.name)
