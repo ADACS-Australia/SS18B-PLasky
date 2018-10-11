@@ -66,7 +66,7 @@ def jobs(request):
 @login_required
 def drafts(request):
     my_jobs = Job.objects.filter(Q(user=request.user), Q(job_status__in=[JobStatus.DRAFT, ])) \
-        .exclude(job_status__in=[DELETED, ]).order_by('-last_updated', '-creation_time')
+        .exclude(job_status__in=[JobStatus.DELETED, ]).order_by('-last_updated', '-creation_time')
 
     paginator = Paginator(my_jobs, 5)
 
