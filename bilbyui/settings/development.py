@@ -2,6 +2,8 @@ from .base import *
 
 DEBUG = True
 
+SITE_URL = 'http://127.0.0.1:8000'
+
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 EMAIL_FROM = 'ssaleheen@swin.edu.au'

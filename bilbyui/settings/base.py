@@ -190,4 +190,6 @@ LOGGING = {
 
 ROOT_SUBDIRECTORY_PATH = ''
 
+SITE_URL = ''
+
 HPC_JOB_CLASS = 'bilbyweb.models.Job'
