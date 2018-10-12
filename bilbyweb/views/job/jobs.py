@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 
+from ...utility.constants import JOBS_PER_PAGE
 from ...utility.utils import get_readable_size
 from ...utility.job import BilbyJob
 from ...utility.display_names import (
@@ -30,7 +31,7 @@ from ...models import Job, JobStatus
 @login_required
 def public_jobs(request):
     my_jobs = Job.objects.filter(Q(extra_status__in=[PUBLIC, ])).order_by('-last_updated', '-job_pending_time')
-    paginator = Paginator(my_jobs, 5)
+    paginator = Paginator(my_jobs, JOBS_PER_PAGE)
 
     page = request.GET.get('page')
     job_list = paginator.get_page(page)
@@ -50,7 +51,7 @@ def jobs(request):
     my_jobs = Job.objects.filter(user=request.user) \
         .exclude(job_status__in=[JobStatus.DRAFT, JobStatus.DELETED]) \
         .order_by('-last_updated', '-job_pending_time')
-    paginator = Paginator(my_jobs, 5)
+    paginator = Paginator(my_jobs, JOBS_PER_PAGE)
 
     page = request.GET.get('page')
     job_list = paginator.get_page(page)
@@ -69,7 +70,7 @@ def drafts(request):
     my_jobs = Job.objects.filter(Q(user=request.user), Q(job_status__in=[JobStatus.DRAFT, ])) \
         .exclude(job_status__in=[JobStatus.DELETED, ]).order_by('-last_updated', '-creation_time')
 
-    paginator = Paginator(my_jobs, 5)
+    paginator = Paginator(my_jobs, JOBS_PER_PAGE)
 
     page = request.GET.get('page')
     job_list = paginator.get_page(page)
@@ -80,6 +81,26 @@ def drafts(request):
         {
             'jobs': job_list,
             'drafts': True,
+        }
+    )
+
+
+@login_required
+def deleted_jobs(request):
+    my_jobs = Job.objects.filter(Q(user=request.user), Q(job_status__in=[JobStatus.DELETED, ])) \
+        .order_by('-last_updated', '-creation_time')
+
+    paginator = Paginator(my_jobs, JOBS_PER_PAGE)
+
+    page = request.GET.get('page')
+    job_list = paginator.get_page(page)
+
+    return render(
+        request,
+        "bilbyweb/job/all-jobs.html",
+        {
+            'jobs': job_list,
+            'deleted': True,
         }
     )
 
@@ -133,7 +154,8 @@ def view_job(request, job_id):
                     'H1': None,
                     'corner': None,
                     'archive': None,
-                    'is_online': bilby_job.job.cluster.is_connected() is not None
+                    # for drafts there are no clusters assigned, so bilby_job.job.custer is None for them
+                    'is_online': bilby_job.job.cluster is not None and bilby_job.job.cluster.is_connected() is not None
                 }
 
                 # Check if the cluster is online
@@ -320,7 +342,7 @@ def delete_job(request, job_id):
                 if job.status == DRAFT:
                     job.delete()
                 else:
-                    job.extra_status = DELETED
+                    job.job_status = JobStatus.DELETING
                     job.save()
                     to_page = 'jobs'
                 messages.add_message(request, messages.SUCCESS, message, extra_tags='safe')

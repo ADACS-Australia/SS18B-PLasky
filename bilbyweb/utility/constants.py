@@ -18,6 +18,9 @@ from ..forms.sampler.sampler_nestle import SamplerNestleParameterForm
 from ..forms.sampler.sampler_emcee import SamplerEmceeParameterForm
 
 
+JOBS_PER_PAGE = 100
+
+
 def set_dict_indices(my_array):
     """Creates a dictionary based on values in my_array, and links each of them to an index.
 

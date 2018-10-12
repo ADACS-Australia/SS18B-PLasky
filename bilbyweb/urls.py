@@ -17,8 +17,10 @@ urlpatterns = [
     path('job/<job_id>/', login_required(jobs.view_job), name='job'),
     path('jobs/', jobs.jobs, name='jobs'),
     path('public_jobs/', jobs.public_jobs, name='public_jobs'),
+    path('deleted_jobs/', jobs.deleted_jobs, name='deleted_jobs'),
     path('drafts/', jobs.drafts, name='drafts'),
 
     # Job asset retrieval
-    path('download_asset/<int:job_id>/<int:download>/<path:file_path>', login_required(jobs.download_asset), name='download_asset'),
+    path('download_asset/<int:job_id>/<int:download>/<path:file_path>', login_required(jobs.download_asset),
+         name='download_asset'),
 ]

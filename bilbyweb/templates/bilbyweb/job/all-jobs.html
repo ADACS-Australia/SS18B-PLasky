@@ -23,7 +23,7 @@
                 <th scope="col">Name</th>
                 <th>{% if drafts %}Creation{% else %}Launch{% endif %} Time</th>
                 <th>Last Updated</th>
-                {% if not drafts and not public %}<th>Status</th>{% endif %}
+                {% if not drafts and not public and not deleted %}<th>Status</th>{% endif %}
                 {% if public %}<th>Owner</th>{% endif %}
                 <th>Action(s)</th>
             </tr>
@@ -34,7 +34,7 @@
                     <th scope="col" class="job-name"><a href="{% url 'job' job.id %}">{{ job.name }}</a></th>
                     <td>{% if drafts %}{{ job.creation_time }}{% else %}{{ job.job_pending_time }}{% endif %}</td>
                     <td>{{ job.last_updated }}</td>
-                    {% if not drafts and not public %}<td>{{ job.status_display }}</td>{% endif %}
+                    {% if not drafts and not public and not deleted %}<td>{{ job.status_display }}</td>{% endif %}
                     {% if public %}<td>{{ job.user.display_name }}</td>{% endif %}
                     {% if drafts %}
                         <td>
@@ -43,6 +43,10 @@
                             <a class="text-info" href="{% url 'copy_job' job.id %}">Copy <i class="fas fa-clone"></i></a>
                         </td>
                     {% elif public %}
+                        <td>
+                            <a class="text-info" href="{% url 'copy_job' job.id %}">Copy <i class="fas fa-clone"></i></a>
+                        </td>
+                    {% elif deleted %}
                         <td>
                             <a class="text-info" href="{% url 'copy_job' job.id %}">Copy <i class="fas fa-clone"></i></a>
                         </td>

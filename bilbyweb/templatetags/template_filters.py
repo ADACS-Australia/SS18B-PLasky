@@ -39,8 +39,8 @@ def status_color(status):
         ERROR: 'danger',
         WALL_TIME_EXCEEDED: 'warning',
         OUT_OF_MEMORY: 'warning',
-        DELETING: 'light',
-        DELETED: 'light',
+        DELETING: 'muted',
+        DELETED: 'muted',
         PUBLIC: 'info',
     }
     return status_color_map.get(status, 'secondary')

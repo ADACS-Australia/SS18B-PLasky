@@ -182,7 +182,8 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <p>You are about to delete the job. This means that, the job will stop processing and no further output will be generated. </p>
+                            <p>You are about to delete the job. This means that, the job will stop processing and no
+                                further output will be generated. </p>
                             <p>Are you sure, you want to proceed?</p>
                         </div>
                         <div class="modal-footer">
@@ -196,16 +197,16 @@
 
     {% endif %}
 
-    <div class="job-view-section">
-        <div class="row">
-            <div class="col col-md-12">
-                <div class="heading">Outputs &#38; Download Options</div>
+    {% if bilby_job.job.status == 'completed' or bilby_job.job.status == 'public' %}
+        <div class="job-view-section">
+            <div class="row">
+                <div class="col col-md-12">
+                    <div class="heading">Outputs &#38; Download Options</div>
+                </div>
             </div>
-        </div>
-        <div class="body preview">
-            {% if job_data.is_online %}
-                <ul>
-                    {% if bilby_job.job.status == 'completed' or bilby_job.job.status == 'public' %}
+            <div class="body preview">
+                {% if job_data.is_online %}
+                    <ul>
                         {% if job_data.H1 %}
                             <li class="card text-center">
                                 <img class="card-img-top"
@@ -246,26 +247,27 @@
                                 </div>
                             </li>
                         {% endif %}
-                    {% endif %}
-                    {% if job_data.archive %}
-                        <li class="card text-center">
-                            <a href="{% url 'download_asset' bilby_job.job.id 1 job_data.archive.path %}">
-                                <img class="card-img-top small" src="{% static 'bilbyweb/images/archive.png' %}"
-                                     alt="Archive"/>
-                                <p class="size">Size: {{ job_data.archive.size }}</p>
-                                <div class="card-body">
-                                    <p class="card-text">Download Archive</p>
-                                </div>
-                            </a>
-                        </li>
-                    {% endif %}
-                </ul>
-            {% else %}
-                <h5>Unable to fetch output files. Cluster containing the output of this job is not currently
-                    online.</h5>
-            {% endif %}
+
+                        {% if job_data.archive %}
+                            <li class="card text-center">
+                                <a href="{% url 'download_asset' bilby_job.job.id 1 job_data.archive.path %}">
+                                    <img class="card-img-top small" src="{% static 'bilbyweb/images/archive.png' %}"
+                                         alt="Archive"/>
+                                    <p class="size">Size: {{ job_data.archive.size }}</p>
+                                    <div class="card-body">
+                                        <p class="card-text">Download Archive</p>
+                                    </div>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                {% else %}
+                    <h5>Unable to fetch output files. Cluster containing the output of this job is not currently
+                        online.</h5>
+                {% endif %}
+            </div>
         </div>
-    </div>
+    {% endif %}
 
     <div class="job-view-section">
         <div class="row">
