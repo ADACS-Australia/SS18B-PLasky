@@ -131,7 +131,7 @@
 
 @media (max-width: 720px) {
     .breadcrumbs li a {
-        padding: 15px;
+        padding: 10px 0 0 0;
     }
 
     .breadcrumbs li a:before,
