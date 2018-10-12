@@ -65,6 +65,6 @@ class TestNewJob(TestCase):
                 'start-description': job_description,
             })
 
-        logger.check(('bilbyweb.forms.start', 'ERROR', 'You already have a job with the same name'), )
+        logger.check(('bilbyweb.forms.start', 'INFO', 'You already have a job with the same name'), )
 
         self.assertEqual(response.status_code, HTTPStatus.OK)

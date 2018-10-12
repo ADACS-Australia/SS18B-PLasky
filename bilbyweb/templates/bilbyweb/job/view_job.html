@@ -252,7 +252,7 @@
                             <a href="{% url 'download_asset' bilby_job.job.id 1 job_data.archive.path %}">
                                 <img class="card-img-top small" src="{% static 'bilbyweb/images/archive.png' %}"
                                      alt="Archive"/>
-                                <p class="size">Size: {% widthratio job_data.archive.size 1024 1 %} Kb</p>
+                                <p class="size">Size: {{ job_data.archive.size }}</p>
                                 <div class="card-body">
                                     <p class="card-text">Download Archive</p>
                                 </div>

@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 
+from ...utility.utils import get_readable_size
 from ...utility.job import BilbyJob
 from ...utility.display_names import (
     DELETED,
@@ -149,7 +150,7 @@ def view_job(request, job_id):
                             # Waste the is_file bool
                             result.pop_bool()
                             # Waste the file size
-                            size = result.pop_ulong()
+                            size = get_readable_size(result.pop_ulong())
 
                             # Check if this is a wanted file
                             if 'output/L1_frequency_domain_data.png' in path:
