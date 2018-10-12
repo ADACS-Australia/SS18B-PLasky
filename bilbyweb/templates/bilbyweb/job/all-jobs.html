@@ -3,7 +3,7 @@
 {% load template_filters %}
 
 {% block page_header %}
-    Jobs
+    {% if public %}Public{% elif drafts %}Draft{% elif deleted %}Deleted{% else %}Launched{% endif %} Jobs
 {% endblock page_header %}
 
 {% block additional_styles %}
