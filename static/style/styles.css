@@ -8,6 +8,12 @@ body {
     box-sizing: border-box;
 }
 
+@media only screen and (max-width: 991px) {
+    * {
+        font-size: .9rem;
+    }
+}
+
 .main-content {
     background-color: #ffffff;
     padding: 10px 0 20px;
@@ -46,6 +52,31 @@ body {
     width: 150px;
 }
 
+.dropdown .dropdown-menu {
+    background-color: rgba(55, 60, 66, 1);
+}
+
+.dropdown .dropdown-menu a,
+.dropdown .dropdown-menu a:focus,
+.dropdown .dropdown-menu a:visited {
+    color: rgba(255,255,255,.5);
+}
+
+.dropdown .dropdown-menu a:hover {
+    color: rgba(255,255,255,.8);
+    background-color: rgba(55, 60, 66, 1);
+}
+
+@media only screen and (max-width: 767px) {
+    .navbar-nav .nav-item {
+        border-bottom: 1px dotted rgba(255,255,255,.5);
+    }
+
+    .dropdown .dropdown-menu {
+        border: none;
+        background-color: inherit;
+    }
+}
 
 
 /********************************************/
