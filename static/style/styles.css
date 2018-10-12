@@ -118,6 +118,10 @@ body {
     background-color: darksalmon;
 }
 
+.field.error ul.errorlist li {
+    font-size: 0.8rem;
+}
+
 /* non field errors */
 
 .non-field-error div {

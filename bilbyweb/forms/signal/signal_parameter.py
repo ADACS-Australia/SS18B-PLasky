@@ -129,6 +129,14 @@ class SignalParameterBbhForm(DynamicForm):
                     # Do not update existing value
                     pass
 
+    def clean(self):
+        data = self.cleaned_data
+
+        # mass_1 needs to be greater than mass_2
+        if not data.get(MASS1) > data.get(MASS2):
+            self.add_error(MASS1, MASS1_DISPLAY + ' must be greater than ' + MASS2_DISPLAY)
+            self.add_error(MASS2, MASS2_DISPLAY + ' must be smaller than ' + MASS1_DISPLAY)
+
     def update_from_database(self, job):
         if not job:
             return

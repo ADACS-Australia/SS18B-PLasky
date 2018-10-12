@@ -2,6 +2,26 @@
     {% csrf_token %}
     <input type="hidden" name="form-tab" value="signal"/>
 
+    {% if signal_form.non_field_errors %}
+        <div class="non-field-error">
+            <ul class="errors">
+                {% for error in signal_form.non_field_errors %}
+                    <li class="error">{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {% if signal_parameter_bbh_form.non_field_errors %}
+        <div class="non-field-error">
+            <ul class="errors">
+                {% for error in signal_parameter_bbh_form.non_field_errors %}
+                    <li class="error">{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
     {% with signal_form.signal_choice as field %}
         {% include 'bilbyweb/job/snippets/render_field.html' %}
     {% endwith %}
