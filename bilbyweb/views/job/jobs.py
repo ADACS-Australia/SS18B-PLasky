@@ -285,13 +285,12 @@ def cancel_job(request, job_id):
             # permission check and
             # status check, whether cancel is allowed for the job
             if not (request.user == job.user or request.user.is_admin()) or \
-                    job.status not in [PENDING, SUBMITTING, SUBMITTED, QUEUED, IN_PROGRESS]:
+                    job.status not in [PENDING, SUBMITTED, QUEUED, IN_PROGRESS]:
                 should_redirect = False
             else:
-                # TODO
-                # job.status = CANCELLING
-                # job.save()
-                pass
+                # Cancel the job
+                job.cancel()
+
                 should_redirect = True
         except Job.DoesNotExist:
             pass
@@ -342,8 +341,7 @@ def delete_job(request, job_id):
                 if job.status == DRAFT:
                     job.delete()
                 else:
-                    job.job_status = JobStatus.DELETING
-                    job.save()
+                    job.delete_job()
                     to_page = 'jobs'
                 messages.add_message(request, messages.SUCCESS, message, extra_tags='safe')
                 should_redirect = True
