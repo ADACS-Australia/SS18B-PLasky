@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.utils import timezone
 
 from ...utility.display_names import SKIP
 from ...utility.utils import get_enabled_tabs
