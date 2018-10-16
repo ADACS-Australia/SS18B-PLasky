@@ -9,21 +9,9 @@ from ...utility.constants import JOBS_PER_PAGE
 from ...utility.utils import get_readable_size
 from ...utility.job import BilbyJob
 from ...utility.display_names import (
-    DELETED,
     DRAFT,
     PUBLIC,
-    SUBMITTED,
-    QUEUED,
-    IN_PROGRESS,
     NONE,
-    COMPLETED,
-    ERROR,
-    CANCELLING,
-    CANCELLED,
-    WALL_TIME_EXCEEDED,
-    OUT_OF_MEMORY,
-    PENDING,
-    SUBMITTING,
 )
 from ...models import Job, JobStatus
 
@@ -36,11 +24,19 @@ def public_jobs(request):
     page = request.GET.get('page')
     job_list = paginator.get_page(page)
 
+    # creating bilby jobs from jobs
+    # it will create a light job with list of actions this user can do based on the job status
+    bilby_jobs = []
+    for job in job_list:
+        bilby_job = job.bilby_job
+        bilby_job.list_actions(request.user)
+        bilby_jobs.append(bilby_job)
+
     return render(
         request,
         "bilbyweb/job/all-jobs.html",
         {
-            'jobs': job_list,
+            'jobs': bilby_jobs,
             'public': True,
         }
     )
@@ -56,11 +52,19 @@ def jobs(request):
     page = request.GET.get('page')
     job_list = paginator.get_page(page)
 
+    # creating bilby jobs from jobs
+    # it will create a light job with list of actions this user can do based on the job status
+    bilby_jobs = []
+    for job in job_list:
+        bilby_job = job.bilby_job
+        bilby_job.list_actions(request.user)
+        bilby_jobs.append(bilby_job)
+
     return render(
         request,
         "bilbyweb/job/all-jobs.html",
         {
-            'jobs': job_list,
+            'jobs': bilby_jobs,
         }
     )
 
@@ -75,11 +79,19 @@ def drafts(request):
     page = request.GET.get('page')
     job_list = paginator.get_page(page)
 
+    # creating bilby jobs from jobs
+    # it will create a light job with list of actions this user can do based on the job status
+    bilby_jobs = []
+    for job in job_list:
+        bilby_job = job.bilby_job
+        bilby_job.list_actions(request.user)
+        bilby_jobs.append(bilby_job)
+
     return render(
         request,
         "bilbyweb/job/all-jobs.html",
         {
-            'jobs': job_list,
+            'jobs': bilby_jobs,
             'drafts': True,
         }
     )
@@ -95,11 +107,19 @@ def deleted_jobs(request):
     page = request.GET.get('page')
     job_list = paginator.get_page(page)
 
+    # creating bilby jobs from jobs
+    # it will create a light job with list of actions this user can do based on the job status
+    bilby_jobs = []
+    for job in job_list:
+        bilby_job = job.bilby_job
+        bilby_job.list_actions(request.user)
+        bilby_jobs.append(bilby_job)
+
     return render(
         request,
         "bilbyweb/job/all-jobs.html",
         {
-            'jobs': job_list,
+            'jobs': bilby_jobs,
             'deleted': True,
         }
     )
@@ -112,6 +132,7 @@ def download_asset(request, job_id, download, file_path):
 
     :param request: The django request object
     :param job_id: int: The job id
+    :param download: int: Force download or not
     :param file_path: string: the path to the file to fetch
 
     :return: A HttpStreamingResponse object representing the file
@@ -120,7 +141,11 @@ def download_asset(request, job_id, download, file_path):
     job = get_object_or_404(Job, id=job_id)
 
     # Check that this user has access to this job
-    if not (job.status == PUBLIC or request.user == job.user or request.user.is_admin()):
+    # it can download assets if there is a copy access
+    bilby_job = job.bilby_job
+    bilby_job.list_actions(request.user)
+
+    if 'copy' not in bilby_job.job_actions:
         # Nothing to see here
         raise Http404
 
@@ -140,7 +165,13 @@ def view_job(request, job_id):
     if job_id:
         try:
             job = Job.objects.get(id=job_id)
-            if not (job.status == PUBLIC or request.user == job.user or request.user.is_admin()):
+
+            # Check that this user has access to this job
+            # it can view if there is a copy access
+            bilby_job = job.bilby_job
+            bilby_job.list_actions(request.user)
+
+            if 'copy' not in bilby_job.job_actions:
                 job = None
             else:
                 # create a bilby_job instance of the job
@@ -201,7 +232,7 @@ def view_job(request, job_id):
 
     # this should be the last line before redirect
     if not job:
-        # should return to a page notifying that no permission to view the job or no job or job not in draft
+        # should return to a page notifying that no permission to view
         raise Http404
     else:
         request.session['to_load'] = job.as_json()
@@ -218,7 +249,10 @@ def copy_job(request, job_id):
     if job_id:
         try:
             job = Job.objects.get(id=job_id)
-            if not (job.status == PUBLIC or request.user == job.user or request.user.is_admin()):
+            bilby_job = job.bilby_job
+            bilby_job.list_actions(request.user)
+
+            if 'copy' not in bilby_job.job_actions:
                 job = None
             else:
                 # create a bilby_job instance of the job
@@ -233,7 +267,7 @@ def copy_job(request, job_id):
 
     # this should be the last line before redirect
     if not job:
-        # should return to a page notifying that no permission to view the job or no job or job not in draft
+        # should return to a page notifying that no permission to copy
         raise Http404
     else:
         request.session['to_load'] = job.as_json()
@@ -250,14 +284,17 @@ def edit_job(request, job_id):
     if job_id:
         try:
             job = Job.objects.get(id=job_id)
-            if not (request.user == job.user or request.user.is_admin()):
+            bilby_job = job.bilby_job
+            bilby_job.list_actions(request.user)
+
+            if 'edit' not in bilby_job.job_actions:
                 job = None
         except Job.DoesNotExist:
             pass
 
     # this should be the last line before redirect
     if not job:
-        # should return to a page notifying that no permission to view the job or no job or job not in draft
+        # should return to a page notifying that no permission to edit
         raise Http404
     else:
         request.session['to_load'] = job.as_json()
@@ -267,25 +304,22 @@ def edit_job(request, job_id):
 
 @login_required
 def cancel_job(request, job_id):
-    # checking:
-    # 1. Job ID and job exists
-
-    job = None
-
     should_redirect = False
 
     # to decide which page to forward if not coming from any http referrer.
     # this happens when you type in the url.
     to_page = 'jobs'
 
+    # checking:
+    # 1. Job ID and job exists
     if job_id:
         try:
             job = Job.objects.get(id=job_id)
 
-            # permission check and
-            # status check, whether cancel is allowed for the job
-            if not (request.user == job.user or request.user.is_admin()) or \
-                    job.status not in [PENDING, SUBMITTED, QUEUED, IN_PROGRESS]:
+            bilby_job = job.bilby_job
+            bilby_job.list_actions(request.user)
+
+            if 'cancel' not in bilby_job.job_actions:
                 should_redirect = False
             else:
                 # Cancel the job
@@ -297,7 +331,7 @@ def cancel_job(request, job_id):
 
     # this should be the last line before redirect
     if not should_redirect:
-        # should return to a page notifying that no permission to view the job or no job or job not in correct status
+        # should return to a page notifying that no permission to cancel
         raise Http404
 
     # returning to the right page with pagination on
@@ -333,8 +367,10 @@ def delete_job(request, job_id):
     if job_id:
         try:
             job = Job.objects.get(id=job_id)
-            if not (request.user == job.user or request.user.is_admin()) or \
-                    job.status not in [DRAFT, COMPLETED, ERROR, CANCELLED, WALL_TIME_EXCEEDED, OUT_OF_MEMORY, PUBLIC]:
+            bilby_job = job.bilby_job
+            bilby_job.list_actions(request.user)
+
+            if 'delete' not in bilby_job.job_actions:
                 should_redirect = False
             else:
                 message = 'Job <strong>{name}</strong> has been successfully deleted'.format(name=job.name)
@@ -342,6 +378,11 @@ def delete_job(request, job_id):
                     job.delete()
                 else:
                     job.delete_job()
+
+                    # cancelling the public status if deleted
+                    job.extra_status = NONE
+                    job.save()
+
                     to_page = 'jobs'
                 messages.add_message(request, messages.SUCCESS, message, extra_tags='safe')
                 should_redirect = True
@@ -350,21 +391,29 @@ def delete_job(request, job_id):
 
     # this should be the last line before redirect
     if not should_redirect:
-        # should return to a page notifying that no permission to view the job or no job or job not in draft
+        # should return to a page notifying that no permission to delete
         raise Http404
 
     # returning to the right page with pagination on
     page = 1
     full_path = request.META.get('HTTP_REFERER', None)
-    if full_path and ('/drafts/' in full_path or '/jobs/' in full_path):
+    if full_path and ('/drafts/' in full_path or '/jobs/' in full_path or '/public_jobs/' in full_path):
         if '?' in full_path:
             query_string = full_path.split('?')[1].split('&')
             for q in query_string:
                 if q.startswith('page='):
                     page = q.split('=')[1]
 
-        response = redirect('drafts') if '/drafts/' in full_path else redirect('jobs')
+        # redirect to the correct url
+        if '/drafts/' in full_path:
+            response = redirect('drafts')
+        elif '/public_jobs/' in full_path:
+            response = redirect('public_jobs')
+        else:
+            response = redirect('jobs')
+
         response['Location'] += '?page={0}'.format(page)
+
     else:
         response = redirect(to_page)
 
@@ -384,7 +433,10 @@ def make_job_private(request, job_id):
     if job_id:
         try:
             job = Job.objects.get(id=job_id)
-            if job.status == PUBLIC and (request.user == job.user or request.user.is_admin()):
+            bilby_job = job.bilby_job
+            bilby_job.list_actions(request.user)
+
+            if 'make_it_private' in bilby_job.job_actions:
                 job.extra_status = NONE
                 job.save()
                 should_redirect = True
@@ -416,7 +468,10 @@ def make_job_public(request, job_id):
     if job_id:
         try:
             job = Job.objects.get(id=job_id)
-            if job.status == COMPLETED and (request.user == job.user or request.user.is_admin()):
+            bilby_job = job.bilby_job
+            bilby_job.list_actions(request.user)
+
+            if 'make_it_public' in bilby_job.job_actions:
                 job.extra_status = PUBLIC
                 job.save()
                 should_redirect = True

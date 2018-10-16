@@ -18,7 +18,11 @@ from ..utility.display_names import (
     COMPLETED,
     SUBMITTING,
     PENDING,
-    ERROR, CANCELLED, WALL_TIME_EXCEEDED, OUT_OF_MEMORY, PUBLIC
+    ERROR,
+    CANCELLED,
+    WALL_TIME_EXCEEDED,
+    OUT_OF_MEMORY,
+    PUBLIC,
 )
 
 from ..models import (
@@ -171,7 +175,7 @@ class BilbyJob(object):
                 self.job_actions.append('edit')
 
             # cancel a job if it is not finished processing
-            if self.job.status in [PENDING, SUBMITTED, QUEUED, IN_PROGRESS]:
+            if self.job.status in [PENDING, SUBMITTING, SUBMITTED, QUEUED, IN_PROGRESS]:
                 self.job_actions.append('cancel')
 
             # completed job can be public and vice versa
@@ -185,7 +189,13 @@ class BilbyJob(object):
             if self.job.status in [PUBLIC]:
                 self.job_actions.append('copy')
 
-    def __init__(self, job_id):
+    def __init__(self, job_id, light=False):
+        # do not need to do further processing for light bilby jobs
+        # it is used only for status check mainly from the model itself to list the
+        # actions a user can do on the job
+        if light:
+            return
+
         # populating data tab information
         try:
             self.data = Data.objects.get(job=self.job)
@@ -250,12 +260,12 @@ class BilbyJob(object):
         self.as_json()
 
     def __new__(cls, *args, **kwargs):
+        result = super(BilbyJob, cls).__new__(cls)
         try:
-            cls.job = Job.objects.get(id=kwargs.get('job_id', None))
+            result.job = Job.objects.get(id=kwargs.get('job_id', None))
         except Job.DoesNotExist:
             return None
-
-        return super(BilbyJob, cls).__new__(cls)
+        return result
 
     def as_json(self):
         # data_dict

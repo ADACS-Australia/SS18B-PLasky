@@ -33,6 +33,11 @@ class Job(HpcJob):
             return DISPLAY_NAME_MAP_HPC_JOB[self.job_status]
         return "unknown"
 
+    @property
+    def bilby_job(self):
+        from bilbyweb.utility.job import BilbyJob
+        return BilbyJob(job_id=self.pk, light=True)
+
     creation_time = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now_add=True)
     json_representation = models.TextField(null=True, blank=True)
@@ -55,18 +60,6 @@ class Job(HpcJob):
                 creation_time=self.creation_time.strftime('%d %b %Y %I:%m %p'),
             ),
         )
-
-
-def user_job_results_file_directory_path_not_field(instance):
-    return settings.MEDIA_ROOT + 'user_{0}/job_{1}/result_files/'.format(instance.user.id, instance.id)
-
-
-def user_job_input_file_directory_path(instance):
-    return settings.MEDIA_ROOT + 'user_{0}/job_{1}/input_files/{2}'.format(instance.user.id, instance.id, "input.json")
-
-
-def user_job_result_files_directory_path(instance, filename):
-    return 'user_{0}/job_{1}/result_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
 
 
 class Data(models.Model):

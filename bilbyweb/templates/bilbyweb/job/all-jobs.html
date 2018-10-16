@@ -29,38 +29,27 @@
             </tr>
             </thead>
             <tbody>
-            {% for job in jobs %}
-                <tr class="text-{{ job.status | status_color }}">
-                    <th scope="col" class="job-name"><a href="{% url 'job' job.id %}">{{ job.name }}</a></th>
-                    <td>{% if drafts %}{{ job.creation_time }}{% else %}{{ job.job_pending_time }}{% endif %}</td>
-                    <td>{{ job.last_updated }}</td>
-                    {% if not drafts and not public and not deleted %}<td>{{ job.status_display }}</td>{% endif %}
-                    {% if public %}<td>{{ job.user.display_name }}</td>{% endif %}
-                    {% if drafts %}
-                        <td>
-                            <a class="text-danger delete-job" data-toggle="modal" data-target="#deleteJob" href="{% url 'delete_job' job.id %}">Delete <i class="fas fa-trash-alt"></i></a>
-                            <a class="text-primary" href="{% url 'edit_job' job.id %}">Edit <i class="fas fa-edit"></i></a>
-                            <a class="text-info" href="{% url 'copy_job' job.id %}">Copy <i class="fas fa-clone"></i></a>
-                        </td>
-                    {% elif public %}
-                        <td>
-                            <a class="text-info" href="{% url 'copy_job' job.id %}">Copy <i class="fas fa-clone"></i></a>
-                        </td>
-                    {% elif deleted %}
-                        <td>
-                            <a class="text-info" href="{% url 'copy_job' job.id %}">Copy <i class="fas fa-clone"></i></a>
-                        </td>
-                    {% else %}
-                        <td>
-                            {% if job.status != 'pending' and job.status != 'submitting' and job.status != 'submitted' and job.status != 'queued' and job.status != 'in_progress' %}
-                            <a class="text-danger delete-job" data-toggle="modal" data-target="#deleteJob" href="{% url 'delete_job' job.id %}">Delete <i class="fas fa-trash-alt"></i></a>
-                            {% endif %}
-                            {% if job.status == 'pending' or job.status == 'submitting' or job.status == 'submitted' or job.status == 'queued' or job.status == 'in_progress' %}
-                            <a class="text-dark cancel-job" data-toggle="modal" data-target="#cancelJob" href="{% url 'cancel_job' job.id %}">Cancel <i class="far fa-stop-circle"></i></a>
-                            {% endif %}
-                            <a class="text-info" href="{% url 'copy_job' job.id %}">Copy <i class="fas fa-clone"></i></a>
-                        </td>
+            {% for bilby_job in jobs %}
+                <tr class="text-{{ bilby_job.job.status | status_color }}">
+                    <th scope="col" class="job-name"><a href="{% url 'job' bilby_job.job.id %}">{{ bilby_job.job.name }}</a></th>
+                    <td>{% if drafts %}{{ bilby_job.job.creation_time }}{% else %}{{ bilby_job.job.job_pending_time }}{% endif %}</td>
+                    <td>{{ bilby_job.job.last_updated }}</td>
+                    {% if not drafts and not public and not deleted %}<td>{{ bilby_job.job.status_display }}</td>{% endif %}
+                    {% if public %}<td>{{ bilby_job.job.user.display_name }}</td>{% endif %}
+                    <td>
+                    {% if 'delete' in bilby_job.job_actions %}
+                        <a class="text-danger delete-job" data-toggle="modal" data-target="#deleteJob" href="{% url 'delete_job' bilby_job.job.id %}">Delete <i class="fas fa-trash-alt"></i></a>
                     {% endif %}
+                    {% if 'edit' in bilby_job.job_actions %}
+                        <a class="text-primary" href="{% url 'edit_job' bilby_job.job.id %}">Edit <i class="fas fa-edit"></i></a>
+                    {% endif %}
+                    {% if 'cancel' in bilby_job.job_actions %}
+                        <a class="text-dark cancel-job" data-toggle="modal" data-target="#cancelJob" href="{% url 'cancel_job' bilby_job.job.id %}">Cancel <i class="far fa-stop-circle"></i></a>
+                    {% endif %}
+                    {% if 'copy' in bilby_job.job_actions %}
+                        <a class="text-info" href="{% url 'copy_job' bilby_job.job.id %}">Copy <i class="fas fa-clone"></i></a>
+                    {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>
