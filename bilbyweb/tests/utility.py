@@ -35,5 +35,7 @@ class TestData:
                 email=username + '@localhost.com',
             )
             user.set_password(PASSWORD_ADMIN if username in ['admin', ] else PASSWORD_MEMBER)
+            if username == 'admin':
+                user.role = 'Admin'
             user.save()
             users.append(user)

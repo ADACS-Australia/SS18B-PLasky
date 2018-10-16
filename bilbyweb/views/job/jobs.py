@@ -1,4 +1,4 @@
-from django.http import Http404, HttpResponse
+from django.http import Http404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -234,10 +234,6 @@ def view_job(request, job_id):
     if not job:
         # should return to a page notifying that no permission to view
         raise Http404
-    else:
-        request.session['to_load'] = job.as_json()
-
-    return redirect('new_job')
 
 
 @login_required
