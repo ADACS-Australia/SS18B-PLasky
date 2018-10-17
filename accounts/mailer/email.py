@@ -1,3 +1,7 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template import Template
@@ -16,6 +20,16 @@ class Email:
     """
 
     def __init__(self, subject, to_addresses, template, context=None, from_address=None, cc=None, bcc=None):
+        """
+        Initializes an Email object
+        :param subject: Subject of the email
+        :param to_addresses: A list of email addresses
+        :param template: A template of the email body
+        :param context: A dictionary to render the template variables
+        :param from_address: Sender of the email (email address)
+        :param cc: A list of email addresses
+        :param bcc: A list of email addresses
+        """
         self.subject = subject
         self.to_addresses = to_addresses
 
@@ -32,6 +46,12 @@ class Email:
         self.bcc = bcc
 
     def send_email(self):
+        """
+        Sends the actual email
+        :return: Nothing
+        """
+
+        # creates the email
         email = EmailMultiAlternatives(
             subject=self.subject,
             body=self.text_content,
@@ -42,5 +62,8 @@ class Email:
             reply_to=[self.from_address, ],
         )
 
+        # set the email as an HTML email
         email.attach_alternative(self.html_content, 'text/html')
+
+        # sends the email
         email.send(fail_silently=False)
