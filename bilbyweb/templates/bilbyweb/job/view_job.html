@@ -298,6 +298,18 @@
                         <td>{{ bilby_job.job.job_pending_time }}</td>
                     </tr>
                 {% endif %}
+                {% if bilby_job.job.job_running_time %}
+                    <tr>
+                        <th scope="row">Job Run Start Time</th>
+                        <td>{{ bilby_job.job.job_running_time }}</td>
+                    </tr>
+                {% endif %}
+                {% if bilby_job.job.job_finished_time %}
+                    <tr>
+                        <th scope="row">Job Finished Time</th>
+                        <td>{{ bilby_job.job.job_finished_time }}</td>
+                    </tr>
+                {% endif %}
                 </tbody>
             </table>
         </div>

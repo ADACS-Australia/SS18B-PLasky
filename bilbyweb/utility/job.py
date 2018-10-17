@@ -175,7 +175,7 @@ class BilbyJob(object):
                 self.job_actions.append('edit')
 
             # cancel a job if it is not finished processing
-            if self.job.status in [PENDING, SUBMITTING, SUBMITTED, QUEUED, IN_PROGRESS]:
+            if self.job.status in [PENDING, SUBMITTED, QUEUED, IN_PROGRESS]:
                 self.job_actions.append('cancel')
 
             # completed job can be public and vice versa
