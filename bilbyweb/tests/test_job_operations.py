@@ -8,9 +8,10 @@ from http import HTTPStatus
 from testfixtures.logcapture import LogCapture
 
 from ..utility.display_names import PUBLIC
+from django_hpc_job_controller.client.scheduler.status import JobStatus
+
 from ..models import (
     Job,
-    JobStatus,
 )
 
 from .utility import (
