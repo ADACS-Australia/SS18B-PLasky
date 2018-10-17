@@ -1,3 +1,7 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
@@ -35,6 +39,9 @@ LABELS = {
 
 
 class RegistrationForm(UserCreationForm):
+    """
+    Customise the User Registration form from default Django UserCreationForm
+    """
     def __init__(self, *args, **kwargs):
         super(RegistrationForm, self).__init__(*args, **kwargs)
         self.fields['username'].help_text = None
@@ -52,6 +59,10 @@ class RegistrationForm(UserCreationForm):
         widgets = WIDGETS
 
     def clean_email(self):
+        """
+        Checks email address uniqueness which is not present in Django
+        :return: Validation Error or email address
+        """
         email = self.cleaned_data.get('email')
         username = self.cleaned_data.get('username')
         if email and User.objects.filter(email=email).exclude(username=username).exists():
@@ -59,7 +70,13 @@ class RegistrationForm(UserCreationForm):
         return email
 
     def save(self, commit=True):
+        """
+        Overrides the save method of Super class
+        :param commit: Whether the User would be saved directly or not.
+        :return: The saved user.
+        """
         # Save the user as an inactive user
+        # It will be active once the email address is verified by the User
         user = super(RegistrationForm, self).save(commit=False)
         user.is_active = False
         if commit:

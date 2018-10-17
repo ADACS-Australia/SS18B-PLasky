@@ -1,3 +1,7 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import password_validation
@@ -5,6 +9,9 @@ from django.contrib.auth.forms import PasswordChangeForm
 
 
 class PasswordChangeCustomForm(PasswordChangeForm):
+    """
+    Extends Django default PasswordChangeForm to apply bootstrap styles
+    """
     new_password1 = forms.CharField(
         label=_("New password"),
         widget=forms.PasswordInput(
