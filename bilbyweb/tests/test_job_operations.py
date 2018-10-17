@@ -281,7 +281,11 @@ class TestJobCopy(TestCase):
         with LogCapture() as logger:
             response = self.client.get(reverse('copy_job', kwargs={'job_id': job.id}))
 
-        logger.check(('bilbyweb.views.job.jobs', 'INFO', 'Cannot copy job due to name length, job id: 1'), )
+        logger.check(
+            ('bilbyweb.views.job.jobs',
+             'INFO',
+             'Cannot copy job due to name length, job id: {}'.format(job.id)),
+        )
 
         self.assertEquals(response.status_code, HTTPStatus.OK)
 
@@ -290,3 +294,94 @@ class TestJobCopy(TestCase):
 
         # 404 page displayed
         self.assertTemplateUsed(response, 'bilbyweb/error_404.html')
+
+
+class TestJobEdit(TestCase):
+    client = None
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.client = Client()
+        cls.data = TestData()
+        cls.members = get_members()
+        cls.admins = get_admins()
+
+    def test_non_member(self):
+        """
+        Test a non member or not logged in user cannot edit the job
+        """
+        job_name = 'a job'
+        job_description = 'a job description'
+
+        job = Job.objects.create(
+            name=job_name,
+            description=job_description,
+            user=self.members[0],
+        )
+
+        response = self.client.get(reverse('edit_job', kwargs={'job_id': job.id}))
+
+        # redirected to login
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        self.assertTrue('/login/' in response.url)
+
+    def test_other_member(self):
+        """
+        Test other members cannot edit a private job
+        """
+        job_name = 'a job'
+        job_description = 'a job description'
+
+        job = Job.objects.create(
+            name=job_name,
+            description=job_description,
+            user=self.members[0],
+        )
+
+        self.client.force_login(self.members[1])
+
+        response = self.client.get(reverse('edit_job', kwargs={'job_id': job.id}))
+
+        # 404 page displayed
+        self.assertTemplateUsed(response, 'bilbyweb/error_404.html')
+
+    def test_job_owner(self):
+        """
+        Test job owner can edit a job
+        """
+        job_name = 'a job'
+        job_description = 'a job description'
+
+        job = Job.objects.create(
+            name=job_name,
+            description=job_description,
+            job_status=JobStatus.DRAFT,
+            user=self.members[0],
+        )
+
+        self.client.force_login(self.members[0])
+
+        response = self.client.get(reverse('edit_job', kwargs={'job_id': job.id}))
+
+        self.assertEquals(response.status_code, HTTPStatus.FOUND)
+
+    def test_admin(self):
+        """
+        Test admin can edit a job
+        """
+        job_name = 'a job'
+        job_description = 'a job description'
+
+        job = Job.objects.create(
+            name=job_name,
+            description=job_description,
+            job_status=JobStatus.DRAFT,
+            user=self.members[0],
+        )
+
+        self.client.force_login(self.admins[0])
+
+        response = self.client.get(reverse('edit_job', kwargs={'job_id': job.id}))
+
+        self.assertEquals(response.status_code, HTTPStatus.FOUND)
+
