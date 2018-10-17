@@ -385,3 +385,52 @@ class TestJobEdit(TestCase):
 
         self.assertEquals(response.status_code, HTTPStatus.FOUND)
 
+
+class TestJobCancel(TestCase):
+    client = None
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.client = Client()
+        cls.data = TestData()
+        cls.members = get_members()
+        cls.admins = get_admins()
+
+    def test_non_member(self):
+        """
+        Test a non member or not logged in user cannot cancel a job
+        """
+        job_name = 'a job'
+        job_description = 'a job description'
+
+        job = Job.objects.create(
+            name=job_name,
+            description=job_description,
+            user=self.members[0],
+        )
+
+        response = self.client.get(reverse('cancel_job', kwargs={'job_id': job.id}))
+
+        # redirected to login
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        self.assertTrue('/login/' in response.url)
+
+    def test_other_member(self):
+        """
+        Test other members cannot cancel a private job
+        """
+        job_name = 'a job'
+        job_description = 'a job description'
+
+        job = Job.objects.create(
+            name=job_name,
+            description=job_description,
+            user=self.members[0],
+        )
+
+        self.client.force_login(self.members[1])
+
+        response = self.client.get(reverse('cancel_job', kwargs={'job_id': job.id}))
+
+        # 404 page displayed
+        self.assertTemplateUsed(response, 'bilbyweb/error_404.html')
