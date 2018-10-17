@@ -1,3 +1,5 @@
+import logging
+
 from django.http import Http404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -14,6 +16,9 @@ from ...utility.display_names import (
     NONE,
 )
 from ...models import Job, JobStatus
+
+
+logger = logging.getLogger(__name__)
 
 
 @login_required
@@ -255,7 +260,7 @@ def copy_job(request, job_id):
                 bilby_job = BilbyJob(job_id=job.id)
                 job = bilby_job.clone_as_draft(request.user)
                 if not job:
-                    print('cannot copy due to name length')
+                    logger.info('Cannot copy job due to name length, job id: {}'.format(bilby_job.job.id))
                     # should return error about name length
                     pass
         except Job.DoesNotExist:
