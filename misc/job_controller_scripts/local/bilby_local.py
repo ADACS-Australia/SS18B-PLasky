@@ -3,13 +3,13 @@ import os
 import shutil
 import uuid
 
-from scheduler.slurm import Slurm
+from scheduler.local import Local
 
 
-class Bilby(Slurm):
+class Bilby(Local):
     def __init__(self, settings, ui_id, job_id):
         """
-        Initialises the slurm scheduler class for Bilby
+        Initialises the local scheduler class for Bilby
 
         :param settings: The settings from settings.py
         :param ui_id: The UI id of the job
@@ -18,18 +18,8 @@ class Bilby(Slurm):
         # Call the original constructor
         super().__init__(settings, ui_id, job_id)
 
-        # Set the slurm template
-        self.slurm_template = 'settings/bilby.sh'
-        # Set the number of nodes
-        self.nodes = 1
-        # Set the number of tasks per node
-        self.tasks_per_node = 1
-        # Set the amount of ram in Mb per cpu
-        self.memory = 4096  # 4Gb
-        # Set the walltime in seconds
-        self.walltime = 60*60*24  # 1 day
-        # Set the job name
-        self.job_name = 'bilby_' + str(uuid.uuid4())
+        # Set the local template
+        self.local_template = 'settings/bilby_local.sh'
         # Set our job parameter path
         self.job_parameter_file = os.path.join(self.get_working_directory(), 'json_params.json')
         # Set the job output directory
@@ -37,11 +27,11 @@ class Bilby(Slurm):
 
     def generate_template_dict(self):
         """
-        Called before a job is submitted before writing the slurm script
+        Called before a job is submitted before writing the local script
 
-        We add in our custom slurm arguments
+        We add in our custom local arguments
 
-        :return: A dict of key/value pairs used in the slurm script template
+        :return: A dict of key/value pairs used in the local script template
         """
         # Get the existing parameters
         params = super().generate_template_dict()
