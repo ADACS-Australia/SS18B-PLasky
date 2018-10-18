@@ -1,7 +1,9 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 import ast
 from collections import OrderedDict
-
-from django import forms
 
 from ...utility.display_names import SIMULATED_DATA
 from ..dynamic import field
@@ -64,10 +66,15 @@ DATA_FIELDS_PROPERTIES = OrderedDict([
 
 
 class SimulatedDataParameterForm(DynamicForm):
+    """
+    Simulated Data Parameter Form extending Dynamic Form
+    """
 
     def __init__(self, *args, **kwargs):
         kwargs['name'] = 'data-parameter'
         kwargs['fields_properties'] = DATA_FIELDS_PROPERTIES
+
+        # We need to job to extract job information but job itself is not going to be used for saving form
         self.job = kwargs.pop('job', None)
 
         super(SimulatedDataParameterForm, self).__init__(*args, **kwargs)
@@ -85,9 +92,18 @@ class SimulatedDataParameterForm(DynamicForm):
             )
 
     def update_from_database(self, job):
+        """
+        Populates the form field with the values stored in the database
+        :param job: instance of job model for which the data parameters belong to
+        :return: Nothing
+        """
+
         if not job:
             return
         else:
+
+            # check whether the data choice is open data or not
+            # if not nothing to populate
             try:
                 data = Data.objects.get(job=job)
                 if data.data_choice != SIMULATED_DATA:
@@ -95,9 +111,14 @@ class SimulatedDataParameterForm(DynamicForm):
             except Data.DoesNotExist:
                 return
 
+        # iterate over the fields
         for name in DATA_FIELDS_PROPERTIES.keys():
             try:
                 value = DataParameter.objects.get(data=data, name=name).value
+
+                # set the field value
+                # extra processing required for checkbox type fields
                 self.fields[name].initial = ast.literal_eval(value) if name == 'detector_choice' else value
+
             except DataParameter.DoesNotExist:
                 continue
