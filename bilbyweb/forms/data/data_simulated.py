@@ -102,7 +102,7 @@ class SimulatedDataParameterForm(DynamicForm):
             return
         else:
 
-            # check whether the data choice is open data or not
+            # check whether the data choice is simulated data or not
             # if not nothing to populate
             try:
                 data = Data.objects.get(job=job)

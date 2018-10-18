@@ -1,3 +1,7 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 import itertools
 from django import forms
 
@@ -25,6 +29,9 @@ CHECKBOX = 'checkbox'
 
 
 class CustomCharField(forms.CharField):
+    """
+    Class representing a custom text field
+    """
 
     description = "A custom text field"
 
@@ -43,6 +50,15 @@ class CustomCharField(forms.CharField):
 
 
 def get_text_input(label, required, placeholder=None, initial=None, validators=()):
+    """
+    Method to get a custom text field
+    :param label: String label of the field
+    :param required: Boolean to define whether the field is required or not
+    :param placeholder: Placeholder to appear in the field
+    :param initial: Default input value for the field
+    :param validators: validators that should be attached with the field
+    :return: A custom text field
+    """
     return CustomCharField(
         label=label,
         required=required,
@@ -53,6 +69,9 @@ def get_text_input(label, required, placeholder=None, initial=None, validators=(
 
 
 class CustomFloatField(forms.FloatField):
+    """
+    Class representing a custom text field
+    """
 
     description = "A custom float field"
 
@@ -71,7 +90,15 @@ class CustomFloatField(forms.FloatField):
 
 
 def get_float_input(label, required, placeholder=None, initial=None, validators=()):
-
+    """
+    Method to get a custom float field
+    :param label: String label of the field
+    :param required: Boolean to define whether the field is required or not
+    :param placeholder: Placeholder to appear in the field
+    :param initial: Default input value for the field
+    :param validators: validators that should be attached with the field
+    :return: A custom floating number field
+    """
     return CustomFloatField(
         label=label,
         required=required,
@@ -82,6 +109,15 @@ def get_float_input(label, required, placeholder=None, initial=None, validators=
 
 
 def get_positive_float_input(label, required, placeholder=None, initial=None, validators=()):
+    """
+    Method to get a custom positive float number field
+    :param label: String label of the field
+    :param required: Boolean to define whether the field is required or not
+    :param placeholder: Placeholder to appear in the field
+    :param initial: Default input value for the field
+    :param validators: validators that should be attached with the field
+    :return: A custom floating number field that accepts only number that is greater than zero
+    """
     default_validators = [validate_positive_float, ]
 
     return CustomFloatField(
@@ -94,6 +130,15 @@ def get_positive_float_input(label, required, placeholder=None, initial=None, va
 
 
 def get_zero_to_hundred_input(label, required, placeholder=None, initial=None, validators=()):
+    """
+    Method to get a custom positive float number field
+    :param label: String label of the field
+    :param required: Boolean to define whether the field is required or not
+    :param placeholder: Placeholder to appear in the field
+    :param initial: Default input value for the field
+    :param validators: validators that should be attached with the field
+    :return: A custom floating number field that accepts only number that is greater than zero and less than 100
+    """
     default_validators = [validate_positive_float, validate_less_than_equal_hundred, ]
 
     return CustomFloatField(
@@ -106,6 +151,15 @@ def get_zero_to_hundred_input(label, required, placeholder=None, initial=None, v
 
 
 def get_zero_to_pi_input(label, required, placeholder=None, initial=None, validators=()):
+    """
+    Method to get a custom positive float number field
+    :param label: String label of the field
+    :param required: Boolean to define whether the field is required or not
+    :param placeholder: Placeholder to appear in the field
+    :param initial: Default input value for the field
+    :param validators: validators that should be attached with the field
+    :return: A custom floating number field that accepts only number that is greater than zero and less than pi(Math.pi)
+    """
     default_validators = [validate_positive_float, validate_less_than_pi, ]
 
     return CustomFloatField(
@@ -118,6 +172,15 @@ def get_zero_to_pi_input(label, required, placeholder=None, initial=None, valida
 
 
 def get_zero_to_2pi_input(label, required, placeholder=None, initial=None, validators=()):
+    """
+    Method to get a custom positive float number field
+    :param label: String label of the field
+    :param required: Boolean to define whether the field is required or not
+    :param placeholder: Placeholder to appear in the field
+    :param initial: Default input value for the field
+    :param validators: validators that should be attached with the field
+    :return: A custom floating number field that accepts only numbers greater than zero and less than 2pi(Math.pi)
+    """
     default_validators = [validate_positive_float, validate_less_than_2pi, ]
 
     return CustomFloatField(
@@ -130,6 +193,9 @@ def get_zero_to_2pi_input(label, required, placeholder=None, initial=None, valid
 
 
 class CustomTextAreaField(forms.CharField):
+    """
+    Class representing a custom text-area field
+    """
 
     description = "A custom text-area field"
 
@@ -148,6 +214,14 @@ class CustomTextAreaField(forms.CharField):
 
 
 def get_text_area_input(label, required, placeholder=None, initial=None):
+    """
+    Method to get a custom text-area field
+    :param label: String label of the field
+    :param required: Boolean to define whether the field is required or not
+    :param placeholder: Placeholder to appear in the field
+    :param initial: Default input value for the field
+    :return: A custom text-area field
+    """
     return CustomTextAreaField(
         label=label,
         placeholder=placeholder,
@@ -157,6 +231,9 @@ def get_text_area_input(label, required, placeholder=None, initial=None):
 
 
 class CustomIntegerField(forms.IntegerField):
+    """
+    Class representing a custom Integer field
+    """
 
     description = "A custom integer field"
 
@@ -175,6 +252,15 @@ class CustomIntegerField(forms.IntegerField):
 
 
 def get_positive_integer_input(label, required, placeholder=None, initial=None, validators=()):
+    """
+    Method to get a custom positive integer field
+    :param label: String label of the field
+    :param required: Boolean to define whether the field is required or not
+    :param placeholder: Placeholder to appear in the field
+    :param initial: Default input value for the field
+    :param validators: validators that should be attached with the field
+    :return: A custom positive integer field accepts inputs greater than zero
+    """
     default_validators = [validate_positive_integer, ]
 
     return CustomIntegerField(
@@ -187,6 +273,15 @@ def get_positive_integer_input(label, required, placeholder=None, initial=None, 
 
 
 def get_select_input(label, choices=None, initial=None, extra_class=None):
+    """
+    Method to get a choice field with bootstrap theme
+    :param label: String label of the field
+    :param choices: List of choices to be rendered with the field
+    :param initial: Default input value for the field
+    :param extra_class: extra css class for styling
+    :return: A custom select field
+    """
+
     return forms.ChoiceField(
         label=label,
         widget=forms.Select(
@@ -201,6 +296,14 @@ def get_select_input(label, choices=None, initial=None, extra_class=None):
 
 
 def get_checkbox_input(label, required=False, initial=None, extra_class=None):
+    """
+    Method to get a checkbox
+    :param label: String label of the field
+    :param required: Boolean to define whether the input is required or not
+    :param initial: Default input value for the field (checked or not)
+    :param extra_class: extra css class for styling
+    :return: A custom select field
+    """
     return forms.BooleanField(
         label=label,
         widget=forms.CheckboxInput(
@@ -214,6 +317,14 @@ def get_checkbox_input(label, required=False, initial=None, extra_class=None):
 
 
 def get_multiple_choices_input(label, required, choices=None, initial=None):
+    """
+    Method to get a multiple checkbox field
+    :param label: String label of the field
+    :param required: Boolean to define whether the input is required or not
+    :param initial: Default input value for the field (checked or not)
+    :param choices: List of choices to be rendered with the field
+    :return: A multiple checkbox field
+    """
     return forms.MultipleChoiceField(
         label=label,
         widget=forms.CheckboxSelectMultiple(),

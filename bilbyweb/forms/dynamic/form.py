@@ -1,3 +1,7 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 from django import forms
 
 from .field import (
@@ -27,6 +31,10 @@ from .field import (
 
 
 class DynamicForm(forms.Form):
+    """
+    Class that defines a form by generating fields based on a dictionary input of fields.
+    It serves a base class for forms that do not know the number of fields and their types beforehand.
+    """
     def __init__(self, *args, **kwargs):
         # name of the form
         self.name = kwargs.pop('name', None)
@@ -36,8 +44,10 @@ class DynamicForm(forms.Form):
         # request might be needed
         self.request = kwargs.pop('request', None)
 
+        # initializes the form
         super(DynamicForm, self).__init__(*args, **kwargs)
 
+        # generating form fields based on their types
         for name, properties in self.fields_properties.items():
 
             if properties.get('type') == TEXT:
