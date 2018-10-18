@@ -6,7 +6,7 @@ and managing user input, download job information and job data, etc.
 
 Prerequisites
 =============
-* Python 3.5+
+* Python 3.6+
 * MySQL 5.7+ (tested with 5.7)
 
 Optional
@@ -100,3 +100,20 @@ DATABASES = {
     }
 }
 ```
+
+## Local Job Submission Setup
+
+Local job submission setup is relatively simple:
+
+* Create a Python 3.6 virtual environment in the local `django_hpc_job_controller/client/venv` and install the client requirements as described in https://github.com/ASVO-TAO/django_hpc_job_controller#installation-steps
+* Configure a new cluster in the Django admin that uses `localhost` for the host name as described in https://github.com/ASVO-TAO/django_hpc_job_controller#configure-a-cluster and also has the client path set to the absolute path to the job controller client folder, eg: `/home/user/projects/ADACS-SS18B-PLasky/django_hpc_job_controller/client`
+* Create a python virtual environment for Bilby and install Bilby in to it. eg: `/home/user/bilby/venv`
+* Copy the three files from `misc/job_controller_scripts/local/` to `django_hpc_job_controller/client/settings/`
+* Copy the Bilby json wrapper (`misc/bilby_json_wrapper`) somewhere, eg: to `/home/user/bilby/`
+* Configure the local submission script paths in `django_hpc_job_controller/client/settings/bilby_local.sh` to match the paths on your system.
+* Configure the local job working directory (where job output folders will be created) in `django_hpc_job_controller/client/settings/local.py`, eg: `HPC_JOB_WORKING_DIRECTORY = '/home/user/bilby/jobs/'`
+
+## Slurm Job Submission Setup
+
+## Nginx Configuration
+
