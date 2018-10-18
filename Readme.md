@@ -115,5 +115,48 @@ Local job submission setup is relatively simple:
 
 ## Slurm Job Submission Setup
 
+Slurm job submission is similar to the local job submission steps.
+
+* Follow the client setup instructions in https://github.com/ASVO-TAO/django_hpc_job_controller#installation-steps on the remote cluster
+* Configure a new cluster in the Django admin for the remote cluster as described in https://github.com/ASVO-TAO/django_hpc_job_controller#configure-a-cluster 
+* Create a python virtual environment on the remote cluster for Bilby and install Bilby in to it. eg: `/home/user/bilby/venv`
+* Copy the three files from `misc/job_controller_scripts/slurm/` to `.../django_hpc_job_controller/client/settings/` on the remote cluster
+* Copy the Bilby json wrapper (`misc/bilby_json_wrapper`) somewhere on the remote cluster, eg: to `/home/user/bilby/`
+* Configure the slurm submission script paths in `.../django_hpc_job_controller/client/settings/bilby_slurm.sh`, on the remote cluster, to match the correct paths on the remote cluster.
+* Configure the slurm job working directory on the remote cluster (where job output folders will be created) in `.../django_hpc_job_controller/client/settings/local.py`, eg: `HPC_JOB_WORKING_DIRECTORY = '/home/user/bilby/jobs/'`
+
 ## Nginx Configuration
 
+The Django server currently exports two ports, one for handling HTTP, and the other for handling Websocket connections. Typically, we would recommend running the web app with gunicorn in a production environment (as configured in the provided docker configurations). By default the Websocket server will listen on port 8001. For the Swinburne/OzSTAR deployment, we use an nginx reverse proxy to map the incoming Websocket connections on /ws/ to the websocket server, and all other requests are sent to the normal Django port.
+
+The nginx config for our docker release at Swinburne looks like this:
+
+```nginx
+server {
+  location /projects/bilby/live/static/ {
+    autoindex on;
+    alias /static/;
+  }
+
+  location /projects/bilby/live/ws/ {
+    proxy_pass http://web:8001/;
+ 
+    proxy_http_version  1.1;
+    proxy_set_header    Upgrade $http_upgrade;
+    proxy_set_header    Connection "upgrade";
+    
+    proxy_connect_timeout 7d;
+    proxy_send_timeout 7d;
+    proxy_read_timeout 7d;
+  }
+
+  location / {
+    proxy_pass http://web:8000;
+  }
+ 
+  listen 8000;
+  server_name localhost;
+}
+```
+
+The connection upgrade configuration is very important for successful websocket connection.
