@@ -12,6 +12,10 @@ body {
     * {
         font-size: .9rem;
     }
+
+    .page-header span {
+        font-size: x-large;
+    }
 }
 
 .main-content {

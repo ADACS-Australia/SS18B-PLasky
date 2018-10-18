@@ -7,6 +7,8 @@ from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 
+from accounts.decorators import admin_or_system_admin_required
+
 from ...utility.constants import JOBS_PER_PAGE
 from ...utility.utils import get_readable_size
 from ...utility.job import BilbyJob
@@ -75,6 +77,35 @@ def jobs(request):
 
 
 @login_required
+@admin_or_system_admin_required
+def all_jobs(request):
+    my_jobs = Job.objects.all() \
+        .exclude(job_status__in=[JobStatus.DRAFT, JobStatus.DELETED]) \
+        .order_by('-last_updated', '-job_pending_time')
+    paginator = Paginator(my_jobs, JOBS_PER_PAGE)
+
+    page = request.GET.get('page')
+    job_list = paginator.get_page(page)
+
+    # creating bilby jobs from jobs
+    # it will create a light job with list of actions this user can do based on the job status
+    bilby_jobs = []
+    for job in job_list:
+        bilby_job = job.bilby_job
+        bilby_job.list_actions(request.user)
+        bilby_jobs.append(bilby_job)
+
+    return render(
+        request,
+        "bilbyweb/job/all-jobs.html",
+        {
+            'jobs': bilby_jobs,
+            'admin_view': True,
+        }
+    )
+
+
+@login_required
 def drafts(request):
     my_jobs = Job.objects.filter(Q(user=request.user), Q(job_status__in=[JobStatus.DRAFT, ])) \
         .exclude(job_status__in=[JobStatus.DELETED, ]).order_by('-last_updated', '-creation_time')
@@ -103,6 +134,36 @@ def drafts(request):
 
 
 @login_required
+@admin_or_system_admin_required
+def all_drafts(request):
+    my_jobs = Job.objects.filter(Q(job_status__in=[JobStatus.DRAFT, ])) \
+        .exclude(job_status__in=[JobStatus.DELETED, ]).order_by('-last_updated', '-creation_time')
+
+    paginator = Paginator(my_jobs, JOBS_PER_PAGE)
+
+    page = request.GET.get('page')
+    job_list = paginator.get_page(page)
+
+    # creating bilby jobs from jobs
+    # it will create a light job with list of actions this user can do based on the job status
+    bilby_jobs = []
+    for job in job_list:
+        bilby_job = job.bilby_job
+        bilby_job.list_actions(request.user)
+        bilby_jobs.append(bilby_job)
+
+    return render(
+        request,
+        "bilbyweb/job/all-jobs.html",
+        {
+            'jobs': bilby_jobs,
+            'drafts': True,
+            'admin_view': True,
+        }
+    )
+
+
+@login_required
 def deleted_jobs(request):
     my_jobs = Job.objects.filter(Q(user=request.user), Q(job_status__in=[JobStatus.DELETED, ])) \
         .order_by('-last_updated', '-creation_time')
@@ -126,6 +187,36 @@ def deleted_jobs(request):
         {
             'jobs': bilby_jobs,
             'deleted': True,
+        }
+    )
+
+
+@login_required
+@admin_or_system_admin_required
+def all_deleted_jobs(request):
+    my_jobs = Job.objects.filter(Q(job_status__in=[JobStatus.DELETED, ])) \
+        .order_by('-last_updated', '-creation_time')
+
+    paginator = Paginator(my_jobs, JOBS_PER_PAGE)
+
+    page = request.GET.get('page')
+    job_list = paginator.get_page(page)
+
+    # creating bilby jobs from jobs
+    # it will create a light job with list of actions this user can do based on the job status
+    bilby_jobs = []
+    for job in job_list:
+        bilby_job = job.bilby_job
+        bilby_job.list_actions(request.user)
+        bilby_jobs.append(bilby_job)
+
+    return render(
+        request,
+        "bilbyweb/job/all-jobs.html",
+        {
+            'jobs': bilby_jobs,
+            'deleted': True,
+            'admin_view': True,
         }
     )
 
