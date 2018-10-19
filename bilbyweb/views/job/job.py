@@ -30,7 +30,7 @@ from ...utility.constants import (
 
 
 def get_to_be_active_tab(active_tab, previous=False):
-    no_more_tabs = False  # keep track of out of index tab, might be beneficial to detect the last page
+    no_more_tabs = False  # keep track of out of index tab, beneficial to detect the last page
 
     active_tab_index = TABS_INDEXES.get(active_tab)
 
@@ -249,4 +249,3 @@ def new_job(request):
             'drafted_job': bilby_job,
         }
     )
-
