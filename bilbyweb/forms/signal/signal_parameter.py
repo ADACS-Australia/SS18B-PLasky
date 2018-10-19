@@ -97,7 +97,8 @@ BBH_FIELDS_PROPERTIES = OrderedDict([
 
 
 class SignalParameterBbhForm(DynamicForm):
-    """Class to represent a SignalBbhParameter. It can be any of the following types:
+    """
+    Class to represent a SignalBbhParameter. For Binary Black Hole
     """
 
     def __init__(self, *args, **kwargs):
@@ -130,6 +131,10 @@ class SignalParameterBbhForm(DynamicForm):
                     pass
 
     def clean(self):
+        """
+        Validating dependent fields in the same form. For example: Mass1 should be greater than Mass2
+        :return: None
+        """
         data = self.cleaned_data
 
         # mass_1 needs to be greater than mass_2
@@ -138,6 +143,11 @@ class SignalParameterBbhForm(DynamicForm):
             self.add_error(MASS2, MASS2_DISPLAY + ' must be smaller than ' + MASS1_DISPLAY)
 
     def update_from_database(self, job):
+        """
+        Populates the form field with the values stored in the database
+        :param job: instance of job model for which the sampler parameters belong to
+        :return: Nothing
+        """
         if not job:
             return
 
