@@ -57,6 +57,15 @@
 }
 
 /******************/
+/* INPUT FIELDS   */
+/******************/
+.form-control::placeholder {
+    color: #a9a9a9;
+    font-style: italic;
+}
+/*******************/
+
+/******************/
 /* PRIOR FIELDSET */
 /******************/
 .fieldset-name {
