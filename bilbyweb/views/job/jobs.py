@@ -1,3 +1,7 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 import logging
 
 from django.http import Http404
@@ -25,7 +29,15 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def public_jobs(request):
-    my_jobs = Job.objects.filter(Q(extra_status__in=[PUBLIC, ])).order_by('-last_updated', '-job_pending_time')
+    """
+    Collects all public jobs and renders them in template.
+    :param request: Django request object.
+    :return: Rendered template.
+    """
+
+    my_jobs = Job.objects.filter(Q(extra_status__in=[PUBLIC, ])) \
+        .order_by('-last_updated', '-job_pending_time')
+
     paginator = Paginator(my_jobs, JOBS_PER_PAGE)
 
     page = request.GET.get('page')
@@ -51,9 +63,16 @@ def public_jobs(request):
 
 @login_required
 def jobs(request):
+    """
+    Collects all jobs that are not draft or deleted and renders them in template.
+    :param request: Django request object.
+    :return: Rendered template.
+    """
+
     my_jobs = Job.objects.filter(user=request.user) \
         .exclude(job_status__in=[JobStatus.DRAFT, JobStatus.DELETED]) \
         .order_by('-last_updated', '-job_pending_time')
+
     paginator = Paginator(my_jobs, JOBS_PER_PAGE)
 
     page = request.GET.get('page')
@@ -79,9 +98,16 @@ def jobs(request):
 @login_required
 @admin_or_system_admin_required
 def all_jobs(request):
+    """
+    Collects all jobs that are not deleted or draft and renders them in template.
+    :param request: Django request object.
+    :return: Rendered template.
+    """
+
     my_jobs = Job.objects.all() \
         .exclude(job_status__in=[JobStatus.DRAFT, JobStatus.DELETED]) \
         .order_by('-last_updated', '-job_pending_time')
+
     paginator = Paginator(my_jobs, JOBS_PER_PAGE)
 
     page = request.GET.get('page')
@@ -107,8 +133,15 @@ def all_jobs(request):
 
 @login_required
 def drafts(request):
+    """
+    Collects all drafts of the user and renders them in template.
+    :param request: Django request object.
+    :return: Rendered template.
+    """
+
     my_jobs = Job.objects.filter(Q(user=request.user), Q(job_status__in=[JobStatus.DRAFT, ])) \
-        .exclude(job_status__in=[JobStatus.DELETED, ]).order_by('-last_updated', '-creation_time')
+        .exclude(job_status__in=[JobStatus.DELETED, ]) \
+        .order_by('-last_updated', '-creation_time')
 
     paginator = Paginator(my_jobs, JOBS_PER_PAGE)
 
@@ -136,8 +169,15 @@ def drafts(request):
 @login_required
 @admin_or_system_admin_required
 def all_drafts(request):
+    """
+    Collects all drafts and renders them in template.
+    :param request: Django request object.
+    :return: Rendered template.
+    """
+
     my_jobs = Job.objects.filter(Q(job_status__in=[JobStatus.DRAFT, ])) \
-        .exclude(job_status__in=[JobStatus.DELETED, ]).order_by('-last_updated', '-creation_time')
+        .exclude(job_status__in=[JobStatus.DELETED, ]) \
+        .order_by('-last_updated', '-creation_time')
 
     paginator = Paginator(my_jobs, JOBS_PER_PAGE)
 
@@ -165,6 +205,12 @@ def all_drafts(request):
 
 @login_required
 def deleted_jobs(request):
+    """
+    Collects all deleted jobs of the user and renders them in template.
+    :param request: Django request object.
+    :return: Rendered template.
+    """
+
     my_jobs = Job.objects.filter(Q(user=request.user), Q(job_status__in=[JobStatus.DELETED, ])) \
         .order_by('-last_updated', '-creation_time')
 
@@ -194,6 +240,12 @@ def deleted_jobs(request):
 @login_required
 @admin_or_system_admin_required
 def all_deleted_jobs(request):
+    """
+    Collects all deleted jobs and renders them in template.
+    :param request: Django request object.
+    :return: Rendered template.
+    """
+
     my_jobs = Job.objects.filter(Q(job_status__in=[JobStatus.DELETED, ])) \
         .order_by('-last_updated', '-creation_time')
 
@@ -254,10 +306,17 @@ def download_asset(request, job_id, download, file_path):
 
 @login_required
 def view_job(request, job_id):
-    # checking:
-    # 1. Job ID and job exists
+    """
+    Collects a particular job information and renders them in template.
+    :param request: Django request object.
+    :param job_id: id of the job.
+    :return: Rendered template.
+    """
 
     job = None
+
+    # checking:
+    # 1. Job ID and job exists
     if job_id:
         try:
             job = Job.objects.get(id=job_id)
@@ -326,7 +385,6 @@ def view_job(request, job_id):
         except Job.DoesNotExist:
             pass
 
-    # this should be the last line before redirect
     if not job:
         # should return to a page notifying that no permission to view
         raise Http404
@@ -334,13 +392,22 @@ def view_job(request, job_id):
 
 @login_required
 def copy_job(request, job_id):
-    # checking:
-    # 1. Job ID and job exists
+    """
+    Copies a particular job as a draft.
+    :param request: Django request object.
+    :param job_id: id of the job.
+    :return: Redirects to relevant view.
+    """
 
     job = None
+
+    # checking:
+    # 1. Job ID and job exists
     if job_id:
         try:
             job = Job.objects.get(id=job_id)
+
+            # Check whether user can copy the job
             bilby_job = job.bilby_job
             bilby_job.list_actions(request.user)
 
@@ -362,6 +429,8 @@ def copy_job(request, job_id):
         # should return to a page notifying that no permission to copy
         raise Http404
     else:
+
+        # loading job as draft and redirecting to the new job view
         request.session['to_load'] = job.as_json()
 
     return redirect('new_job')
@@ -369,13 +438,22 @@ def copy_job(request, job_id):
 
 @login_required
 def edit_job(request, job_id):
-    # checking:
-    # 1. Job ID and job exists
+    """
+    Checks job permission for edit and then redirects to relevant view.
+    :param request: Django request object.
+    :param job_id: id of the job.
+    :return: Redirects to relevant view.
+    """
 
     job = None
+
+    # checking:
+    # 1. Job ID and job exists
     if job_id:
         try:
             job = Job.objects.get(id=job_id)
+
+            # Checks the edit permission for the user
             bilby_job = job.bilby_job
             bilby_job.list_actions(request.user)
 
@@ -389,6 +467,8 @@ def edit_job(request, job_id):
         # should return to a page notifying that no permission to edit
         raise Http404
     else:
+
+        # loading job as draft and redirecting to the new job view
         request.session['to_load'] = job.as_json()
 
     return redirect('new_job')
@@ -396,6 +476,13 @@ def edit_job(request, job_id):
 
 @login_required
 def cancel_job(request, job_id):
+    """
+    Cancels the current job.
+    :param request: Django request object.
+    :param job_id: id of the job.
+    :return: Redirects to relevant view.
+    """
+
     should_redirect = False
 
     # to decide which page to forward if not coming from any http referrer.
@@ -411,6 +498,7 @@ def cancel_job(request, job_id):
             bilby_job = job.bilby_job
             bilby_job.list_actions(request.user)
 
+            # Checks that user has cancel permission
             if 'cancel' not in bilby_job.job_actions:
                 should_redirect = False
             else:
@@ -449,26 +537,42 @@ def cancel_job(request, job_id):
 
 @login_required
 def delete_job(request, job_id):
-    # checking:
-    # 1. Job ID and job exists
+    """
+    Deletes or marks a job as deleted.
+    :param request: Django request object.
+    :param job_id: id of the job.
+    :return: Redirects to relevant view.
+    """
 
     should_redirect = False
     # to decide which page to forward if not coming from any http referrer.
     # this happens when you type in the url.
     to_page = 'drafts'
+
+    # checking:
+    # 1. Job ID and job exists
     if job_id:
         try:
             job = Job.objects.get(id=job_id)
+
             bilby_job = job.bilby_job
             bilby_job.list_actions(request.user)
 
+            # checks that user has delete permission
             if 'delete' not in bilby_job.job_actions:
                 should_redirect = False
             else:
+
                 message = 'Job <strong>{name}</strong> has been successfully deleted'.format(name=job.name)
+
                 if job.status == DRAFT:
+
+                    # draft jobs are to be deleted forever as they do not have any connection with the cluster yet.
                     job.delete()
+
                 else:
+
+                    # for other jobs, they are marked as deleting and control is handed over to the workflow.
                     job.delete_job()
 
                     # cancelling the public status if deleted
@@ -476,12 +580,13 @@ def delete_job(request, job_id):
                     job.save()
 
                     to_page = 'jobs'
+
                 messages.add_message(request, messages.SUCCESS, message, extra_tags='safe')
                 should_redirect = True
+
         except Job.DoesNotExist:
             pass
 
-    # this should be the last line before redirect
     if not should_redirect:
         # should return to a page notifying that no permission to delete
         raise Http404
@@ -514,25 +619,38 @@ def delete_job(request, job_id):
 
 @login_required
 def make_job_private(request, job_id):
+    """
+    Marks a job as private if public.
+    :param request: Django request object.
+    :param job_id: id of the job.
+    :return: Redirects to the referrer page.
+    """
+
     full_path = request.META.get('HTTP_REFERER', None)
+
     if not full_path:
+        # not from a referrer, sorry
         raise Http404
+
+    should_redirect = False
 
     # checking:
     # 1. Job ID and job exists
-
-    should_redirect = False
     if job_id:
         try:
             job = Job.objects.get(id=job_id)
+
             bilby_job = job.bilby_job
             bilby_job.list_actions(request.user)
 
+            # Checks that user has make_it_private permission
             if 'make_it_private' in bilby_job.job_actions:
                 job.extra_status = NONE
                 job.save()
+
                 should_redirect = True
                 messages.success(request, 'Job has been changed to <strong>private!</strong>', extra_tags='safe')
+
         except Job.DoesNotExist:
             pass
 
@@ -549,25 +667,37 @@ def make_job_private(request, job_id):
 
 @login_required
 def make_job_public(request, job_id):
+    """
+    Marks a job as public if private.
+    :param request: Django request object.
+    :param job_id: id of the job.
+    :return: Redirects to the referrer page.
+    """
     full_path = request.META.get('HTTP_REFERER', None)
+
     if not full_path:
+        # not from a referrer, sorry
         raise Http404
+
+    should_redirect = False
 
     # checking:
     # 1. Job ID and job exists
-
-    should_redirect = False
     if job_id:
         try:
             job = Job.objects.get(id=job_id)
+
             bilby_job = job.bilby_job
             bilby_job.list_actions(request.user)
 
+            # Checks that user has make_it_public permission
             if 'make_it_public' in bilby_job.job_actions:
                 job.extra_status = PUBLIC
                 job.save()
+
                 should_redirect = True
                 messages.success(request, 'Job has been changed to <strong>public!</strong>', extra_tags='safe')
+
         except Job.DoesNotExist:
             pass
 
