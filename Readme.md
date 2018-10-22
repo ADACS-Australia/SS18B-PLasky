@@ -34,7 +34,7 @@ pip install -r requirements.txt
 
 The required steps include the following:
 
-* `virtualenv venv` (create the virtual environment, e.g. with https://docs.python.org/3/library/venv.html or https://github.com/pyenv/pyenv)
+* `virtualenv -p python3.6 venv` (create the virtual environment, e.g. with https://docs.python.org/3/library/venv.html or https://github.com/pyenv/pyenv)
 * `git pull` (clone the code)
 * `git submodule update --init --recursive` (pulls any submodules (django_hpc_job_controller))
 * `source venv/bin/activate` (activate the virtual environment)
@@ -43,8 +43,8 @@ The required steps include the following:
 * `cd ../../` (enter the root directory of the project)
 * `pip3 install -r requirements.txt` (install required python packages)
 * `pip3 install -r django_hpc_job_controller/server/requirements.txt` (install required python packages for the django_hpc_job_controller server)
-* `./development-manage.py migrate` (migrate, for staging or production
-* `./development-manage.py createsuperuser` (create an admin account) specify the required manage.py file instead)
+* `./development-manage.py migrate` (migrate, for staging or production)
+* `./development-manage.py createsuperuser` (create an admin account) (specify the required manage.py file instead)
 * `./development-manage.py runserver 8000` (running the server)
 
 ## Local Settings ##
@@ -100,6 +100,28 @@ DATABASES = {
     }
 }
 ```
+
+### Database Settings for Docker ###
+
+To run using docker and MySQL, modify the `local.py` configuration file. 
+Instead of using the database settings described above, use something in 
+the lines of the following:
+
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'bilby',
+        'HOST': 'db',
+        'USER': 'django',
+        'PORT': 3306,
+        'PASSWORD': 'test-docker_#1',
+    },
+}
+```
+
+The USER and PASSWORD should be in accordance with the information provided in the file `docker-compose.yml` 
+included at the root of the project repository.
 
 ## Local Job Submission Setup
 
