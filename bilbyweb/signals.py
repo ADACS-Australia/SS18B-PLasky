@@ -1,4 +1,8 @@
-from django.db.models.signals import pre_save, post_save
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 
@@ -15,12 +19,24 @@ from .utility.email.email import email_notification_job_done
 
 @receiver(pre_save, sender=Job, dispatch_uid='update_last_updated')
 def update_last_updated(instance, **kwargs):
+    """
+    Signal to update the last updated for the Job
+    :param instance: instance of Job
+    :param kwargs: keyward arguments
+    :return: Nothing
+    """
     if instance.pk:
         instance.last_updated = timezone.now()
 
 
 @receiver(pre_save, sender=Job, dispatch_uid='notify_job_owner')
 def notify_job_owner(instance, **kwargs):
+    """
+    Signal to send email notification on Job finished processing
+    :param instance: instance of Job
+    :param kwargs: keyward arguments
+    :return: Nothing
+    """
     if instance.pk:
 
         # finding the actual instance

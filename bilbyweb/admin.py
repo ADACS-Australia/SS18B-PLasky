@@ -1,3 +1,7 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 from django.contrib import admin
 
 from .models import (
