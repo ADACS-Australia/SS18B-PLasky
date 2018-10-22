@@ -1,3 +1,7 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 from django.test import (
     TestCase,
     Client,
@@ -8,7 +12,7 @@ from http import HTTPStatus
 from testfixtures.logcapture import LogCapture
 
 from ..models import Job
-from .utility import TestData, get_admins, get_members, PASSWORD_ADMIN, PASSWORD_MEMBER
+from .utility import TestData, get_admins, get_members, PASSWORD_MEMBER
 
 
 class TestNewJob(TestCase):

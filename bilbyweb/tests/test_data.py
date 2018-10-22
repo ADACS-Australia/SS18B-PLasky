@@ -1,3 +1,7 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 from django.test import (
     TestCase,
     Client,
@@ -10,7 +14,7 @@ from ..models import (
     Data,
     DataParameter,
 )
-from .utility import TestData, get_admins, get_members, PASSWORD_ADMIN, PASSWORD_MEMBER
+from .utility import TestData, get_admins, get_members, PASSWORD_MEMBER
 
 
 class TestDataForm(TestCase):
