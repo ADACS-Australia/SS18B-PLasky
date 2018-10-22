@@ -1,3 +1,7 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
@@ -30,15 +34,26 @@ from ...utility.constants import (
 
 
 def get_to_be_active_tab(active_tab, previous=False):
-    no_more_tabs = False  # keep track of out of index tab, beneficial to detect the last page
+    """
+    Finds out the next active tab based on user input
+    :param active_tab: Current active tab
+    :param previous: Whether or not previous is pressed
+    :return: To be Active tab, Whether it is the last tab or not
+    """
 
+    # keep track of out of index tab, beneficial to detect the last tab
+    no_more_tabs = False
+
+    # find the current active tab index
     active_tab_index = TABS_INDEXES.get(active_tab)
 
+    # next active tab index based on the button pressed
     if previous:
         active_tab_index -= 1
     else:
         active_tab_index += 1
 
+    # checks out the last tab or not
     try:
         active_tab = TABS[active_tab_index]
     except IndexError:
@@ -47,7 +62,16 @@ def get_to_be_active_tab(active_tab, previous=False):
     return active_tab, no_more_tabs
 
 
-def generate_forms(job=None, request=None, forms=None):
+def generate_forms(job=None, forms=None):
+    """
+    Generates all the forms for the job and the user inputs.
+    :param job: the job information to be rendered in the forms
+    :param forms: forms already generated during save tab
+    :return: A dictionary of forms
+    """
+
+    # initialise all blank if no forms are generated, usually this will happen for a get request
+    # the new job page, or job copied or loaded for editing.
     if not forms:
         forms = {
             START: None,
@@ -64,25 +88,39 @@ def generate_forms(job=None, request=None, forms=None):
             LAUNCH: None,
         }
 
+    # if there is a job, update the model forms
     if job:
         for model in MODELS:
             try:
                 # START Form is the Job instance, for other forms it is referenced
                 instance = job if model in [START, ] else MODELS[model].objects.get(job=job)
 
+                # do not override already generated forms.
+                # otherwise, this would wipe out all errors from the form.
                 if not forms.get(model, None):
+                    # generate a form if there is none generated for this
                     forms.update({
                         model: FORMS_NEW[model](instance=instance, job=job, prefix=model)
                     })
             except MODELS[model].DoesNotExist:
                 pass
 
+    # Do a check for all forms as well,
+    # i.e., for Dynamic forms here, others will be skipped.
     for name in FORMS_NEW.keys():
+
+        # generate a form if there is none generated for this
+        # Model forms would be automatically ignored here as they have been taken
+        # care of in the previous section
         if not forms.get(name, None):
             forms.update({
                 name: FORMS_NEW[name](job=job, prefix=name)
             })
 
+    # if there is a job, update the forms based on job information
+    # to pre-fill their input fields like the model forms
+    # extra processing is needed because Dynamic Form does not
+    # have easy update option by passing the instance.
     if job:
         # non-model forms update
         forms[DATA_OPEN].update_from_database(job=job)
@@ -107,6 +145,12 @@ def generate_forms(job=None, request=None, forms=None):
 
 
 def filter_as_per_input(forms_to_save, request):
+    """
+    Filters out irrelevant forms from the to save list based on user input
+    :param forms_to_save: list of forms to save for a tab
+    :param request: Django request object
+    :return: new list of forms to save
+    """
 
     # returning the corrected forms need to be saved for DATA tab
     if DATA in forms_to_save:
@@ -141,7 +185,16 @@ def filter_as_per_input(forms_to_save, request):
 
 
 def save_tab(request, active_tab):
+    """
+    Saves the forms in a tab.
+    :param request: Django request object
+    :param active_tab: Currently active tab
+    :return: active tab, forms for all the tabs, whether or not the form is submitted
+    """
+
     submitted = False
+
+    # check whether job exists
     try:
         job = Job.objects.get(id=request.session['draft_job'].get('id', None))
     except (KeyError, AttributeError, Job.DoesNotExist):
@@ -187,40 +240,68 @@ def save_tab(request, active_tab):
 
     # don't process further for submitted jobs
     if not submitted:
-        forms = generate_forms(job, request=request, forms=forms)
+
+        # now generate the other forms.
+        forms = generate_forms(job, forms=forms)
 
     return active_tab, forms, submitted
 
 
 @login_required
 def new_job(request):
+    """
+    Process request and returns all the forms for a draft job
+    :param request: Django request object
+    :return: Rendered template or redirects to relevant view
+    """
+
+    # Processing if the request is post, that means things to be saved here
     if request.method == 'POST':
+
+        # Get the active tab
         active_tab = request.POST.get('form-tab', START)
+
+        # find out new active tab, forms to render, and whether submitted or not
         active_tab, forms, submitted = save_tab(request, active_tab)
+
+        # if submitted, nothing more to do with drafts
+        # redirect to the page where the job can be viewed with other jobs
         if submitted:
             return redirect('jobs')
+
+    # Processing if the request is get,
+    # Can happen for new draft, copy or edit
     else:
+
+        # set the active tab as start
         active_tab = START
 
+        # Coming with copy or edit request: load the correct job id as draft
         try:
             request.session['draft_job'] = request.session['to_load']
         except (AttributeError, KeyError):
             request.session['draft_job'] = None
 
+        # clear the to_load session variable, so that next time it does not load
+        # this job automatically
         request.session['to_load'] = None
 
+        # Now, check whether a job exists or not
         try:
             job = Job.objects.get(id=request.session['draft_job'].get('id', None))
         except (KeyError, AttributeError, Job.DoesNotExist):
             job = None
 
+        # generate forms
         forms = generate_forms(job=job)
 
+    # Create a bilby job for this job
     try:
         bilby_job = BilbyJob(job_id=request.session['draft_job'].get('id', None))
     except (KeyError, AttributeError):
         bilby_job = None
 
+    # Get enabled Tabs based on the bilby job and active job
     enabled_tabs = get_enabled_tabs(bilby_job, active_tab)
 
     return render(
