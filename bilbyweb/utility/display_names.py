@@ -1,8 +1,15 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 # VARIABLES of this file must be unique
 from django_hpc_job_controller.client.scheduler.status import JobStatus
 
+
+# Dictionary to map names and corresponding display names (for UI)
 DISPLAY_NAME_MAP = dict()
 DISPLAY_NAME_MAP_HPC_JOB = dict()
+
 
 # Job Status
 NONE = 'none'

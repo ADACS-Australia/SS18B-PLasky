@@ -1,3 +1,8 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
+# Job completion email template that is sent to the job owner once a job is finished processing
 JOB_COMPLETION = dict()
 JOB_COMPLETION['subject'] = '[BILBY-WEB] Job Finished with {}'
 JOB_COMPLETION['message'] = '<p>Dear {{first_name}} {{last_name}}</p>' \
