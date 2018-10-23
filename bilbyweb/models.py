@@ -1,31 +1,65 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 from django.conf import settings
 from django.db import models
+
+from django_hpc_job_controller.models import HpcJob
 
 from .utility.display_names import *
 
 
-class Job(models.Model):
+class Job(HpcJob):
+    """
+    Job model extending HpcJob
+    """
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_job', on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=False, null=False)
     description = models.TextField(blank=True, null=True)
 
     STATUS_CHOICES = [
-        (DRAFT, DRAFT_DISPLAY),
-        (SUBMITTED, SUBMITTED_DISPLAY),
-        (QUEUED, QUEUED_DISPLAY),
-        (IN_PROGRESS, IN_PROGRESS_DISPLAY),
-        (COMPLETED, COMPLETED_DISPLAY),
-        (ERROR, ERROR_DISPLAY),
-        (SAVED, SAVED_DISPLAY),
-        (WALL_TIME_EXCEEDED, WALL_TIME_EXCEEDED_DISPLAY),
-        (DELETED, DELETED_DISPLAY),
+        (NONE, NONE_DISPLAY),
         (PUBLIC, PUBLIC_DISPLAY),
     ]
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, blank=False, default=DRAFT)
+
+    extra_status = models.CharField(max_length=20, choices=STATUS_CHOICES, blank=False, default=NONE)
     creation_time = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now_add=True)
-    submission_time = models.DateTimeField(null=True, blank=True)
     json_representation = models.TextField(null=True, blank=True)
+
+    @property
+    def status_display(self):
+        """
+        Finds and return the corresponding status display for a status
+        :return: String of status display
+        """
+        if self.extra_status != NONE:
+            return DISPLAY_NAME_MAP[self.extra_status]
+        if self.job_status in DISPLAY_NAME_MAP_HPC_JOB:
+            return DISPLAY_NAME_MAP[DISPLAY_NAME_MAP_HPC_JOB[self.job_status]]
+        return "Unknown"
+
+    @property
+    def status(self):
+        """
+        Finds and return the corresponding status for a status number
+        :return: String of status
+        """
+        if self.extra_status != NONE:
+            return self.extra_status
+        if self.job_status in DISPLAY_NAME_MAP_HPC_JOB:
+            return DISPLAY_NAME_MAP_HPC_JOB[self.job_status]
+        return "unknown"
+
+    @property
+    def bilby_job(self):
+        """
+        Creates a LIGHT bilby job instance usually for list actions
+        :return: Bilby Job instance
+        """
+        from bilbyweb.utility.job import BilbyJob
+        return BilbyJob(job_id=self.pk, light=True)
 
     class Meta:
         unique_together = (
@@ -47,19 +81,10 @@ class Job(models.Model):
         )
 
 
-def user_job_results_file_directory_path_not_field(instance):
-    return settings.MEDIA_ROOT + 'user_{0}/job_{1}/result_files/'.format(instance.user.id, instance.id)
-
-
-def user_job_input_file_directory_path(instance):
-    return settings.MEDIA_ROOT + 'user_{0}/job_{1}/input_files/{2}'.format(instance.user.id, instance.id, "input.json")
-
-
-def user_job_result_files_directory_path(instance, filename):
-    return 'user_{0}/job_{1}/result_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
-
-
 class Data(models.Model):
+    """
+    Model to store Data Information
+    """
     job = models.OneToOneField(Job, related_name='job_data', on_delete=models.CASCADE)
 
     DATA_CHOICES = [
@@ -83,6 +108,10 @@ class Data(models.Model):
 
 
 class DataParameter(models.Model):
+    """
+    Model to Store Data Parameters.
+    Serves for Open and Simulated Data parameters.
+    """
     data = models.ForeignKey(Data, on_delete=models.CASCADE)
     name = models.CharField(max_length=20, blank=False, null=False)
     value = models.CharField(max_length=100, null=True, blank=True)
@@ -92,12 +121,14 @@ class DataParameter(models.Model):
 
 
 class Signal(models.Model):
+    """
+    Model to store Signal Injection for the Job
+    """
     job = models.OneToOneField(Job, related_name='job_signal', on_delete=models.CASCADE)
 
     SIGNAL_CHOICES = [
         (SKIP, SKIP_DISPLAY),
         (BINARY_BLACK_HOLE, BINARY_BLACK_HOLE_DISPLAY),
-        # (BINARY_BLACK_HOLE + '_test', BINARY_BLACK_HOLE_DISPLAY + ' TEST'),
     ]
 
     signal_choice = models.CharField(max_length=50, choices=SIGNAL_CHOICES, default=SKIP)
@@ -108,6 +139,10 @@ class Signal(models.Model):
 
 
 class SignalParameter(models.Model):
+    """
+    Model to Store Signal Parameters.
+    Serves for Binary Black Hole parameters.
+    """
     signal = models.ForeignKey(Signal, related_name='signal_signal_parameter', on_delete=models.CASCADE)
 
     NAME_CHOICES = [
@@ -130,6 +165,9 @@ class SignalParameter(models.Model):
 
 
 class Prior(models.Model):
+    """
+    Model to store Prior Information for the Job
+    """
     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='job_prior')
     name = models.CharField(max_length=50, blank=False, null=False)
     CHOICES = [
@@ -142,6 +180,10 @@ class Prior(models.Model):
     uniform_max_value = models.FloatField(blank=True, null=True)
 
     def get_display_value(self):
+        """
+        Formats the value for the template display based on prior type (choice)
+        :return: Formatted string to display
+        """
         if self.prior_choice == FIXED:
             return '{}'.format(self.fixed_value)
         elif self.prior_choice == UNIFORM:
@@ -154,6 +196,9 @@ class Prior(models.Model):
 
 
 class Sampler(models.Model):
+    """
+    Model to store Sampler Information
+    """
     job = models.OneToOneField(Job, related_name='job_sampler', on_delete=models.CASCADE)
 
     SAMPLER_CHOICES = [
@@ -178,6 +223,10 @@ class Sampler(models.Model):
 
 
 class SamplerParameter(models.Model):
+    """
+    Model to Store Sampler Parameters.
+    Serves for Nestle, Dynesty and Emcee parameters.
+    """
     sampler = models.ForeignKey(Sampler, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, blank=False, null=False)
     value = models.CharField(max_length=100, null=True, blank=True)

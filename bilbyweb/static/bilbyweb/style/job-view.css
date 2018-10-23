@@ -85,6 +85,50 @@
     border: 1px solid lightslategrey;
 }
 
+.job-view-section .preview ul li .card-body {
+    padding: 10px;
+    min-height: 50px;
+}
+
+.job-view-section .preview ul li .card-img-top {
+    max-height: 250px;
+    object-fit: contain;
+}
+
+.job-view-section .preview ul li .card-img-top.small {
+    max-height: 215px;
+    padding: 20px 20px 0 20px;
+}
+
+.job-view-section .preview ul li .card-text {
+    font-size: small;
+    font-weight: 600;
+}
+
+.job-view-section .preview ul li a .size {
+    color: #bd2824;
+    font-size: small;
+}
+
+.job-view-section .preview ul li a,
+.job-view-section .preview ul li a:focus,
+.job-view-section .preview ul li a:visited,
+.job-view-section .preview ul li a:hover {
+    text-decoration: none;
+}
+
+@media only screen and (max-width: 592px) {
+    .job-view-section .preview ul li .card-img-top {
+        max-height: 200px;
+        object-fit: contain;
+    }
+
+    .job-view-section .preview ul li .card-img-top.small {
+        max-height: 215px;
+        padding: 20px 20px 0 20px;
+    }
+}
+
 .meta-data table th,
 .meta-data table td {
     padding: .3rem 12px;

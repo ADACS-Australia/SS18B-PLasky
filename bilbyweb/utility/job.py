@@ -1,3 +1,7 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 import json
 import uuid
 
@@ -14,10 +18,14 @@ from ..utility.display_names import (
     SUBMITTED,
     QUEUED,
     IN_PROGRESS,
-    PUBLIC,
     DRAFT,
     COMPLETED,
-    DELETED,
+    PENDING,
+    ERROR,
+    CANCELLED,
+    WALL_TIME_EXCEEDED,
+    OUT_OF_MEMORY,
+    PUBLIC,
 )
 
 from ..models import (
@@ -40,6 +48,12 @@ from ..forms.sampler.sampler_emcee import EMCEE_FIELDS_PROPERTIES
 
 
 def clone_job_data(from_job, to_job):
+    """
+    Copy job data across two jobs
+    :param from_job: instance of Job that will be used as a source
+    :param to_job: instance of Job that will be used as a target
+    :return: Nothing
+    """
     # cloning data and data parameters
     try:
         from_data = Data.objects.get(job=from_job)
@@ -115,57 +129,104 @@ def clone_job_data(from_job, to_job):
 
 
 class BilbyJob(object):
+    """
+    Class representing a Bilby Job. The bilby job parameters are scattered in different models in the database.
+    This class used to collects the correct job parameters in one place. It also defines the json representation
+    of the job.
+    """
+
+    # variable to hold the Job model instance
     job = None
+
+    # variable to hold the Data model instance
     data = None
+
+    # list to hold the Data Parameters instances
     data_parameters = None
+
+    # variable to hold the Signal instance
     signal = None
+
+    # list to hold the Signal Parameters instances
     signal_parameters = None
+
+    # list to hold the Prior instances
     priors = None
+
+    # variable to hold the Sampler instance
     sampler = None
+
+    # list to hold the Sampler Parameters instances
     sampler_parameters = None
 
     # what actions a user can perform on this job
     job_actions = None
 
     def clone_as_draft(self, user):
+        """
+        Clones the bilby job for the user as a Draft Job
+        :param user: the owner of the new Draft Job
+        :return: Nothing
+        """
+
         if not self.job:
             return
 
+        # try to generate a unique name for the job owner
         name = self.job.name
         while Job.objects.filter(user=user, name=name).exists():
             name = (self.job.name + '_' + uuid.uuid4().hex)[:255]
 
+            # This will be true if the job has 255 Characters in it,
+            # In this case, we cannot get a new name by adding something to it.
+            # This can be altered later based on the requirement.
             if name == self.job.name:
                 # cannot generate a new name, returning none
                 return None
 
+        # Once the name is set, creating the draft job with new name and owner and same description
         cloned = Job.objects.create(
             name=name,
             user=user,
             description=self.job.description,
         )
 
+        # copying other parameters of the job
         clone_job_data(self.job, cloned)
 
         return cloned
 
     def list_actions(self, user):
+        """
+        List the actions a user can perform on this Job
+        :param user: User for whom the actions will be generated
+        :return: Nothing
+        """
+
         self.job_actions = []
+
+        # Job Owners and Admins get most actions
         if self.job.user == user or user.is_admin():
 
             # any job can be copied
             self.job_actions.append('copy')
 
-            # job can only be deleted if not in the following status:
-            # 1. submitted
-            # 2. queued
-            # 3. in progress
-            if self.job.status not in [SUBMITTED, QUEUED, IN_PROGRESS, DELETED]:
+            # job can only be deleted if in the following status:
+            # 1. draft
+            # 2. completed
+            # 3. error (wall time and out of memory)
+            # 4. cancelled
+            # 5. public
+            if self.job.status in [DRAFT, COMPLETED, ERROR, CANCELLED, WALL_TIME_EXCEEDED, OUT_OF_MEMORY, PUBLIC]:
                 self.job_actions.append('delete')
 
             # edit a job if it is a draft
             if self.job.status in [DRAFT]:
                 self.job_actions.append('edit')
+
+            # cancel a job if it is not finished processing
+            if self.job.status in [PENDING, SUBMITTED, QUEUED, IN_PROGRESS]:
+                self.job_actions.append('cancel')
 
             # completed job can be public and vice versa
             if self.job.status in [COMPLETED]:
@@ -178,7 +239,18 @@ class BilbyJob(object):
             if self.job.status in [PUBLIC]:
                 self.job_actions.append('copy')
 
-    def __init__(self, job_id):
+    def __init__(self, job_id, light=False):
+        """
+        Initialises the Bilby Job
+        :param job_id: id of the job
+        :param light: Whether used for only job variable to be initialised atm
+        """
+        # do not need to do further processing for light bilby jobs
+        # it is used only for status check mainly from the model itself to list the
+        # actions a user can do on the job
+        if light:
+            return
+
         # populating data tab information
         try:
             self.data = Data.objects.get(job=self.job)
@@ -240,18 +312,28 @@ class BilbyJob(object):
                 for name in EMCEE_FIELDS_PROPERTIES.keys():
                     self.sampler_parameters.append(all_sampler_parameters.get(name=name))
 
-        self.as_json()
-
     def __new__(cls, *args, **kwargs):
+        """
+        Instantiate the Bilby Job
+        :param args: arguments
+        :param kwargs: keyword arguments
+        :return: Instance of Bilby Job with job variable initialised from job_id if exists
+                 otherwise returns None
+        """
+        result = super(BilbyJob, cls).__new__(cls)
         try:
-            cls.job = Job.objects.get(id=kwargs.get('job_id', None))
+            result.job = Job.objects.get(id=kwargs.get('job_id', None))
         except Job.DoesNotExist:
             return None
-
-        return super(BilbyJob, cls).__new__(cls)
+        return result
 
     def as_json(self):
-        # data_dict
+        """
+        Generates the json representation of the Bilby Job so that Bilby Core can digest it
+        :return: Json Representation
+        """
+
+        # processing data dict
         data_dict = dict()
         if self.data:
             data_dict.update({
@@ -262,7 +344,7 @@ class BilbyJob(object):
                     data_parameter.name: data_parameter.value,
                 })
 
-        # signal_dict
+        # processing signal dict
         signal_dict = dict()
         if self.signal and self.signal.signal_choice != SKIP:
             signal_dict.update({
@@ -273,7 +355,7 @@ class BilbyJob(object):
                     signal_parameter.name: signal_parameter.value,
                 })
 
-        # prior dict
+        # processing prior dict
         priors_dict = dict()
         if self.priors:
             for prior in self.priors:
@@ -294,7 +376,7 @@ class BilbyJob(object):
                     prior.name: prior_dict,
                 })
 
-        # sampler_dict
+        # processing sampler dict
         sampler_dict = dict()
         if self.sampler:
             sampler_dict.update({
@@ -305,6 +387,7 @@ class BilbyJob(object):
                     sampler_parameter.name: sampler_parameter.value,
                 })
 
+        # accumulating all in one dict
         json_dict = dict(
             name=self.job.name,
             description=self.job.description,
@@ -314,4 +397,5 @@ class BilbyJob(object):
             sampler=sampler_dict,
         )
 
+        # returning json with correct indentation
         return json.dumps(json_dict, indent=4)

@@ -3,9 +3,19 @@ body {
 }
 
 *, *:before, *:after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@media only screen and (max-width: 991px) {
+    * {
+        font-size: .9rem;
+    }
+
+    .page-header span {
+        font-size: x-large;
+    }
 }
 
 .main-content {
@@ -39,25 +49,39 @@ body {
 
 /********************************************/
 /*                                          */
-/*              Welcome page                */
+/*                 Navbar                    */
 /*                                          */
 /********************************************/
-
-.jumbotron {
-    /*background-image: url("../images/GW.jpg");*/
-    background-size:cover;
-    background: no-repeat center center;
-    margin-bottom: 0;
-    /*padding-top: 15em;*/
-    /*padding-bottom: 13em;*/
+.navbar-brand .logo {
+    width: 150px;
 }
 
-#welcome-message{
-    text-align: center;
-    /*color: #000000;*/
-    /*font-optical-sizing: auto;*/
-    /*text-shadow: 1px 1px #0e2918;*/
+.dropdown .dropdown-menu {
+    background-color: rgba(55, 60, 66, 1);
 }
+
+.dropdown .dropdown-menu a,
+.dropdown .dropdown-menu a:focus,
+.dropdown .dropdown-menu a:visited {
+    color: rgba(255,255,255,.5);
+}
+
+.dropdown .dropdown-menu a:hover {
+    color: rgba(255,255,255,.8);
+    background-color: rgba(55, 60, 66, 1);
+}
+
+@media only screen and (max-width: 767px) {
+    .navbar-nav .nav-item {
+        border-bottom: 1px dotted rgba(255,255,255,.5);
+    }
+
+    .dropdown .dropdown-menu {
+        border: none;
+        background-color: inherit;
+    }
+}
+
 
 /********************************************/
 /*                                          */
@@ -67,6 +91,7 @@ body {
 .field {
     padding-bottom: 10px;
 }
+
 .field.error label {
     color: darkred;
 }
@@ -95,6 +120,10 @@ body {
     border-top-width: 0;
     border-radius: 0 0 4px 4px;
     background-color: darksalmon;
+}
+
+.field.error ul.errorlist li {
+    font-size: 0.8rem;
 }
 
 /* non field errors */
@@ -135,17 +164,8 @@ ul.messages {
 /********************************************/
 
 .field.required .control-label:after {
-   content:"*";
-   color:red;
-}
-
-/********************************************/
-/*                                          */
-/*                 Job-Tabs                 */
-/*                                          */
-/********************************************/
-.tab-content{
-    margin-top: 20px;
+    content: "*";
+    color: red;
 }
 
 /********************************************/
@@ -154,5 +174,5 @@ ul.messages {
 /*                                          */
 /********************************************/
 .errorlist {
-  list-style-type: none;
+    list-style-type: none;
 }

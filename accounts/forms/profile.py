@@ -1,3 +1,7 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 from django import forms
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
@@ -32,6 +36,9 @@ LABELS = {
 
 
 class EditProfileForm(forms.ModelForm):
+    """
+    Model form to Edit Profile information
+    """
     def __init__(self, *args, **kwargs):
         super(EditProfileForm, self).__init__(*args, **kwargs)
         self.fields['first_name'].required = True

@@ -106,7 +106,7 @@ venv.bak/
 
 .gitignore
 .idea/
-local.py
+bilbyui/settings/local.py
 *.pdf
 ADACS.py
 static-files/*

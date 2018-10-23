@@ -1,0 +1,17 @@
+.welcome {
+    margin: 1.5em 0;
+}
+
+.welcome .section.bilby-logo {
+    margin: 1.8em 0;
+}
+
+.welcome img {
+    width: 100%;
+}
+
+.welcome .slogan {
+    color: #006FBD;
+    font-weight: 600;
+    font-size: large;
+}

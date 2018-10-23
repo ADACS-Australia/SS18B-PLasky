@@ -1,3 +1,7 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 from django.db.models import Q
 
 from accounts.models import User
@@ -16,6 +20,11 @@ def get_members():
 
 
 class TestData:
+    """
+    Helper class that sets up the test environment. Currently only creating the users and admins.
+    However, all other common resources should be initialised here.
+    """
+
     def __init__(self):
         self.username_list = [
             'admin',
@@ -35,5 +44,7 @@ class TestData:
                 email=username + '@localhost.com',
             )
             user.set_password(PASSWORD_ADMIN if username in ['admin', ] else PASSWORD_MEMBER)
+            if username == 'admin':
+                user.role = 'Admin'
             user.save()
             users.append(user)

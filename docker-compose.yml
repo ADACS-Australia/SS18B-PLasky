@@ -5,13 +5,10 @@ services:
     image: nginx:latest
     container_name: ng_bilby
     ports:
-      - "8001:8000"
+      - "8000:8000"
     volumes:
-      - ./code:/code
-      - ./:/etc/nginx/conf.d
+      - ./nginx:/etc/nginx/conf.d
       - ./static:/static
-      - ./bilbyweb/static:/bilbyweb/static
-      - ./accounts/static:/accounts/static
     depends_on:
       - web
   db:
@@ -26,7 +23,8 @@ services:
     build: ./
     container_name: dg_bilby
     command: >
-      bash -c "python manage.py makemigrations
+      bash -c "pip install gunicorn
+      && python manage.py makemigrations
       && python manage.py migrate
       && python manage.py collectstatic --noinput
       && gunicorn bilbyui.wsgi -b 0.0.0.0:8000"
@@ -35,7 +33,5 @@ services:
     volumes:
       - ./:/code
       - ./static:/static
-      - ./bilbyweb/static:/bilbyweb/static
-      - ./accounts/static:/accounts/static
     depends_on:
       - db

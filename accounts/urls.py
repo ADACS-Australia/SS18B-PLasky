@@ -1,3 +1,7 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 from django.urls import path
 from django.conf import settings
 from django.contrib.auth import views as auth_views
@@ -6,11 +10,12 @@ from .forms.password_reset import PasswordResetCustomForm
 from .forms.password_change import PasswordChangeCustomForm
 from .views import registration, profile, verify
 
+# defines the URLs for the accounts app
 urlpatterns = [
     path('register/', registration, name='register'),
     path('login/', auth_views.LoginView.as_view(redirect_authenticated_user=True, template_name='accounts/login.html'),
          name='login'),
-    path('logout/', auth_views.logout, {'next_page': '/'}, name='logout'),
+    path('logout/', auth_views.logout, {'next_page': settings.LOGOUT_REDIRECT_URL}, name='logout'),
     path('profile/', profile, name='profile'),
     path('password_change/',
          auth_views.PasswordChangeView.as_view(

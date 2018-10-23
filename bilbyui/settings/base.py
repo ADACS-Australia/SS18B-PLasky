@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'bilbyweb',
+    'django_hpc_job_controller'
 ]
 
 MIDDLEWARE = [
@@ -170,14 +171,25 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['file', 'mail_admins'],
+            'handlers': ['file', 'mail_admins', 'console'],
             'level': 'INFO',
             'propagate': True,
         },
         'bilbyweb': {
-            'handlers': ['file', 'mail_admins'],
+            'handlers': ['file', 'mail_admins', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'django_hpc_job_controller': {
+            'handlers': ['file', 'mail_admins', 'console'],
             'level': 'INFO',
             'propagate': True,
         },
     },
 }
+
+ROOT_SUBDIRECTORY_PATH = ''
+
+SITE_URL = ''
+
+HPC_JOB_CLASS = 'bilbyweb.models.Job'

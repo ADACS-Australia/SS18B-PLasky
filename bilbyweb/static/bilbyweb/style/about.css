@@ -1,0 +1,8 @@
+.about .section {
+    margin-bottom: 20px;
+}
+
+.about .section.bilby-logo img {
+    max-width: 50%;
+}
+

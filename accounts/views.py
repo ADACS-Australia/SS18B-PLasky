@@ -1,3 +1,7 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -14,6 +18,11 @@ from .mailer import actions
 
 
 def registration(request):
+    """
+    View to process the registration
+    :param request: A Django request object
+    :return: A rendered HTML template
+    """
 
     # returning to profile if the user is authenticated
     if request.user.is_authenticated:
@@ -21,7 +30,11 @@ def registration(request):
 
     data = {}
     if request.method == 'POST':
+
+        # creating the registration form from the data
         form = RegistrationForm(request.POST)
+
+        # if form is valid save the information
         if form.is_valid():
             data = form.cleaned_data
             form.save()
@@ -49,6 +62,8 @@ def registration(request):
                 },
             )
     else:
+
+        # get request will serve a blank form
         form = RegistrationForm()
 
     return render(
@@ -64,6 +79,12 @@ def registration(request):
 
 @login_required
 def profile(request):
+    """
+    View to process the profile updates
+    :param request: A Django request object
+    :return: A rendered HTML template
+    """
+
     data = {}
     if request.method == 'POST':
         form = EditProfileForm(request.POST, instance=request.user)
@@ -97,15 +118,28 @@ def profile(request):
 
 
 def verify(request):
+    """
+    View to verify a request, using verification table
+    :param request:
+    :return:
+    """
     data = {}
     code_encrypted = request.GET.get('code', None)
+
     if code_encrypted:
         try:
+            # decrypt the code and its parts
             code = utility.get_information(code_encrypted)
             params = dict(parse.parse_qsl(code))
             verify_type = params.get('type', None)
+
+            # if the verification is for user email address
             if verify_type == 'user':
+
+                # finds username from the retrieved information
                 username = params.get('username', None)
+
+                # Update the user
                 try:
                     user = User.objects.get(username=username)
                     user.status = user.VERIFIED
@@ -130,6 +164,7 @@ def verify(request):
             success=False,
             message='Invalid Verification Code',
         )
+
     return render(
         request,
         "accounts/notification.html",

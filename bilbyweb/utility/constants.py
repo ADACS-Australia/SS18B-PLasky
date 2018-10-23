@@ -1,3 +1,7 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 from ..models import (
     Job,
     Data,
@@ -16,6 +20,10 @@ from ..forms.sampler.sampler import SamplerForm
 from ..forms.sampler.sampler_dynesty import SamplerDynestyParameterForm
 from ..forms.sampler.sampler_nestle import SamplerNestleParameterForm
 from ..forms.sampler.sampler_emcee import SamplerEmceeParameterForm
+
+# Number of jobs to be displayed in a page showing list view
+# Ex: My Jobs, My Drafts, All Jobs, Public Jobs etc.
+JOBS_PER_PAGE = 50
 
 
 def set_dict_indices(my_array):
@@ -54,11 +62,8 @@ SAMPLER_EMCEE = 'sampler-emcee'
 SAMPLER_NESTLE = 'sampler-nestle'
 LAUNCH = 'launch'
 
-SKIP_FORWARD = 'SKIP >'
-SKIP_BACKWARD = '< SKIP'
-REMOVE_FORWARD = 'REMOVE >'
-REMOVE_BACKWARD = '< REMOVE'
 
+# Number of TABs to show up in the UI. We currently have 6 TABs
 TABS = [
     START,
     DATA,
@@ -69,6 +74,8 @@ TABS = [
 ]
 TABS_INDEXES = set_dict_indices(TABS)
 
+
+# Tab Forms, defines the forms of a Tab. Based on this, forms are saved when Next or Previous buttons are pressed.
 TAB_FORMS = {
     START: [START],
     DATA: [DATA, DATA_SIMULATED, DATA_OPEN, ],
@@ -78,6 +85,8 @@ TAB_FORMS = {
     LAUNCH: [LAUNCH, ]
 }
 
+
+# Form Dictionary, Maps the form key to the actual form class
 FORMS_NEW = {
     START: StartJobForm,
     DATA: DataForm,
@@ -93,6 +102,8 @@ FORMS_NEW = {
     LAUNCH: SubmitJobForm,
 }
 
+
+# Maps models to form keys for models that use Django Model Forms.
 MODELS = {
     START: Job,
     DATA: Data,

@@ -2,6 +2,10 @@ from .base import *
 
 DEBUG = True
 
+ALLOWED_HOSTS = ['*']
+
+SITE_URL = 'http://127.0.0.1:8000'
+
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 EMAIL_FROM = 'ssaleheen@swin.edu.au'
@@ -18,7 +22,7 @@ DATABASES = {
 }
 
 for logger in LOGGING['loggers']:
-    LOGGING['loggers'][logger]['handlers'] = ['console']
+    LOGGING['loggers'][logger]['handlers'] = ['console', 'file']
 
 try:
     from .local import *

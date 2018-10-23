@@ -1,3 +1,7 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 from collections import OrderedDict
 
 from ...utility.display_names import DYNESTY
@@ -21,6 +25,9 @@ DYNESTY_FIELDS_PROPERTIES = OrderedDict([
 
 
 class SamplerDynestyParameterForm(DynamicForm):
+    """
+    Sampler Dynesty Parameter Form extending Dynamic Form
+    """
 
     def __init__(self, *args, **kwargs):
         kwargs['name'] = 'data-parameter'
@@ -32,6 +39,8 @@ class SamplerDynestyParameterForm(DynamicForm):
     def save(self):
         # find the sampler first
         sampler = Sampler.objects.get(job=self.job)
+
+        # create or update sampler parameters
         for name, value in self.cleaned_data.items():
             SamplerParameter.objects.update_or_create(
                 sampler=sampler,
@@ -42,9 +51,17 @@ class SamplerDynestyParameterForm(DynamicForm):
             )
 
     def update_from_database(self, job):
+        """
+        Populates the form field with the values stored in the database
+        :param job: instance of job model for which the sampler parameters belong to
+        :return: Nothing
+        """
         if not job:
             return
         else:
+
+            # check whether the sampler choice is dynesty or not
+            # if not nothing to populate
             try:
                 sampler = Sampler.objects.get(job=job)
                 if sampler.sampler_choice != DYNESTY:
@@ -52,6 +69,7 @@ class SamplerDynestyParameterForm(DynamicForm):
             except Sampler.DoesNotExist:
                 return
 
+        # iterate over the fields
         for name in DYNESTY_FIELDS_PROPERTIES.keys():
             try:
                 value = SamplerParameter.objects.get(sampler=sampler, name=name).value

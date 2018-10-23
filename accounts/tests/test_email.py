@@ -1,3 +1,7 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 from django.test import TestCase
 from django.core import mail
 
@@ -5,8 +9,15 @@ from ..mailer.email import Email
 
 
 class TestEmail(TestCase):
+    """
+    Class to test email sending
+    """
 
-    def test_email(self):  # tests whether an email can be sent
+    def test_email(self):
+        """
+        tests whether an email can be sent
+        :return: Nothing
+        """
         subject = 'Test Subject'
         to_addresses = ['testto@localhost.com']
         context = {

@@ -1,3 +1,7 @@
+"""
+Distributed under the MIT License. See LICENSE.txt for more info.
+"""
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from ...models import Sampler
@@ -18,6 +22,9 @@ LABELS = {
 
 
 class SamplerForm(forms.ModelForm):
+    """
+    Sampler class
+    """
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         self.job = kwargs.pop('job', None)
@@ -30,6 +37,11 @@ class SamplerForm(forms.ModelForm):
         labels = LABELS
 
     def save(self, **kwargs):
+        """
+        Overrides the default save method
+        :param kwargs: Dictionary of keyword arguments
+        :return: Nothing
+        """
         self.full_clean()
         data = self.cleaned_data
 
