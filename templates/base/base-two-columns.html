@@ -1,0 +1,25 @@
+{% extends 'base/_base.html' %}
+
+{% block main_content %}
+    <div class="container">
+        <div class="row">
+            <div class="col col-md-12">
+                <div class="page-header">
+                    {% block page_header %}
+                        BILBY
+                    {% endblock page_header %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-md-8 col-lg-8 col-sm-12 col-sx-12 col-12">
+                {% block content %}
+                {% endblock content %}
+            </div>
+            <div class="col col-md-4 col-lg-4 col-sm-12 col-sx-12 col-12 info-bar">
+                {% block info-bar %}
+                {% endblock info-bar %}
+            </div>
+        </div>
+    </div>
+{% endblock main_content %}

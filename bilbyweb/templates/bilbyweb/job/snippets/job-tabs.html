@@ -1,0 +1,57 @@
+<div class='breadcrumbs'>
+    <div class='inner'>
+        <ul class='cf nav nav-tabs nav-justified'>
+            <li id="li_start" class="nav-item">
+                <a class="nav-link {% if active_tab == 'start' %}active{% endif %}" data-toggle="tab" href="#start">
+                  <span>1</span>
+                  <span>Start</span>
+                </a>
+            </li>
+            <li id="li_data"
+                class="nav-item {% if 'data' not in enabled_tabs %} disabled {% endif %}"
+                data-content="Define Data" data-placement="top" data-container="body"
+            >
+                <a class="nav-link {% if active_tab == 'data' %}active{% endif %}" data-toggle="tab" href="#data">
+                  <span>2</span>
+                  <span>Data</span>
+                </a>
+            </li>
+            <li id="li_signal"
+                class="nav-item {% if 'signal' not in enabled_tabs %} disabled {% endif %}"
+                data-content="Define Data" data-placement="top" data-container="body"
+            >
+                <a class="nav-link {% if active_tab == 'signal' %}active{% endif %}" data-toggle="tab" href="#signal">
+                  <span>3</span>
+                  <span>Signal</span>
+                </a>
+            </li>
+            <li id="li_prior"
+                class="nav-item {% if 'prior' not in enabled_tabs %} disabled {% endif %}"
+                data-content="Define Data" data-placement="top" data-container="body"
+            >
+                <a class="nav-link {% if active_tab == 'prior' %}active{% endif %}" data-toggle="tab" href="#prior">
+                  <span>4</span>
+                  <span>Priors</span>
+                </a>
+            </li>
+            <li id="li_sampler"
+                class="nav-item {% if 'sampler' not in enabled_tabs %} disabled {% endif %}"
+                data-content="Define Data" data-placement="top" data-container="body"
+            >
+                <a class="nav-link {% if active_tab == 'sampler' %}active{% endif %}" data-toggle="tab" href="#sampler">
+                  <span>5</span>
+                  <span>Sampler</span>
+                </a>
+            </li>
+            <li id="li_launch"
+                class="nav-item {% if 'launch' not in enabled_tabs %} disabled {% endif %}"
+                data-content="Define Data" data-placement="top" data-container="body"
+            >
+                <a class="nav-link {% if active_tab == 'launch' %}active{% endif %}" data-toggle="tab" href="#launch">
+                  <span>6</span>
+                  <span>Submit</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

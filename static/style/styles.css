@@ -1,0 +1,178 @@
+body {
+    background-color: #343a40 !important;
+}
+
+*, *:before, *:after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@media only screen and (max-width: 991px) {
+    * {
+        font-size: .9rem;
+    }
+
+    .page-header span {
+        font-size: x-large;
+    }
+}
+
+.main-content {
+    background-color: #ffffff;
+    padding: 10px 0 20px;
+}
+
+.page-header {
+    margin: 0 0 20px;
+    padding: 10px;
+    font-size: xx-large;
+    text-align: left;
+    border-bottom: 1px dotted #cccccc;
+}
+
+.single-form-wrapper {
+    max-width: 780px;
+}
+
+.field {
+    margin-bottom: 10px;
+}
+
+.footer {
+    padding: 10px 0;
+}
+
+.footer-text {
+    color: white;
+}
+
+/********************************************/
+/*                                          */
+/*                 Navbar                    */
+/*                                          */
+/********************************************/
+.navbar-brand .logo {
+    width: 150px;
+}
+
+.dropdown .dropdown-menu {
+    background-color: rgba(55, 60, 66, 1);
+}
+
+.dropdown .dropdown-menu a,
+.dropdown .dropdown-menu a:focus,
+.dropdown .dropdown-menu a:visited {
+    color: rgba(255,255,255,.5);
+}
+
+.dropdown .dropdown-menu a:hover {
+    color: rgba(255,255,255,.8);
+    background-color: rgba(55, 60, 66, 1);
+}
+
+@media only screen and (max-width: 767px) {
+    .navbar-nav .nav-item {
+        border-bottom: 1px dotted rgba(255,255,255,.5);
+    }
+
+    .dropdown .dropdown-menu {
+        border: none;
+        background-color: inherit;
+    }
+}
+
+
+/********************************************/
+/*                                          */
+/*                 Forms                    */
+/*                                          */
+/********************************************/
+.field {
+    padding-bottom: 10px;
+}
+
+.field.error label {
+    color: darkred;
+}
+
+.field.error input {
+    border-color: darkred;
+    border-radius: 4px 4px 0 0;
+}
+
+.field.error ul {
+    margin-bottom: 0;
+    list-style: none;
+    color: darkred;
+    padding: 5px 5px 0 10px;
+    border: 1px solid darkred;
+    border-radius: 4px 4px 0 0;
+}
+
+/* not applicable to ul inputs to avoid the checkboxes */
+.field.error ul.errorlist {
+    margin-bottom: 0;
+    list-style: none;
+    color: darkred;
+    padding: 5px 5px 5px 10px;
+    border: 1px solid darkred;
+    border-top-width: 0;
+    border-radius: 0 0 4px 4px;
+    background-color: darksalmon;
+}
+
+.field.error ul.errorlist li {
+    font-size: 0.8rem;
+}
+
+/* non field errors */
+
+.non-field-error div {
+    margin-top: -20px;
+    border-top: 1px solid darkred;
+    padding: 0 80px 10px;
+}
+
+.non-field-error ul {
+    list-style: none;
+    color: darkred;
+    padding: 5px 5px 5px 10px;
+    border: 1px solid darkred;
+    border-top-width: 0;
+    border-radius: 0 0 4px 4px;
+    background-color: darksalmon;
+}
+
+ul.messages {
+    list-style: none;
+    padding: 5px 5px 5px 10px;
+}
+
+.buttons {
+    padding-bottom: 10px;
+}
+
+.div-mode-params {
+    margin-bottom: 2px;
+}
+
+/********************************************/
+/*                                          */
+/*                 form-group               */
+/*                                          */
+/********************************************/
+
+.field.required .control-label:after {
+    content: "*";
+    color: red;
+}
+
+/********************************************/
+/*                                          */
+/*               errorlist                  */
+/*                                          */
+/********************************************/
+.errorlist {
+    list-style-type: none;
+}

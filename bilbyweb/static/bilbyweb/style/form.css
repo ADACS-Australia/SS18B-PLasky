@@ -1,0 +1,90 @@
+.row.field ul {
+    list-style: none;
+}
+
+.job-summary {
+    margin-bottom: 20px;
+}
+
+
+.download-options {
+    font-style: italic;
+    font-size: x-large;
+    color: darkslategray;
+    padding: 5px 0;
+    border-bottom: 1px dashed darksalmon;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.download-options {
+    margin-top: 20px;
+}
+
+.job-json {
+    display: none;
+}
+
+.job-json textarea, .job-json textarea:focus {
+    padding: 10px;
+    width:100%;
+    border: none;
+    overflow: auto;
+    outline: none;
+    background-color: darkslategray;
+    color: white;
+    font-size: small;
+    /*height:100%; */
+    box-sizing: border-box;         /* For IE and modern versions of Chrome */
+    -moz-box-sizing: border-box;    /* For Firefox                          */
+    -webkit-box-sizing: border-box; /* For Safari                           */
+}
+
+.download-json {
+    width: 80px;
+    border: 1px solid darkslategray;
+    color: #343a40;
+    text-underline: none;
+}
+
+.download-json a, .download-json a:hover, .download-json a:focus {
+    text-underline: none;
+    color: darkslategray;
+}
+
+.download-json div {
+    margin: 5px;
+}
+
+/******************/
+/* INPUT FIELDS   */
+/******************/
+.form-control::placeholder {
+    color: #a9a9a9;
+    font-style: italic;
+}
+/*******************/
+
+/******************/
+/* PRIOR FIELDSET */
+/******************/
+.fieldset-name {
+    padding: 0 0 10px 0;
+    margin: 20px -5px 15px;
+    border-bottom: 1px dotted darksalmon;
+    color: darkslategray;
+    font-style: italic;
+}
+
+/******************/
+/* END FIELDSET   */
+/******************/
+
+/**********************/
+/*  NON FIELD ERRORS  */
+.non-field-error ul.errors {
+    border-top-width: 1px;
+    border-radius: 4px 4px;
+}
+
+/**********************/

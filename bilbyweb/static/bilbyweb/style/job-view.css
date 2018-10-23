@@ -1,0 +1,146 @@
+.job-status .badge {
+    font-size: 40%;
+    vertical-align: top;
+    margin-right: 5px;
+}
+
+.job-view-section .heading {
+    margin-top: 20px;
+    font-style: italic;
+    font-weight: 500;
+    font-size: medium;
+    color: darkslategray;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+    border-bottom: 1px dotted rosybrown;
+}
+
+#accordion .card {
+    border: none;
+}
+
+#accordion .card-header {
+    background-color: rgba(233,150,122,0.2);
+    border-radius: 0;
+    padding: 0;
+}
+
+#accordion .card-header button,
+#accordion .card-header button:hover,
+#accordion .card-header button:active {
+    width: 100%;
+    color: darkslategray;
+    font-weight: 500;
+    text-decoration: none;
+    text-align: left;
+}
+
+#accordion .card-body {
+    padding: 0;
+}
+
+#accordion .card-body table th,
+#accordion .card-body table td {
+    padding: .3rem 12px;
+    border-top: none;
+    border-bottom: 1px solid rgba(233,150,122,0.5);
+    font-size: small;
+}
+
+#accordion .card-body table th{
+    width: 35%;
+}
+
+#accordion .card-body table.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(233,150,122,0.1);
+}
+
+.job-view-section .body.actions ul li a,
+.job-view-section .body.actions ul li a:visited,
+.job-view-section .body.actions ul li a:hover,
+.job-view-section .body.actions ul li a:focus {
+    color: white;
+    font-size: small;
+    font-weight: 600;
+}
+
+.job-view-section .body.actions ul li {
+    padding-bottom: 5px;
+}
+
+#deleteJob .modal-header .modal-title {
+    color: #dc3545;
+}
+
+
+.job-view-section .preview ul {
+    list-style: none;
+}
+
+.job-view-section .preview ul li {
+    width: 33%;
+    display: inline-block;
+    padding: 5px;
+    margin: 1px 0;
+    border: 1px solid lightslategrey;
+}
+
+.job-view-section .preview ul li .card-body {
+    padding: 10px;
+    min-height: 50px;
+}
+
+.job-view-section .preview ul li .card-img-top {
+    max-height: 250px;
+    object-fit: contain;
+}
+
+.job-view-section .preview ul li .card-img-top.small {
+    max-height: 215px;
+    padding: 20px 20px 0 20px;
+}
+
+.job-view-section .preview ul li .card-text {
+    font-size: small;
+    font-weight: 600;
+}
+
+.job-view-section .preview ul li a .size {
+    color: #bd2824;
+    font-size: small;
+}
+
+.job-view-section .preview ul li a,
+.job-view-section .preview ul li a:focus,
+.job-view-section .preview ul li a:visited,
+.job-view-section .preview ul li a:hover {
+    text-decoration: none;
+}
+
+@media only screen and (max-width: 592px) {
+    .job-view-section .preview ul li .card-img-top {
+        max-height: 200px;
+        object-fit: contain;
+    }
+
+    .job-view-section .preview ul li .card-img-top.small {
+        max-height: 215px;
+        padding: 20px 20px 0 20px;
+    }
+}
+
+.meta-data table th,
+.meta-data table td {
+    padding: .3rem 12px;
+    border-top: 1px solid rgba(112, 233, 181, 0.5);
+    border-bottom: 1px solid rgba(112, 233, 181, 0.5);
+    font-size: small;
+}
+
+.meta-data table th {
+    width: 35%;
+}
+
+.meta-data table.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(112, 233, 181, 0.1);
+}

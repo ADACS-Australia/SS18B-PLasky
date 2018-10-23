@@ -1,0 +1,461 @@
+{% extends 'base/base.html' %}
+{% load template_filters %}
+{% load static %}
+
+{% block additional_styles %}
+    <link rel="stylesheet" href="{% static 'bilbyweb/style/job-view.css' %}"/>
+{% endblock additional_styles %}
+
+{% block page_header %}
+    <span>{{ bilby_job.job.name }}</span>
+    <span class="job-status">
+        {% with bilby_job.job.status as status %}
+            {% if status == 'draft' %}
+                <span class="badge badge-secondary">DRAFT</span>
+            {% elif status == 'pending' %}
+                <span class="badge badge-primary">PENDING</span>
+            {% elif status == 'submitting' %}
+                <span class="badge badge-primary">SUBMITTING</span>
+            {% elif status == 'submitted' %}
+                <span class="badge badge-primary">SUBMITTED</span>
+            {% elif status == 'queued' %}
+                <span class="badge badge-primary">QUEUED</span>
+            {% elif status == 'in_progress' %}
+                <span class="badge badge-primary">IN-PROGRESS</span>
+            {% elif status == 'completed' %}
+                <span class="badge badge-success">COMPLETED</span><span class="badge badge-info">PRIVATE</span>
+            {% elif status == 'error' %}
+                <span class="badge badge-danger">ERROR</span>
+            {% elif status == 'cancelling' %}
+                <span class="badge badge-dark">CANCELLING</span>
+            {% elif status == 'cancelled' %}
+                <span class="badge badge-dark">CANCELLED</span>
+            {% elif status == 'wall_time_exceeded' %}
+                <span class="badge badge-warning">WALL TIME EXCEEDED</span>
+            {% elif status == 'out_of_memory' %}
+                <span class="badge badge-warning">OUT OF MEMORY</span>
+            {% elif status == 'deleting' %}
+                <span class="badge badge-light">DELETING</span>
+            {% elif status == 'deleted' %}
+                <span class="badge badge-light">DELETED</span>
+            {% elif status == 'public' %}
+                <span class="badge badge-success">COMPLETED</span><span class="badge badge-info">PUBLIC</span>
+            {% endif %}
+        {% endwith %}
+    </span>
+{% endblock page_header %}
+
+{% block content %}
+    {{ block.super }}
+    {% if bilby_job.job_actions %}
+        <div class="job-view-section">
+            <div class="body actions">
+                <ul class="list-inline">
+                    {% if 'copy' in bilby_job.job_actions %}
+                        <li class="list-inline-item"><a class="btn btn-primary"
+                                                        href="{% url 'copy_job' bilby_job.job.id %}">COPY <i
+                                class="fas fa-clone"></i></a></li>
+                    {% endif %}
+                    {% if 'edit' in bilby_job.job_actions %}
+                        <li class="list-inline-item"><a class="btn btn-primary"
+                                                        href="{% url 'edit_job' bilby_job.job.id %}">EDIT <i
+                                class="fas fa-edit"></i></a></li>
+                    {% endif %}
+                    {% if 'cancel' in bilby_job.job_actions %}
+                        <li class="list-inline-item"><a class="btn btn-dark" data-toggle="modal"
+                                                        data-target="#cancelJob">CANCEL <i
+                                class="far fa-stop-circle"></i></a></li>
+                    {% endif %}
+                    {% if 'make_it_public' in bilby_job.job_actions %}
+                        <li class="list-inline-item"><a class="btn btn-success" data-toggle="modal"
+                                                        data-target="#makeItPublic">MAKE IT PUBLIC <i
+                                class="fas fa-globe-asia"></i></a></li>
+                    {% endif %}
+                    {% if 'make_it_private' in bilby_job.job_actions %}
+                        <li class="list-inline-item"><a class="btn btn-info" data-toggle="modal"
+                                                        data-target="#makeItPrivate">MAKE IT PRIVATE <i
+                                class="fas fa-user"></i></a></li>
+                    {% endif %}
+                    {% if 'delete' in bilby_job.job_actions %}
+                        <li class="list-inline-item"><a class="btn btn-danger" data-toggle="modal"
+                                                        data-target="#deleteJob">DELETE <i class="fas fa-trash-alt"></i></a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+
+        {% if 'make_it_public' in bilby_job.job_actions %}
+            <!-- Modal Make it public-->
+            <div class="modal fade" id="makeItPublic" tabindex="-1" role="dialog"
+                 aria-labelledby="makeItPublicTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="makeItPublicLongTitle">Make Job Public</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>You are about to make the job public. This means that, any user can view, clone
+                                the job and will be able to download the output files.</p>
+                            <p>However, they will NOT be able to delete the job information, as it will be read-only to
+                                them.</p>
+                            <p>Are you sure, you want to proceed?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-warning" data-dismiss="modal">Not Now</button>
+                            <a class="btn btn-success" href="{% url 'make_job_public' bilby_job.job.id %}">Make it
+                                Public</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if 'make_it_private' in bilby_job.job_actions %}
+            <!-- Modal Make it public-->
+            <div class="modal fade" id="makeItPrivate" tabindex="-1" role="dialog"
+                 aria-labelledby="makeItPrivateTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="makeItPrivateLongTitle">Make Job Private</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>You are about to make the job private. This means that, no user other than you will be
+                                able to view, clone the job and will be able to download the output files.</p>
+                            <p>However, if the job has been copied already, the copied job will still be available to
+                                the respective user.</p>
+                            <p>Are you sure, you want to proceed?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-warning" data-dismiss="modal">Not Now</button>
+                            <a class="btn btn-info" href="{% url 'make_job_private' bilby_job.job.id %}">Make it
+                                Private</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if 'delete' in bilby_job.job_actions %}
+            <!-- Modal delete job -->
+            <div class="modal fade" id="deleteJob" tabindex="-1" role="dialog"
+                 aria-labelledby="deleteJobTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteJobLongTitle">Delete Job</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>You are about to delete the job. This means that, everything related to the job and its
+                                data will be deleted, and you will not be able to revert this process later. </p>
+                            <p>Are you sure, you want to proceed?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-warning" data-dismiss="modal">Not Now</button>
+                            <a class="btn btn-danger" href="{% url 'delete_job' bilby_job.job.id %}">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if 'cancel' in bilby_job.job_actions %}
+            <!-- Modal delete job -->
+            <div class="modal fade" id="cancelJob" tabindex="-1" role="dialog"
+                 aria-labelledby="cancelJobTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="cancelJobLongTitle">Delete Job</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>You are about to delete the job. This means that, the job will stop processing and no
+                                further output will be generated. </p>
+                            <p>Are you sure, you want to proceed?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-warning" data-dismiss="modal">Not Now</button>
+                            <a class="btn btn-dark" href="{% url 'cancel_job' bilby_job.job.id %}">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+    {% endif %}
+
+    {% if bilby_job.job.status == 'completed' or bilby_job.job.status == 'public' %}
+        <div class="job-view-section">
+            <div class="row">
+                <div class="col col-md-12">
+                    <div class="heading">Outputs &#38; Download Options</div>
+                </div>
+            </div>
+            <div class="body preview">
+                {% if job_data.is_online %}
+                    <ul>
+                        {% if job_data.H1 %}
+                            <li class="card text-center">
+                                <img class="card-img-top"
+                                     src="{% url 'download_asset' bilby_job.job.id 0 job_data.H1.path %}"
+                                     alt="Hanford Detector Frequency Domain Data">
+                                <div class="card-body">
+                                    <p class="card-text">Hanford Detector Frequency Domain Data</p>
+                                </div>
+                            </li>
+                        {% endif %}
+                        {% if job_data.L1 %}
+                            <li class="card text-center">
+                                <img class="card-img-top"
+                                     src="{% url 'download_asset' bilby_job.job.id 0 job_data.L1.path %}"
+                                     alt="Livingston Detector Frequency Domain Data">
+                                <div class="card-body">
+                                    <p class="card-text">Livingston Detector Frequency Domain Data</p>
+                                </div>
+                            </li>
+                        {% endif %}
+                        {% if job_data.V1 %}
+                            <li class="card text-center">
+                                <img class="card-img-top"
+                                     src="{% url 'download_asset' bilby_job.job.id 0 job_data.V1.path %}"
+                                     alt="Virgo Detector Frequency Domain Data">
+                                <div class="card-body">
+                                    <p class="card-text">Virgo Detector Frequency Domain Data</p>
+                                </div>
+                            </li>
+                        {% endif %}
+                        {% if job_data.corner %}
+                            <li class="card text-center">
+                                <img class="card-img-top"
+                                     src="{% url 'download_asset' bilby_job.job.id 0 job_data.corner.path %}"
+                                     alt="Corner Data">
+                                <div class="card-body">
+                                    <p class="card-text">Corner Data</p>
+                                </div>
+                            </li>
+                        {% endif %}
+
+                        {% if job_data.archive %}
+                            <li class="card text-center">
+                                <a href="{% url 'download_asset' bilby_job.job.id 1 job_data.archive.path %}">
+                                    <img class="card-img-top small" src="{% static 'bilbyweb/images/archive.png' %}"
+                                         alt="Archive"/>
+                                    <p class="size">Size: {{ job_data.archive.size }}</p>
+                                    <div class="card-body">
+                                        <p class="card-text">Download Archive</p>
+                                    </div>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                {% else %}
+                    <h5>Unable to fetch output files. Cluster containing the output of this job is not currently
+                        online.</h5>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="job-view-section">
+        <div class="row">
+            <div class="col col-md-12">
+                <div class="heading">Job Information</div>
+            </div>
+        </div>
+        <div class="body meta-data">
+            <table class="table table-striped">
+                <tbody>
+                <tr>
+                    <th scope="row">Owner</th>
+                    <td>{{ bilby_job.job.user.display_name }}</td>
+                </tr>
+                {% if bilby_job.job.description %}
+                    <tr>
+                        <th scope="row">Description</th>
+                        <td>{{ bilby_job.job.description | linebreaks }}</td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <th scope="row">Creation Time</th>
+                    <td>{{ bilby_job.job.creation_time }}</td>
+                </tr>
+                {% if bilby_job.job.job_pending_time %}
+                    <tr>
+                        <th scope="row">Launch Time</th>
+                        <td>{{ bilby_job.job.job_pending_time }}</td>
+                    </tr>
+                {% endif %}
+                {% if bilby_job.job.job_running_time %}
+                    <tr>
+                        <th scope="row">Job Run Start Time</th>
+                        <td>{{ bilby_job.job.job_running_time }}</td>
+                    </tr>
+                {% endif %}
+                {% if bilby_job.job.job_finished_time %}
+                    <tr>
+                        <th scope="row">Job Finished Time</th>
+                        <td>{{ bilby_job.job.job_finished_time }}</td>
+                    </tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="job-view-section">
+        <div class="row">
+            <div class="col col-md-12">
+                <div class="heading">Input Parameters</div>
+            </div>
+        </div>
+        <div class="body">
+            <div id="accordion">
+                {% if bilby_job.data %}
+                    <div class="card">
+                        <div class="card-header" id="headingData">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link collapsed" data-toggle="collapse"
+                                        data-target="#collapseData"
+                                        aria-expanded="true" aria-controls="collapseTwo">
+                                    Data
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapseData" class="collapse" aria-labelledby="headingData"
+                             data-parent="#accordion">
+                            <div class="card-body">
+                                <table class="table table-striped">
+                                    <tbody>
+                                    <tr>
+                                        <th scope="row">Data Type</th>
+                                        <td>{{ bilby_job.data.data_choice | display_name }}</td>
+                                    </tr>
+                                    {% if bilby_job.data_parameters %}
+                                        {% for data_parameter in bilby_job.data_parameters %}
+                                            <tr>
+                                                <th scope="row">{{ data_parameter.name | display_name }}</th>
+                                                <td>{{ data_parameter.value | display_name }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                {% if bilby_job.signal and bilby_job.signal.signal_choice != 'skip' %}
+                    <div class="card">
+                        <div class="card-header" id="headingSignal">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link collapsed" data-toggle="collapse"
+                                        data-target="#collapseSignal"
+                                        aria-expanded="true" aria-controls="collapseTwo">
+                                    Signal
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapseSignal" class="collapse" aria-labelledby="headingSignal"
+                             data-parent="#accordion">
+                            <div class="card-body">
+                                <table class="table table-striped">
+                                    <tbody>
+                                    <tr>
+                                        <th scope="row">Signal Injection</th>
+                                        <td>{{ bilby_job.signal.signal_choice | display_name }}</td>
+                                    </tr>
+                                    {% if bilby_job.signal_parameters %}
+                                        {% for signal_parameters in bilby_job.signal_parameters %}
+                                            <tr>
+                                                <th scope="row">{{ signal_parameters.name | display_name }}</th>
+                                                <td>{{ signal_parameters.value | display_name }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                {% if bilby_job.priors %}
+                    <div class="card">
+                        <div class="card-header" id="headingPrior">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link collapsed" data-toggle="collapse"
+                                        data-target="#collapsePrior"
+                                        aria-expanded="true" aria-controls="collapseTwo">
+                                    Priors
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapsePrior" class="collapse" aria-labelledby="headingPrior"
+                             data-parent="#accordion">
+                            <div class="card-body">
+                                <table class="table table-striped">
+                                    <tbody>
+                                    {% for prior in bilby_job.priors %}
+                                        <tr>
+                                            <th scope="row">{{ prior.name | display_name }}</th>
+                                            <td>{{ prior.prior_choice | display_name }}: {{ prior.get_display_value }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                {% if bilby_job.sampler %}
+                    <div class="card">
+                        <div class="card-header" id="headingSampler">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link collapsed" data-toggle="collapse"
+                                        data-target="#collapseSampler"
+                                        aria-expanded="true" aria-controls="collapseTwo">
+                                    Sampler
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapseSampler" class="collapse" aria-labelledby="headingSampler"
+                             data-parent="#accordion">
+                            <div class="card-body">
+                                <table class="table table-striped">
+                                    <tbody>
+                                    <tr>
+                                        <th scope="row">Sampler Type</th>
+                                        <td>{{ bilby_job.sampler.sampler_choice | display_name }}</td>
+                                    </tr>
+                                    {% if bilby_job.sampler_parameters %}
+                                        {% for sampler_parameters in bilby_job.sampler_parameters %}
+                                            <tr>
+                                                <th scope="row">{{ sampler_parameters.name | display_name }}</th>
+                                                <td>{{ sampler_parameters.value | display_name }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

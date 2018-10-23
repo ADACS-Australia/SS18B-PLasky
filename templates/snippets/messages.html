@@ -1,0 +1,13 @@
+{% if messages %}
+    <div class="row field">
+        <div class="col-md-12 text-center">
+            <ul class="messages">
+                {% for message in messages %}
+                    <div class="{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endif %}

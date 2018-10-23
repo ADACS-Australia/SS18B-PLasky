@@ -1,0 +1,21 @@
+<form class="form-row" method="post" enctype="multipart/form-data">
+    <div class="col-md-12">
+        {% csrf_token %}
+        {% include 'snippets/messages.html' %}
+        {% for field in form %}
+            <div class="row field {% if field.errors %}error{% endif %}">
+                <label class="col-md-4 text-md-right" for="{{ field.auto_id }}">{{ field.label }}</label>
+                <div class="col-md-8">
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            </div>
+        {% endfor %}
+        <div class="row text-md-right">
+            <div class="buttons col-md-12 text-md-right">
+                <input class="btn btn-success" type="submit" tabindex="100"
+                       value="{% if submit_text %}{{ submit_text }}{% else %}Submit{% endif %}"/>
+            </div>
+        </div>
+    </div>
+</form>

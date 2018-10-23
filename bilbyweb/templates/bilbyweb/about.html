@@ -1,0 +1,44 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block page_header %}
+    About Bilby
+{% endblock page_header %}
+
+{% block additional_styles %}
+    <link rel="stylesheet" href="{% static 'bilbyweb/style/about.css' %}"/>
+{% endblock additional_styles %}
+
+{% block content %}
+    <div class="about row">
+        <div class="col-md-12">
+            <div class="section text-center bilby-logo">
+                <img src="{% static 'bilbyweb/images/bilby_logo.png' %}"/>
+            </div>
+            <div class="section text-justify">
+                Welcome to Bilby: The user-friendly Bayesian inference library for gravitational-wave astronomy.
+            </div>
+            <div class="section text-justify">
+                Bayesian parameter estimation is fast becoming the language of gravitational-wave astronomy. It is the
+                method by which gravitational-wave data is used to infer the sources astrophysical properties. Bilby is
+                a Bayesian inference code designed to do parameter estimation for gravitational-wave astronomy. This
+                front end combines expert-level parameter-estimation infrastructure with a simple-to-use interface
+                that facilitates use by beginners and experts alike.
+            </div>
+            <div class="section text-justify">
+                Bilby is a project driven out of <a href='https://www.monash.edu/science/schools/physics'
+                                                    target="_blank">
+                Monash University’s School of Physics and Astronomy</a>, and part of the <a
+                    href='http://www.ozgrav.org/' target="_blank">
+                Australian Research Council Centre of Excellence for Gravitational Wave Discovery, OzGrav</a>. The Bilby
+                user interface was built by <a href='https://adacs.org.au/' target="_blank">ADACS: Astronomy Data and
+                Computing Services</a>.
+            </div>
+            <div class="section text-justify">
+                If you would like to download the source code for bilby, visit <a
+                    href='https://git.ligo.org/Monash/bilby' target="_blank">
+                https://git.ligo.org/Monash/bilby</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

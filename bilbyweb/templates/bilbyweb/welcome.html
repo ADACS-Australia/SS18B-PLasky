@@ -1,0 +1,23 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block additional_styles %}
+    <link rel="stylesheet" href="{% static 'bilbyweb/style/welcome.css' %}"/>
+{% endblock additional_styles %}
+
+{% block main_content %}
+    <div class="container">
+        <div class="welcome row">
+            <div class="col col-md-12">
+                <div class="section bilby-logo row">
+                    <div class="col col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-sm-6 offset-sm-3 col-12">
+                        <img src="{% static 'bilbyweb/images/bilby_logo.png' %}"/>
+                    </div>
+                </div>
+                <div class="slogan text-center">
+                    Welcome to Bilby: The user-friendly Bayesian inference library for gravitational-wave astronomy.
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock main_content %}

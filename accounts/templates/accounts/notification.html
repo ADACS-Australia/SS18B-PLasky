@@ -1,0 +1,31 @@
+{% extends 'base/base.html' %}
+
+{% block info-bar %}
+    Verification
+{% endblock info-bar %}
+
+{% block page_header %}
+    BILBY WEB
+    {% if type == 'registration_submitted' %}Registration submitted {% endif %}
+    {% if type == 'email_verify' %}Email address verification {% endif %}
+{% endblock page_header %}
+
+{% block content %}
+    {% if type == 'registration_submitted' %}
+        <p>Dear {{ data.first_name }} {{ data.last_name }},</p>
+        <p>To activate your account into the system you need to verify your email address.</p>
+        <p>We have sent an email to the email address you provided during registration. Please click on the
+            link sent to you via email to verify your email address.</p>
+    {% endif %}
+    {% if type == 'email_verify' %}
+        {% if data.success %}
+            <p>Thank you very much for verifying your email address.</p>
+            <p>The account has been activated in the system.</p>
+            <p>You should now be able to log in the system via <a href="{% url 'login' %}">login</a> page.</p>
+        {% else %}
+            <p>Sorry the system could not verify your email address.</p>
+            <p>The following error occurred during the process</p>
+            <p>{{ data.message }}</p>
+        {% endif %}
+    {% endif %}
+{% endblock content %}

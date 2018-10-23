@@ -1,0 +1,29 @@
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="form-tab" value="launch"/>
+    <div class="job-json">
+        {% for field in submit_form %}
+            <div class="row field
+                    {% if field.field.required %}required{% endif %}
+                    {% if field.errors %}error{% endif %}
+                    div-{{ field.name }}">
+
+                <!-- Label -->
+                <label class="col col-md-4 col-sm-6 col-sx-6 col-12 control-label" for="{{ field.auto_id }}">
+                    {{ field.label }}
+                </label>
+
+                <!-- Field -->
+                <div class="col col-md-8 col-sm-6 col-sx-6 col-12">
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
+
+    {% include 'bilbyweb/job/snippets/job-overview.html' %}
+    {% include 'bilbyweb/job/snippets/pager-previous-launch.html' %}
+
+</form>

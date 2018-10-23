@@ -1,0 +1,21 @@
+<div class="job-summary">
+    <div>
+        <div class="download-options">
+            Job Summary Download Options
+        </div>
+        <div class="download-json text-center">
+            <a id="download_json"
+               download="{{ drafted_job.job.name | slugify }}_{{ drafted_job.job.user.username | slugify }}.json">
+                <div><i class="fas fa-download"></i></div>
+                <div>JSON</div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+  $("a#download_json").click(function () {
+    var content = $("#id_launch-json_representation").text().toString()
+    this.href = "data:text/plain;charset=UTF-8," + encodeURIComponent(content)
+  })
+</script>
