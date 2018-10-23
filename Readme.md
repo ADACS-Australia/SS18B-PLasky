@@ -182,3 +182,14 @@ server {
 ```
 
 The connection upgrade configuration is very important for successful websocket connection.
+
+## License ##
+
+The project is licensed under the MIT License. For more information, please refer to the `LICENSE` included in
+the root of the project.
+
+
+## Authors ##
+* [Shibli Saleheen](https://github.com/shiblisaleheen) (as part of [ADACS](https://adacs.org.au/))
+* [Lewis Lakerink](https://github.com/retsimx) (as part of [ADACS](https://adacs.org.au/))
+* [Dany Vohl](https://github.com/macrocosme) (as part of [ADACS](https://adacs.org.au/))
