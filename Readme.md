@@ -36,9 +36,10 @@ The required steps include the following:
 
 * `virtualenv -p python3.6 venv` (create the virtual environment, e.g. with https://docs.python.org/3/library/venv.html or https://github.com/pyenv/pyenv)
 * `git pull` (clone the code)
-* `git submodule update --init --recursive` (pulls any submodules (django_hpc_job_controller))
-* `source venv/bin/activate` (activate the virtual environment)
-* `cd ADACS-SS18B-PLasky/bilbyui/settings` (enter the settings directory)
+* `cd SS18B-PLasky` (enter to the directory)
+* `git submodule foreach --recursive git pull origin master` (pulls any submodules (django_hpc_job_controller))
+* `source ../venv/bin/activate` (activate the virtual environment)
+* `cd bilbyui/settings` (enter the settings directory)
 * `touch local.py` (create the file for local settings - refer to the Local Settings section for setting up a local settings file)
 * `cd ../../` (enter the root directory of the project)
 * `pip3 install -r requirements.txt` (install required python packages)
