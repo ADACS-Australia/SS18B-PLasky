@@ -6,6 +6,7 @@ services:
     container_name: ng_bilby
     ports:
       - "8000:8000"
+      - "8001:8001"
     volumes:
       - ./nginx:/etc/nginx/conf.d
       - ./static:/static
@@ -15,10 +16,12 @@ services:
     image: mysql:5.7
     container_name: mysql_bilby
     environment:
-      MYSQL_ROOT_PASSWORD: example
+      MYSQL_ROOT_PASSWORD: 76vcqmGKP19Z1AEx
       MYSQL_DATABASE: bilby
       MYSQL_USER: django
-      MYSQL_PASSWORD: test-docker_#1
+      MYSQL_PASSWORD: 76vcqmGKP19Z1AEx
+    volumes:
+      - var_lib_mysql:/var/lib/mysql
   web:
     build: ./
     container_name: dg_bilby
@@ -35,3 +38,6 @@ services:
       - ./static:/static
     depends_on:
       - db
+
+volumes:
+  var_lib_mysql:
