@@ -128,8 +128,8 @@ included at the root of the project repository.
 
 Local job submission setup is relatively simple:
 
-* Create a Python 3.6 virtual environment in the local `django_hpc_job_controller/client/venv` and install the client requirements as described in https://github.com/ASVO-TAO/django_hpc_job_controller#installation-steps
-* Configure a new cluster in the Django admin that uses `localhost` for the host name as described in https://github.com/ASVO-TAO/django_hpc_job_controller#configure-a-cluster and also has the client path set to the absolute path to the job controller client folder, eg: `/home/user/projects/ADACS-SS18B-PLasky/django_hpc_job_controller/client`
+* Create a Python 3.6 virtual environment in the local `django_hpc_job_controller/client/venv` and install the client requirements as described in https://github.com/ADACS-Australia/django_hpc_job_controller#installation-steps
+* Configure a new cluster in the Django admin that uses `localhost` for the host name as described in https://github.com/ADACS-Australia/django_hpc_job_controller#configure-a-cluster and also has the client path set to the absolute path to the job controller client folder, eg: `/home/user/projects/ADACS-SS18B-PLasky/django_hpc_job_controller/client`
 * Create a python virtual environment for Bilby and install Bilby in to it. eg: `/home/user/bilby/venv`
 * Copy the three files from `misc/job_controller_scripts/local/` to `django_hpc_job_controller/client/settings/`
 * Copy the Bilby json wrapper (`misc/bilby_json_wrapper`) somewhere, eg: to `/home/user/bilby/`
@@ -140,8 +140,8 @@ Local job submission setup is relatively simple:
 
 Slurm job submission is similar to the local job submission steps.
 
-* Follow the client setup instructions in https://github.com/ASVO-TAO/django_hpc_job_controller#installation-steps on the remote cluster
-* Configure a new cluster in the Django admin for the remote cluster as described in https://github.com/ASVO-TAO/django_hpc_job_controller#configure-a-cluster 
+* Follow the client setup instructions in https://github.com/ADACS-Australia/django_hpc_job_controller#installation-steps on the remote cluster
+* Configure a new cluster in the Django admin for the remote cluster as described in https://github.com/ADACS-Australia/django_hpc_job_controller#configure-a-cluster 
 * Create a python virtual environment on the remote cluster for Bilby and install Bilby in to it. eg: `/home/user/bilby/venv`
 * Copy the three files from `misc/job_controller_scripts/slurm/` to `.../django_hpc_job_controller/client/settings/` on the remote cluster
 * Copy the Bilby json wrapper (`misc/bilby_json_wrapper`) somewhere on the remote cluster, eg: to `/home/user/bilby/`
